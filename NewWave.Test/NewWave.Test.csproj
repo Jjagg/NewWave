@@ -59,6 +59,10 @@
       <Project>{3125133D-EDA7-448D-9D9D-3AC19CEA0EA7}</Project>
       <Name>NewWave.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NewWave.Midi\NewWave.Midi.csproj">
+      <Project>{0ECAF30F-55BA-4DC0-8E99-F85307C9AB8D}</Project>
+      <Name>NewWave.Midi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
