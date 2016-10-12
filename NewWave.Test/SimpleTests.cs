@@ -6,7 +6,7 @@ namespace NewWave.Test
 	public class SimpleTests
 	{
 		[TestMethod]
-		public void ScoreTest()
+		public void RenderTest()
 		{
 			Common.RenderAndPlay(new TestSong(), "output.mid");
 		}

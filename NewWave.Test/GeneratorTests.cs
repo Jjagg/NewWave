@@ -7,7 +7,7 @@ namespace NewWave.Test
 	public class GeneratorTests
 	{
 		[TestMethod]
-		public void ScoreTest()
+		public void RenderTest()
 		{
 			Common.RenderAndPlay(new GeneratedSong(), "output.mid");
 		}
