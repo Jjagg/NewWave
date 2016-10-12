@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NewWave.Core;
+using NewWave.Midi;
 
 namespace NewWave.Generator
 {
@@ -21,10 +22,23 @@ namespace NewWave.Generator
 	    public override Score Render()
 		{
 			const int measures = 16;
+
+		    var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
+		    var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
 			for (var measure = 0; measure < measures; measure++)
 			{
+				guitar.Notes.Add(new List<Note>
+				{
+					new Note(0, _feel, Pitch.E2, Velocity.Fff),
+					new Note(0, _feel, Pitch.B3, Velocity.Fff),
+					new Note(0, _feel, Pitch.E3, Velocity.Fff)
+				});
+				bass.Notes.Add(new List<Note>
+				{
+					new Note(0, _feel, Pitch.E1, Velocity.Fff)
+				});
 				drums.Notes.Add(DrumBeat.GetMeasure(measure % 4 == 0, _time, _feel));
 			}
 
@@ -32,7 +46,7 @@ namespace NewWave.Generator
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, _tempo } },
 				new Dictionary<int, int> { { 0, _feel } },
-				new List<InstrumentTrack>(),
+				new List<InstrumentTrack> { guitar, bass },
 				drums);
 	    }
 
