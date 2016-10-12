@@ -56,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NewWave.Core\NewWave.Core.csproj">
-      <Project>{3125133D-EDA7-448D-9D9D-3AC19CEA0EA7}</Project>
+      <Project>{fa86d790-de62-46d9-a3b6-0fd84accb75d}</Project>
       <Name>NewWave.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\NewWave.Midi\NewWave.Midi.csproj">

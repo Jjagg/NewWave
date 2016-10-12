@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,7 +16,9 @@ namespace NewWave.Test
 			var song = new TestSong();
 			Console.WriteLine(song.Generate());
 			var score = song.Render();
-			score.ExportMidi(Path.Combine(_dir, "output.mid"));
+			var outputPath = Path.Combine(_dir, "output.mid");
+			score.ExportMidi(outputPath);
+			Process.Start(outputPath);
 		}
 	}
 }
