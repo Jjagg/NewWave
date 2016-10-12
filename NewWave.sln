@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewWave.Midi", "NewWave.Mid
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewWave.Core", "NewWave.Core\NewWave.Core.csproj", "{FA86D790-DE62-46D9-A3B6-0FD84ACCB75D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewWave.Generator", "NewWave.Generator\NewWave.Generator.csproj", "{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FA86D790-DE62-46D9-A3B6-0FD84ACCB75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA86D790-DE62-46D9-A3B6-0FD84ACCB75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA86D790-DE62-46D9-A3B6-0FD84ACCB75D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

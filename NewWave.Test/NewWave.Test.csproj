@@ -50,6 +50,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Common.cs" />
+    <Compile Include="GeneratorTests.cs" />
     <Compile Include="SimpleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSong.cs" />
@@ -58,6 +60,10 @@
     <ProjectReference Include="..\NewWave.Core\NewWave.Core.csproj">
       <Project>{fa86d790-de62-46d9-a3b6-0fd84accb75d}</Project>
       <Name>NewWave.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NewWave.Generator\NewWave.Generator.csproj">
+      <Project>{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}</Project>
+      <Name>NewWave.Generator</Name>
     </ProjectReference>
     <ProjectReference Include="..\NewWave.Midi\NewWave.Midi.csproj">
       <Project>{0ECAF30F-55BA-4DC0-8E99-F85307C9AB8D}</Project>

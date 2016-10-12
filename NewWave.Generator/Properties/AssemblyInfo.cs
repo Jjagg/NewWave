@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NewWave.Core")]
+[assembly: AssemblyTitle("NewWave.Generator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NewWave.Core")]
+[assembly: AssemblyProduct("NewWave.Generator")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("cef7aaac-b324-4cd4-87b0-d9f4ce91135e")]
+[assembly: Guid("cb77bcb7-1fe9-4e24-9870-09a9c2518b1c")]
 
 // Version information for an assembly consists of the following four values:
 //
