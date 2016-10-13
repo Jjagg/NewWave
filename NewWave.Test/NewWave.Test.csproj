@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Common.cs" />
     <Compile Include="LibraryTests\ChordTests.cs" />
+    <Compile Include="LibraryTests\GrooveTests.cs" />
     <Compile Include="GeneratorTests.cs" />
     <Compile Include="SimpleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
