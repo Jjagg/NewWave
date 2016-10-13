@@ -33,7 +33,7 @@ namespace NewWave.Library.Chords
 			// Third note
 			pitches.Add(_basePitch + 7);
 
-			// Fourth note
+			// Additional notes
 			if (_added != ChordAdded.None)
 			{
 				switch (_added)
@@ -45,8 +45,13 @@ namespace NewWave.Library.Chords
 						pitches.Add(_basePitch + (_quality == ChordQuality.Major ? 11 : 10));
 						break;
 					case ChordAdded.Nine:
+						pitches.Add(_basePitch + (_quality == ChordQuality.Major ? 11 : 10));
+						pitches.Add(_basePitch + (_quality == ChordQuality.Minor ? 13 : 14));
+						break;
 					case ChordAdded.Eleven:
-						// Not implemented yet
+						pitches.Add(_basePitch + (_quality == ChordQuality.Major ? 11 : 10));
+						pitches.Add(_basePitch + (_quality == ChordQuality.Minor ? 13 : 14));
+						pitches.Add(_basePitch + (_quality == ChordQuality.Diminished ? 16 : 17));
 						break;
 				}
 			}

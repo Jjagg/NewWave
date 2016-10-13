@@ -44,5 +44,34 @@ namespace NewWave.Test.LibraryTests
 			Assert.AreEqual(Pitch.G3, pitches[2]);
 			Assert.AreEqual(Pitch.ASharp3, pitches[3]);
 		}
+
+		[TestMethod]
+		public void Cmin9ChordTest()
+		{
+			var chord = new Chord(Pitch.C3, ChordQuality.NotSpecified, ChordAdded.Nine);
+			var pitches = chord.Pitches().ToList();
+			Assert.AreEqual(5, pitches.Count);
+
+			Assert.AreEqual(Pitch.C3, pitches[0]);
+			Assert.AreEqual(Pitch.E3, pitches[1]);
+			Assert.AreEqual(Pitch.G3, pitches[2]);
+			Assert.AreEqual(Pitch.ASharp3, pitches[3]);
+			Assert.AreEqual(Pitch.D4, pitches[4]);
+		}
+
+		[TestMethod]
+		public void Cmin11ChordTest()
+		{
+			var chord = new Chord(Pitch.C3, ChordQuality.NotSpecified, ChordAdded.Eleven);
+			var pitches = chord.Pitches().ToList();
+			Assert.AreEqual(6, pitches.Count);
+
+			Assert.AreEqual(Pitch.C3, pitches[0]);
+			Assert.AreEqual(Pitch.E3, pitches[1]);
+			Assert.AreEqual(Pitch.G3, pitches[2]);
+			Assert.AreEqual(Pitch.ASharp3, pitches[3]);
+			Assert.AreEqual(Pitch.D4, pitches[4]);
+			Assert.AreEqual(Pitch.F4, pitches[5]);
+		}
 	}
 }
