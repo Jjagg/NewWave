@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NewWave.Library;
+using NewWave.Library.Chords;
 using NewWave.Midi;
 
 namespace NewWave.Test.LibraryTests

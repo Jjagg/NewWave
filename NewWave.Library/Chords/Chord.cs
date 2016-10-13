@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NewWave.Midi;
 
-namespace NewWave.Library
+namespace NewWave.Library.Chords
 {
 	public class Chord
 	{
@@ -92,23 +92,5 @@ namespace NewWave.Library
 
 			return string.Format("{0}{1}{2}", _basePitch.NoteName(), quality, added);
 		}
-	}
-
-	public enum ChordQuality
-	{
-		NotSpecified,
-		Major,
-		Minor,
-		Augmented,
-		Diminished
-	}
-
-	public enum ChordAdded
-	{
-		None,
-		Six,
-		Seven,
-		Nine,
-		Eleven
 	}
 }
