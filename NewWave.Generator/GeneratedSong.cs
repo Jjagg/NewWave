@@ -25,15 +25,19 @@ namespace NewWave.Generator
 		{
 			const int measures = 16;
 
-		    var chord = new Chord(Pitch.E3, ChordQuality.Minor, ChordAdded.None);
-		    var pitches = chord.Pitches();
-
+		    var chords = new List<Chord>
+		    {
+			    new Chord(Pitch.FSharp3, ChordQuality.Minor, ChordAdded.None),
+			    new Chord(Pitch.E3, ChordQuality.NotSpecified, ChordAdded.None)
+		    };
+		    
 		    var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
 		    var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
 			for (var measure = 0; measure < measures; measure++)
 			{
+				var pitches = chords[measure % 2].Pitches();
 				var g = new List<Note>();
 				var b = new List<Note>();
 				for (var beat = 0; beat < _time.BeatCount; beat++)
