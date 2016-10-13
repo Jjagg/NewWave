@@ -6,5 +6,10 @@ namespace NewWave.Midi
 		{
 			return pitch + 12 * octaves;
 		}
+
+		public static string NoteName(this Pitch pitch)
+		{
+			return pitch.ToString().Substring(0, 1);
+		}
 	}
 }
