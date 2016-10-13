@@ -45,6 +45,7 @@
     <Compile Include="Chords\Chord.cs" />
     <Compile Include="Chords\ChordAdded.cs" />
     <Compile Include="Chords\ChordQuality.cs" />
+    <Compile Include="Grooves\Groove.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +58,7 @@
       <Name>NewWave.Midi</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
