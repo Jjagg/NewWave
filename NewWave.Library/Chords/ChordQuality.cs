@@ -6,6 +6,7 @@ namespace NewWave.Library.Chords
 		Major,
 		Minor,
 		Augmented,
-		Diminished
+		Diminished,
+		Suspended
 	}
 }

@@ -25,6 +25,10 @@ namespace NewWave.Library.Chords
 			{
 				pitches.Add(_basePitch + 3);
 			}
+			else if (_quality == ChordQuality.Suspended)
+			{
+				pitches.Add(_basePitch + 5);
+			}
 			else
 			{
 				pitches.Add(_basePitch + 4);
