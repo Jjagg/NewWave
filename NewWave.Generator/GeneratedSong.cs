@@ -2,6 +2,7 @@
 using System.Linq;
 using NewWave.Core;
 using NewWave.Library.Chords;
+using NewWave.Library.Grooves;
 using NewWave.Midi;
 
 namespace NewWave.Generator
@@ -30,7 +31,9 @@ namespace NewWave.Generator
 			    new Chord(Pitch.FSharp3, ChordQuality.Minor, ChordAdded.None),
 			    new Chord(Pitch.E3, ChordQuality.NotSpecified, ChordAdded.None)
 		    };
-		    
+
+		    var groove = GrooveLibrary.AllGrooves[4];
+
 		    var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
 		    var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
@@ -48,7 +51,7 @@ namespace NewWave.Generator
 
 				guitar.Notes.Add(g);
 				bass.Notes.Add(b);
-				drums.Notes.Add(DrumBeat.GetMeasure(measure % 4 == 0, _time, _feel));
+				drums.Notes.Add(groove.Notes());
 			}
 
 			return new Score(measures,

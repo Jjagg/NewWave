@@ -20,7 +20,7 @@ namespace NewWave.Library.Grooves
 			return Grooves[0];
 		}
 
-		public static IEnumerable<Groove> AllGrooves
+		public static List<Groove> AllGrooves
 		{
 			get { return Grooves; }
 		}
