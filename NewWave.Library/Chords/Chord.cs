@@ -16,7 +16,7 @@ namespace NewWave.Library.Chords
 			_added = added;
 		}
 
-		public IEnumerable<Pitch> Pitches()
+		public List<Pitch> Pitches()
 		{
 			var pitches = new List<Pitch> { _basePitch };
 

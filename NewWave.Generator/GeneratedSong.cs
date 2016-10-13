@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NewWave.Core;
+using NewWave.Library.Chords;
 using NewWave.Midi;
 
 namespace NewWave.Generator
@@ -23,22 +25,25 @@ namespace NewWave.Generator
 		{
 			const int measures = 16;
 
+		    var chord = new Chord(Pitch.E3, ChordQuality.Minor, ChordAdded.None);
+		    var pitches = chord.Pitches();
+
 		    var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
 		    var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
 			for (var measure = 0; measure < measures; measure++)
 			{
-				guitar.Notes.Add(new List<Note>
+				var g = new List<Note>();
+				var b = new List<Note>();
+				for (var beat = 0; beat < _time.BeatCount; beat++)
 				{
-					new Note(0, _feel, Pitch.E2, Velocity.Fff),
-					new Note(0, _feel, Pitch.B3, Velocity.Fff),
-					new Note(0, _feel, Pitch.E3, Velocity.Fff)
-				});
-				bass.Notes.Add(new List<Note>
-				{
-					new Note(0, _feel, Pitch.E1, Velocity.Fff)
-				});
+					g.AddRange(pitches.Select(p => new Note(beat * _feel, _feel, p, Velocity.Fff)));
+					b.Add(new Note(beat * _feel, _feel, pitches[0].AddOctave(-1), Velocity.Fff));
+				}
+
+				guitar.Notes.Add(g);
+				bass.Notes.Add(b);
 				drums.Notes.Add(DrumBeat.GetMeasure(measure % 4 == 0, _time, _feel));
 			}
 
