@@ -46,6 +46,7 @@
     <Compile Include="Chords\ChordAdded.cs" />
     <Compile Include="Chords\ChordQuality.cs" />
     <Compile Include="Grooves\Groove.cs" />
+    <Compile Include="Grooves\GrooveLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
