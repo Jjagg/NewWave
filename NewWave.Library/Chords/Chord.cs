@@ -5,20 +5,32 @@ namespace NewWave.Library.Chords
 {
 	public class Chord
 	{
-		private readonly Pitch _basePitch;
+		private Pitch _basePitch;
 		private readonly ChordQuality _quality;
 		private readonly ChordAdded _added;
+		private Pitch _inversion;
+		private readonly bool _isInverted;
 
-		public Chord(Pitch basePitch, ChordQuality quality, ChordAdded added)
+		public Chord(Pitch basePitch, ChordQuality quality = ChordQuality.NotSpecified, ChordAdded added = ChordAdded.None)
 		{
 			_basePitch = basePitch;
 			_quality = quality;
 			_added = added;
+			_isInverted = false;
+		}
+
+		public Chord(Pitch basePitch, ChordQuality quality, ChordAdded added, Pitch inversion)
+		{
+			_basePitch = basePitch;
+			_quality = quality;
+			_added = added;
+			_inversion = inversion;
+			_isInverted = true;
 		}
 
 		public List<Pitch> Pitches()
 		{
-			var pitches = new List<Pitch> { _basePitch };
+			var pitches = new List<Pitch> { _isInverted ? _inversion : _basePitch };
 
 			// Second note
 			if (_quality == ChordQuality.Minor || _quality == ChordQuality.Diminished)
@@ -63,6 +75,12 @@ namespace NewWave.Library.Chords
 			return pitches;
 		}
 
+		public void Transpose(int halfsteps)
+		{
+			_basePitch += halfsteps;
+			_inversion += halfsteps;
+		}
+
 		public override string ToString()
 		{
 			var quality = string.Empty;
@@ -99,7 +117,9 @@ namespace NewWave.Library.Chords
 					break;
 			}
 
-			return string.Format("{0}{1}{2}", _basePitch.NoteName(), quality, added);
+			var inverted = _isInverted ? string.Format("/{0}", _inversion.NoteName()) : string.Empty;
+
+			return string.Format("{0}{1}{2}{3}", _basePitch.NoteName(), quality, added, inverted);
 		}
 	}
 }
