@@ -35,7 +35,8 @@ namespace NewWave.Generator
 
 			for (var measure = 0; measure < measures; measure++)
 			{
-				var pitches = chords[measure % 2].Pitches();
+				var pitches = chords[measure % chords.Count].Pitches();
+
 				var g = new List<Note>();
 				var b = new List<Note>();
 				for (var beat = 0; beat < _time.BeatCount; beat++)

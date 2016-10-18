@@ -9,7 +9,7 @@ namespace NewWave.Generator.ChordProgressions
 		internal readonly List<MarkovChainNode<T>> ChildNodes;
 		private readonly double _probability;
 
-		public MarkovChainNode(T data, double probability, List<MarkovChainNode<T>> childNodes)
+		public MarkovChainNode(T data, double probability, List<MarkovChainNode<T>> childNodes = null)
 		{
 			Data = data;
 			_probability = probability;
