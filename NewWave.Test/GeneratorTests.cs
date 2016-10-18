@@ -18,10 +18,9 @@ namespace NewWave.Test
 		[TestMethod]
 		public void ChordProgressionTest()
 		{
-			var progression = ChordProgressionGenerator.ChordProgression(Pitch.C3);
-			foreach (var chord in progression)
+			for (var i = 0; i < 50; i++)
 			{
-				Console.WriteLine(chord);
+				Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(Pitch.C3)));
 			}
 		}
 	}

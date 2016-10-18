@@ -33,9 +33,23 @@ namespace NewWave.Generator.ChordProgressions
 								new MarkovChainNode<Chord>(ChordPresets.dm, 0.02),
 								new MarkovChainNode<Chord>(ChordPresets.C, 0.06)
 							}),
-							new MarkovChainNode<Chord>(ChordPresets.F, 0.25),
-							new MarkovChainNode<Chord>(ChordPresets.C, 0.14),
-							new MarkovChainNode<Chord>(ChordPresets.dm, 0.10),
+							new MarkovChainNode<Chord>(ChordPresets.F, 0.25, new List<MarkovChainNode<Chord>>
+							{
+								new MarkovChainNode<Chord>(ChordPresets.C, .48),
+								new MarkovChainNode<Chord>(ChordPresets.am, .16),
+								new MarkovChainNode<Chord>(ChordPresets.G, .2)
+							}),
+							new MarkovChainNode<Chord>(ChordPresets.C, 0.14, new List<MarkovChainNode<Chord>>
+							{
+								new MarkovChainNode<Chord>(ChordPresets.F, .35),
+								new MarkovChainNode<Chord>(ChordPresets.G, .39)
+							}),
+							new MarkovChainNode<Chord>(ChordPresets.dm, 0.10, new List<MarkovChainNode<Chord>>
+							{
+								new MarkovChainNode<Chord>(ChordPresets.C, .19),
+								new MarkovChainNode<Chord>(ChordPresets.am, .26),
+								new MarkovChainNode<Chord>(ChordPresets.F, .46),
+							}),
 							new MarkovChainNode<Chord>(ChordPresets.am7, 0.02),
 							new MarkovChainNode<Chord>(ChordPresets.Fmaj7, 0.007),
 							new MarkovChainNode<Chord>(ChordPresets.E, 0.007),
@@ -47,10 +61,36 @@ namespace NewWave.Generator.ChordProgressions
 						}),
 						new MarkovChainNode<Chord>(ChordPresets.F, 0.19, new List<MarkovChainNode<Chord>>
 						{
-							new MarkovChainNode<Chord>(ChordPresets.C, 0.32),
-							new MarkovChainNode<Chord>(ChordPresets.am, 0.12),
-							new MarkovChainNode<Chord>(ChordPresets.G, 0.30),
-							new MarkovChainNode<Chord>(ChordPresets.dm, 0.05)
+							new MarkovChainNode<Chord>(ChordPresets.C, 0.32, new List<MarkovChainNode<Chord>>
+							{
+								new MarkovChainNode<Chord>(ChordPresets.dm, .05),
+								new MarkovChainNode<Chord>(ChordPresets.am, .11),
+								new MarkovChainNode<Chord>(ChordPresets.G, .44),
+								new MarkovChainNode<Chord>(ChordPresets.F, .16)
+							}),
+							new MarkovChainNode<Chord>(ChordPresets.am, 0.12, new List<MarkovChainNode<Chord>>
+							{
+								new MarkovChainNode<Chord>(ChordPresets.C, .17),
+								new MarkovChainNode<Chord>(ChordPresets.G, .45),
+								new MarkovChainNode<Chord>(ChordPresets.F, .14)
+							}),
+							new MarkovChainNode<Chord>(ChordPresets.G, 0.30, new List<MarkovChainNode<Chord>>
+							{
+								new MarkovChainNode<Chord>(ChordPresets.C, .28),
+								new MarkovChainNode<Chord>(ChordPresets.am, .36),
+								new MarkovChainNode<Chord>(ChordPresets.F, .11),
+								new MarkovChainNode<Chord>(ChordPresets.em, .07),
+								new MarkovChainNode<Chord>(ChordPresets.dm, .05)
+							}),
+							new MarkovChainNode<Chord>(ChordPresets.dm, 0.05, new List<MarkovChainNode<Chord>>
+							{
+								new MarkovChainNode<Chord>(ChordPresets.C, .11),
+								new MarkovChainNode<Chord>(ChordPresets.am, .25),
+								new MarkovChainNode<Chord>(ChordPresets.G, .2),
+								new MarkovChainNode<Chord>(ChordPresets.F, .11),
+								new MarkovChainNode<Chord>(ChordPresets.E, .08),
+								new MarkovChainNode<Chord>(ChordPresets.em, .1)
+							})
 						}),
 						new MarkovChainNode<Chord>(ChordPresets.am, 0.1, new List<MarkovChainNode<Chord>>
 						{
@@ -187,21 +227,76 @@ namespace NewWave.Generator.ChordProgressions
 							new MarkovChainNode<Chord>(ChordPresets.F, .36)
 						})
 					}),
-					new MarkovChainNode<Chord>(ChordPresets.dm, 0.05),
-					new MarkovChainNode<Chord>(ChordPresets.em, 0.03),
-					new MarkovChainNode<Chord>(ChordPresets.am7, 0.02),
-					new MarkovChainNode<Chord>(ChordPresets.CE, 0.02),
-					new MarkovChainNode<Chord>(ChordPresets.dm7, 0.02),
-					new MarkovChainNode<Chord>(ChordPresets.Fmaj7, 0.02),
-					new MarkovChainNode<Chord>(ChordPresets.Bb, 0.01),
-					new MarkovChainNode<Chord>(ChordPresets.CG, 0.01),
-					new MarkovChainNode<Chord>(ChordPresets.E, 0.01),
-					new MarkovChainNode<Chord>(ChordPresets.em7, 0.01),
-					new MarkovChainNode<Chord>(ChordPresets.GB, 0.01),
-					new MarkovChainNode<Chord>(ChordPresets.G7, 0.01),
-					new MarkovChainNode<Chord>(ChordPresets.Cmaj7, 0.008),
-					new MarkovChainNode<Chord>(ChordPresets.amE, 0.007),
-					new MarkovChainNode<Chord>(ChordPresets.D, 0.007),
+					new MarkovChainNode<Chord>(ChordPresets.dm, 0.05, new List<MarkovChainNode<Chord>>
+					{
+						new MarkovChainNode<Chord>(ChordPresets.C, .13, new List<MarkovChainNode<Chord>>
+						{
+							new MarkovChainNode<Chord>(ChordPresets.dm, .18),
+							new MarkovChainNode<Chord>(ChordPresets.GB, .05),
+							new MarkovChainNode<Chord>(ChordPresets.am, .12),
+							new MarkovChainNode<Chord>(ChordPresets.F, .13),
+							new MarkovChainNode<Chord>(ChordPresets.G, .28)
+						}),
+						new MarkovChainNode<Chord>(ChordPresets.F, .16, new List<MarkovChainNode<Chord>>
+						{
+							new MarkovChainNode<Chord>(ChordPresets.C, .34),
+							new MarkovChainNode<Chord>(ChordPresets.am, .16),
+							new MarkovChainNode<Chord>(ChordPresets.G, .25),
+							new MarkovChainNode<Chord>(ChordPresets.em, .05),
+							new MarkovChainNode<Chord>(ChordPresets.dm, .06)
+						}),
+						new MarkovChainNode<Chord>(ChordPresets.G, .16, new List<MarkovChainNode<Chord>>
+						{
+							new MarkovChainNode<Chord>(ChordPresets.C, .4),
+							new MarkovChainNode<Chord>(ChordPresets.am, .17),
+							new MarkovChainNode<Chord>(ChordPresets.F, .09),
+							new MarkovChainNode<Chord>(ChordPresets.dm, .1)
+						}),
+						new MarkovChainNode<Chord>(ChordPresets.em, .09, new List<MarkovChainNode<Chord>>
+						{
+							new MarkovChainNode<Chord>(ChordPresets.C, .05),
+							new MarkovChainNode<Chord>(ChordPresets.am, .21),
+							new MarkovChainNode<Chord>(ChordPresets.F, .49),
+							new MarkovChainNode<Chord>(ChordPresets.dm, .09)
+						}),
+						new MarkovChainNode<Chord>(ChordPresets.am, .18, new List<MarkovChainNode<Chord>>
+						{
+							new MarkovChainNode<Chord>(ChordPresets.C, .05),
+							new MarkovChainNode<Chord>(ChordPresets.am, .21),
+							new MarkovChainNode<Chord>(ChordPresets.F, .49),
+							new MarkovChainNode<Chord>(ChordPresets.dm, .09)
+						})
+					}),
+					new MarkovChainNode<Chord>(ChordPresets.em, 0.03, new List<MarkovChainNode<Chord>>
+					{
+						new MarkovChainNode<Chord>(ChordPresets.C, 0.05),
+						new MarkovChainNode<Chord>(ChordPresets.dm, 0.08),
+						new MarkovChainNode<Chord>(ChordPresets.F, 0.33),
+						new MarkovChainNode<Chord>(ChordPresets.G, 0.08),
+						new MarkovChainNode<Chord>(ChordPresets.am, 0.26)
+					}),
+					new MarkovChainNode<Chord>(ChordPresets.am7, 0.02, new List<MarkovChainNode<Chord>>
+					{
+						new MarkovChainNode<Chord>(ChordPresets.C, 0.05),
+						new MarkovChainNode<Chord>(ChordPresets.dm7, 0.09),
+						new MarkovChainNode<Chord>(ChordPresets.am, 0.06),
+						new MarkovChainNode<Chord>(ChordPresets.em7, 0.06),
+						new MarkovChainNode<Chord>(ChordPresets.F, 0.13),
+						new MarkovChainNode<Chord>(ChordPresets.Fmaj7, 0.05),
+						new MarkovChainNode<Chord>(ChordPresets.G, 0.15)
+					})
+					//new MarkovChainNode<Chord>(ChordPresets.CE, 0.02),
+					//new MarkovChainNode<Chord>(ChordPresets.dm7, 0.02),
+					//new MarkovChainNode<Chord>(ChordPresets.Fmaj7, 0.02),
+					//new MarkovChainNode<Chord>(ChordPresets.Bb, 0.01),
+					//new MarkovChainNode<Chord>(ChordPresets.CG, 0.01),
+					//new MarkovChainNode<Chord>(ChordPresets.E, 0.01),
+					//new MarkovChainNode<Chord>(ChordPresets.em7, 0.01),
+					//new MarkovChainNode<Chord>(ChordPresets.GB, 0.01),
+					//new MarkovChainNode<Chord>(ChordPresets.G7, 0.01),
+					//new MarkovChainNode<Chord>(ChordPresets.Cmaj7, 0.008),
+					//new MarkovChainNode<Chord>(ChordPresets.amE, 0.007),
+					//new MarkovChainNode<Chord>(ChordPresets.D, 0.007)
 				};
 			}
 		}
