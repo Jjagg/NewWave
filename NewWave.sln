@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewWave.Test", "NewWave.Test\NewWave.Test.csproj", "{2710E02C-51D2-42C7-96F8-0DDDD3FD3021}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD} = {B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewWave.Midi", "NewWave.Midi\NewWave.Midi.csproj", "{0ECAF30F-55BA-4DC0-8E99-F85307C9AB8D}"
 EndProject

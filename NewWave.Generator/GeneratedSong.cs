@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
-using NewWave.Library.Chords;
+using NewWave.Generator.ChordProgressions;
 using NewWave.Library.Grooves;
 using NewWave.Midi;
 
@@ -26,13 +26,8 @@ namespace NewWave.Generator
 		{
 			const int measures = 16;
 
-		    var chords = new List<Chord>
-		    {
-			    new Chord(Pitch.FSharp3, ChordQuality.Minor, ChordAdded.None),
-			    new Chord(Pitch.E3, ChordQuality.NotSpecified, ChordAdded.None)
-		    };
-
-		    var groove = GrooveLibrary.AllGrooves[4];
+		    var chords = ChordProgressionGenerator.ChordProgression(Pitch.E0);
+		    var groove = GrooveLibrary.AllGrooves[0];
 
 		    var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
 		    var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
