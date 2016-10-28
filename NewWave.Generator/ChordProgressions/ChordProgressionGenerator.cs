@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NewWave.Library.Chords;
 using NewWave.Midi;
 
@@ -6,7 +7,7 @@ namespace NewWave.Generator.ChordProgressions
 {
 	public static class ChordProgressionGenerator
 	{
-		public static List<Chord> ChordProgression(Pitch key)
+		public static List<Chord> ChordProgression(Pitch key, Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> filterFunc)
 		{
 			var guitarBase = key.LowestAbovePitch(Pitch.E3);
 
@@ -15,7 +16,7 @@ namespace NewWave.Generator.ChordProgressions
 
 			do
 			{
-				var chord = MarkovChainNode<Chord>.Choose(chain);
+				var chord = MarkovChainNode<Chord>.Choose(chain, filterFunc);
 				if (chord != null)
 				{
 					chords.Add(TransposeForKey(guitarBase, chord.Data));

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
+using NewWave.Library.Chords;
 using NewWave.Library.Grooves;
 using NewWave.Midi;
 
@@ -15,7 +17,7 @@ namespace NewWave.Generator
 
 	    public override string Generate()
 	    {
-		    _tempo = 175;
+		    _tempo = 150;
 			_time = new TimeSignature(4, 4);
 			_feel = 4;
 
@@ -41,8 +43,10 @@ namespace NewWave.Generator
         private int RenderSection(InstrumentTrack guitar, InstrumentTrack bass, PercussionTrack drums)
         {
             const int measures = 8;
+            var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
+            var timeKeeper = timeKeepers[Randomizer.Next(timeKeepers.Count)];
 
-            var chords = ChordProgressionGenerator.ChordProgression(Pitch.E0);
+            var chords = ChordProgressionGenerator.ChordProgression(Pitch.E0, MinorOrDiminshedFilter);
             if (chords.Count == 3)
             {
                 chords.Add(chords[2]);
@@ -65,7 +69,7 @@ namespace NewWave.Generator
 
                 guitar.Notes.Add(g);
                 bass.Notes.Add(b);
-                drums.Notes.Add(groove.Notes());
+                drums.Notes.Add(groove.Notes(timeKeeper));
             }
             return measures;
         }
@@ -74,5 +78,16 @@ namespace NewWave.Generator
 	    {
 		    get { return "Generated song"; }
 	    }
+
+        private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
+        {
+            get
+            {
+                return n =>
+                    n.Data.Quality != ChordQuality.Minor && n.Data.Quality != ChordQuality.Diminished
+                        ? new MarkovChainNode<Chord>(n.Data, n.Probability / 4.0)
+                        : n;
+            }
+        }
     }
 }

@@ -1,26 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NewWave.Generator.ChordProgressions
 {
-	internal class MarkovChainNode<T>
-	{
-		internal readonly T Data;
-		internal readonly List<MarkovChainNode<T>> ChildNodes;
-		private readonly double _probability;
+    public class MarkovChainNode<T>
+    {
+        internal readonly T Data;
+        internal readonly List<MarkovChainNode<T>> ChildNodes;
+        internal readonly double Probability;
 
-		public MarkovChainNode(T data, double probability, List<MarkovChainNode<T>> childNodes = null)
-		{
-			Data = data;
-			_probability = probability;
-			ChildNodes = childNodes;
-		}
+        public MarkovChainNode(T data, double probability, List<MarkovChainNode<T>> childNodes = null)
+        {
+            Data = data;
+            Probability = probability;
+            ChildNodes = childNodes;
+        }
 
-		internal static MarkovChainNode<T> Choose(List<MarkovChainNode<T>> nodes)
-		{
-			return nodes.Count == 0
+        internal static MarkovChainNode<T> Choose(IEnumerable<MarkovChainNode<T>> nodes, Func<MarkovChainNode<T>, MarkovChainNode<T>> filterFunc)
+        {
+            var filteredNodes = nodes.Select(filterFunc).ToList();
+
+            return filteredNodes.Count == 0
 				? null
-				: nodes[Randomizer.GetWeightedIndex(nodes.Select(n => n._probability).ToList())];
+                : filteredNodes[Randomizer.GetWeightedIndex(filteredNodes.Select(n => n.Probability).ToList())];
 		}
-	}
+    }
 }
