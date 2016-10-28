@@ -10,35 +10,35 @@ using NewWave.Midi;
 namespace NewWave.Generator
 {
     public class GeneratedSong : Song
-	{
-		private int _tempo;
-		private int _feel;
-		private TimeSignature _time;
+    {
+        private int _tempo;
+        private int _feel;
+        private TimeSignature _time;
 
-	    public override string Generate()
-	    {
-		    _tempo = 150;
-			_time = new TimeSignature(4, 4);
-			_feel = 4;
+        public override string Generate()
+        {
+            _tempo = 170;
+            _time = new TimeSignature(4, 4);
+            _feel = 4;
 
-		    return "Finished";
-	    }
+            return "Finished";
+        }
 
-	    public override Score Render()
+        public override Score Render()
         {
             var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
             var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
             var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-	        var sections = new[] { 1, 2, 3 }.Select(i => RenderSection(guitar, bass, drums));
+            var sections = Enumerable.Range(0, 8).Select(i => RenderSection(guitar, bass, drums));
 
-	        return new Score(sections.Sum(s => s),
-				new Dictionary<int, TimeSignature> { { 0, _time } },
-				new Dictionary<int, int> { { 0, _tempo } },
-				new Dictionary<int, int> { { 0, _feel } },
-				new List<InstrumentTrack> { guitar, bass },
-				drums);
-	    }
+            return new Score(sections.Sum(s => s),
+                new Dictionary<int, TimeSignature> { { 0, _time } },
+                new Dictionary<int, int> { { 0, _tempo } },
+                new Dictionary<int, int> { { 0, _feel } },
+                new List<InstrumentTrack> { guitar, bass },
+                drums);
+        }
 
         private int RenderSection(InstrumentTrack guitar, InstrumentTrack bass, PercussionTrack drums)
         {
@@ -46,7 +46,12 @@ namespace NewWave.Generator
             var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
             var timeKeeper = timeKeepers[Randomizer.Next(timeKeepers.Count)];
 
-            var chords = ChordProgressionGenerator.ChordProgression(Pitch.E0, MinorOrDiminshedFilter);
+            List<Chord> chords;
+            do
+            {
+                chords = ChordProgressionGenerator.ChordProgression(Pitch.E0, MinorOrDiminshedFilter);
+            } while (chords.Count <= 1);
+
             if (chords.Count == 3)
             {
                 chords.Add(chords[2]);
@@ -69,23 +74,24 @@ namespace NewWave.Generator
 
                 guitar.Notes.Add(g);
                 bass.Notes.Add(b);
-                drums.Notes.Add(groove.Notes(timeKeeper));
+                drums.Notes.Add(groove.Notes(timeKeeper, measure == 0));
+
             }
             return measures;
         }
 
         public override string DisplayName
-	    {
-		    get { return "Generated song"; }
-	    }
+        {
+            get { return "Generated song"; }
+        }
 
         private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
         {
             get
             {
                 return n =>
-                    n.Data.Quality != ChordQuality.Minor && n.Data.Quality != ChordQuality.Diminished
-                        ? new MarkovChainNode<Chord>(n.Data, n.Probability / 4.0)
+                    n.Data.Quality == ChordQuality.Minor || n.Data.Quality == ChordQuality.Diminished
+                        ? new MarkovChainNode<Chord>(n.Data, n.Probability * 4.0)
                         : n;
             }
         }

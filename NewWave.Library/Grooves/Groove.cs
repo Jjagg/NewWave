@@ -28,11 +28,16 @@ namespace NewWave.Library.Grooves
 			_kick = kick;
 		}
 
-		public List<PercussionNote> Notes(Percussion timekeeper)
+		public List<PercussionNote> Notes(Percussion timekeeper, bool addCrash)
 		{
 			var notes = new List<PercussionNote>();
 
-            notes.AddRange(_hihat.Select(hihatNote => new PercussionNote(hihatNote, timekeeper, Velocity.Fff)));
+		    if (addCrash)
+		    {
+                notes.Add(new PercussionNote(0, Percussion.CrashCymbal1, Velocity.Fff));
+		    }
+
+            notes.AddRange(_hihat.Skip(addCrash ? 1 : 0).Select(hihatNote => new PercussionNote(hihatNote, timekeeper, Velocity.Fff)));
 			notes.AddRange(_snare.Select(snareNote => new PercussionNote(snareNote, Percussion.SnareDrum1, Velocity.Fff)));
 			notes.AddRange(_kick.Select(kickNote => new PercussionNote(kickNote, Percussion.BassDrum1, Velocity.Fff)));
 
