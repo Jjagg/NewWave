@@ -42,7 +42,7 @@ namespace NewWave.Generator
 
         private int RenderSection(InstrumentTrack guitar, InstrumentTrack bass, PercussionTrack drums)
         {
-            const int measures = 8;
+            const int measures = 4;
             var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
             var timeKeeper = timeKeepers[Randomizer.Next(timeKeepers.Count)];
 
@@ -54,7 +54,7 @@ namespace NewWave.Generator
 
             if (chords.Count == 3)
             {
-                chords.Add(chords[2]);
+                chords = AugmentThreeChordProgression(chords);
             }
 
             var groove = GrooveLibrary.AllGrooves[Randomizer.Next(GrooveLibrary.AllGrooves.Count)];
@@ -83,6 +83,26 @@ namespace NewWave.Generator
         public override string DisplayName
         {
             get { return "Generated song"; }
+        }
+
+        private static List<Chord> AugmentThreeChordProgression(List<Chord> chords)
+        {
+            if (chords.Count != 3) throw new ArgumentException("Must have three chords");
+
+            switch (new[] { 0, 1, 2 }[Randomizer.GetWeightedIndex(new List<double> { 0.2, 0.3, 0.5 })])
+            {
+                case 0: // Extend chord 1
+                    chords.Insert(1, chords[0]);
+                    break;
+                case 1: // Extend chord 2
+                    chords.Insert(2, chords[1]);
+                    break;
+                default: // Extend chord 3
+                    chords.Add(chords[2]);
+                    break;
+            }
+
+            return chords;
         }
 
         private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
