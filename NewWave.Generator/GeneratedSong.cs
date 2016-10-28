@@ -23,34 +23,14 @@ namespace NewWave.Generator
 	    }
 
 	    public override Score Render()
-		{
-			const int measures = 16;
+        {
+            var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
+            var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
+            var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-		    var chords = ChordProgressionGenerator.ChordProgression(Pitch.E0);
-		    var groove = GrooveLibrary.AllGrooves[0];
+	        var sections = new[] { 1, 2, 3 }.Select(i => RenderSection(guitar, bass, drums));
 
-		    var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
-		    var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
-			var drums = new PercussionTrack(new List<List<PercussionNote>>());
-
-			for (var measure = 0; measure < measures; measure++)
-			{
-				var pitches = chords[measure % chords.Count].Pitches();
-
-				var g = new List<Note>();
-				var b = new List<Note>();
-				for (var beat = 0; beat < _time.BeatCount; beat++)
-				{
-					g.AddRange(pitches.Select(p => new Note(beat * _feel, _feel, p, Velocity.Fff)));
-					b.Add(new Note(beat * _feel, _feel, pitches[0].AddOctave(-1), Velocity.Fff));
-				}
-
-				guitar.Notes.Add(g);
-				bass.Notes.Add(b);
-				drums.Notes.Add(groove.Notes());
-			}
-
-			return new Score(measures,
+	        return new Score(sections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, _tempo } },
 				new Dictionary<int, int> { { 0, _feel } },
@@ -58,7 +38,39 @@ namespace NewWave.Generator
 				drums);
 	    }
 
-	    public override string DisplayName
+        private int RenderSection(InstrumentTrack guitar, InstrumentTrack bass, PercussionTrack drums)
+        {
+            const int measures = 8;
+
+            var chords = ChordProgressionGenerator.ChordProgression(Pitch.E0);
+            if (chords.Count == 3)
+            {
+                chords.Add(chords[2]);
+            }
+
+            var groove = GrooveLibrary.AllGrooves[Randomizer.Next(GrooveLibrary.AllGrooves.Count)];
+
+            for (var measure = 0; measure < measures; measure++)
+            {
+                var chordIndex = measure % chords.Count;
+                var pitches = chords[chordIndex].Pitches();
+
+                var g = new List<Note>();
+                var b = new List<Note>();
+                for (var beat = 0; beat < _time.BeatCount; beat++)
+                {
+                    g.AddRange(pitches.Select(p => new Note(beat * _feel, _feel, p, Velocity.Fff)));
+                    b.Add(new Note(beat * _feel, _feel, pitches[0].AddOctave(-1), Velocity.Fff));
+                }
+
+                guitar.Notes.Add(g);
+                bass.Notes.Add(b);
+                drums.Notes.Add(groove.Notes());
+            }
+            return measures;
+        }
+
+        public override string DisplayName
 	    {
 		    get { return "Generated song"; }
 	    }

@@ -6,26 +6,31 @@ namespace NewWave.Generator
 {
 	public static class Randomizer
 	{
-		private static Random _r = new Random();
+		private static readonly Random R = new Random();
 
 		public static int Next()
 		{
-			return _r.Next();
+			return R.Next();
 		}
+
+        public static int Next(int maxValue)
+        {
+            return R.Next(0, maxValue);
+        }
 
 		public static int Next(int minValue, int maxValue)
 		{
-			return _r.Next(minValue, maxValue);
+			return R.Next(minValue, maxValue);
 		}
 
 		public static double NextDouble()
 		{
-			return _r.NextDouble();
+			return R.NextDouble();
 		}
 
 		public static double NextDouble(double minValue, double maxValue)
 		{
-			return _r.NextDouble() * (maxValue - minValue) + minValue;
+			return R.NextDouble() * (maxValue - minValue) + minValue;
 		}
 
 		public static int GetWeightedIndex(List<double> input)
