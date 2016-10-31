@@ -182,7 +182,7 @@ namespace NewWave.Generator.ChordProgressions
 									new MarkovChainNode<Chord>(ChordPresets.am, 0.06, new List<MarkovChainNode<Chord>>
 									{
 										new MarkovChainNode<Chord>(ChordPresets.gdimB, 1)
-									},
+									}),
 									new MarkovChainNode<Chord>(ChordPresets.F, 0.61, new List<MarkovChainNode<Chord>>
 									{
 										new MarkovChainNode<Chord>(ChordPresets.EAb, 0.09),
@@ -757,7 +757,7 @@ namespace NewWave.Generator.ChordProgressions
 										new MarkovChainNode<Chord>(ChordPresets.G, 0.5),
 										new MarkovChainNode<Chord>(ChordPresets.D, 0.5)
 									})
-								},
+								}),
 								new MarkovChainNode<Chord>(ChordPresets.G, 0.39, new List<MarkovChainNode<Chord>>
 								{
 									new MarkovChainNode<Chord>(ChordPresets.FA, 0.02, new List<MarkovChainNode<Chord>>
@@ -912,7 +912,7 @@ namespace NewWave.Generator.ChordProgressions
 										new MarkovChainNode<Chord>(ChordPresets.CE, 0.2),
 										new MarkovChainNode<Chord>(ChordPresets.fdim, 0.2) // Listed as "f?°"
 									})
-								}1),
+								}),
 								new MarkovChainNode<Chord>(ChordPresets.dm, 0.03, new List<MarkovChainNode<Chord>>
 								{
 									new MarkovChainNode<Chord>(ChordPresets.A, 0.13, new List<MarkovChainNode<Chord>>
@@ -1588,7 +1588,7 @@ namespace NewWave.Generator.ChordProgressions
 								{
 									new MarkovChainNode<Chord>(ChordPresets.Fmaj7, 0.4, new List<MarkovChainNode<Chord>>
 									{
-										new MarkovChainNode<Chord>(ChordPresets.dmF 1)
+										new MarkovChainNode<Chord>(ChordPresets.dmF, 1)
 									}),
 									new MarkovChainNode<Chord>(ChordPresets.am, 0.4, new List<MarkovChainNode<Chord>>
 									{
@@ -1656,7 +1656,7 @@ namespace NewWave.Generator.ChordProgressions
 									new MarkovChainNode<Chord>(ChordPresets.C, 1, new List<MarkovChainNode<Chord>>
 									{
 										new MarkovChainNode<Chord>(ChordPresets.G, 1)
-									}
+									})
 								}),
 								new MarkovChainNode<Chord>(ChordPresets.gm, 0.03, new List<MarkovChainNode<Chord>>
 								{
