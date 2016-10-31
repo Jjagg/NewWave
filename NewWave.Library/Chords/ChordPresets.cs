@@ -55,5 +55,7 @@ namespace NewWave.Library.Chords
 		public static Chord EAb { get { return new Chord(Pitch.E0, ChordQuality.NotSpecified, ChordAdded.None, Pitch.GSharp0); } }
 		public static Chord Fmaj7E { get { return new Chord(Pitch.D0, ChordQuality.Major, ChordAdded.Seven, Pitch.E0); } }
 		public static Chord gm7 { get { return new Chord(Pitch.G0, ChordQuality.Minor, ChordAdded.Seven); } }
+		public static Chord cm { get { return new Chord(Pitch.C0, ChordQuality.Minor); } }
+		public static Chord fdim { get { return new Chord(Pitch.F0, ChordQuality.Diminished); } }
 	}
 }
