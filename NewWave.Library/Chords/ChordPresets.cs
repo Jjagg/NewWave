@@ -82,5 +82,20 @@ namespace NewWave.Library.Chords
 		public static Chord edim { get { return new Chord(Pitch.E0, ChordQuality.Diminished); } }
 		public static Chord am7E { get { return new Chord(Pitch.A0, ChordQuality.Minor, ChordAdded.Seven, Pitch.E0); } }
 		public static Chord gbdim { get { return new Chord(Pitch.FSharp0, ChordQuality.Diminished); } }
+		public static Chord BbD { get { return new Chord(Pitch.ASharp0, ChordQuality.NotSpecified, ChordAdded.None, Pitch.D0); } }
+		public static Chord Bb7 { get { return new Chord(Pitch.ASharp0, ChordQuality.NotSpecified, ChordAdded.Seven); } }
+		public static Chord Bbmaj6 { get { return new Chord(Pitch.ASharp0, ChordQuality.Major, ChordAdded.Six); } }
+		public static Chord cdimE { get { return new Chord(Pitch.C0, ChordQuality.Diminished, ChordAdded.None, Pitch.E0); } }
+		public static Chord C7B { get { return new Chord(Pitch.C0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.B0); } }
+		public static Chord adim { get { return new Chord(Pitch.A0, ChordQuality.Diminished); } }
+		public static Chord cmEb { get { return new Chord(Pitch.C0, ChordQuality.Minor, ChordAdded.None, Pitch.DSharp0); } }
+		public static Chord Abmaj7 { get { return new Chord(Pitch.GSharp0, ChordQuality.Major, ChordAdded.Seven); } }
+		public static Chord G7B { get { return new Chord(Pitch.G0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.B0); } }
+		public static Chord D7Gb { get { return new Chord(Pitch.D0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.FSharp0); } }
+		public static Chord C7G { get { return new Chord(Pitch.C0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.G0); } }
+		public static Chord cmG { get { return new Chord(Pitch.C0, ChordQuality.Minor, ChordAdded.None, Pitch.G0); } }
+		public static Chord D7F { get { return new Chord(Pitch.D0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.F0); } }
+		public static Chord D7C { get { return new Chord(Pitch.D0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.C0); } }
+		public static Chord Fmaj7C { get { return new Chord(Pitch.F0, ChordQuality.Major, ChordAdded.Seven, Pitch.C0); } }
 	}
 }
