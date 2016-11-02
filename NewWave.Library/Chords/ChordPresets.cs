@@ -98,5 +98,14 @@ namespace NewWave.Library.Chords
 		public static Chord D7C { get { return new Chord(Pitch.D0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.C0); } }
 		public static Chord Fmaj7C { get { return new Chord(Pitch.F0, ChordQuality.Major, ChordAdded.Seven, Pitch.C0); } }
 		public static Chord em7B { get { return new Chord(Pitch.E0, ChordQuality.Minor, ChordAdded.Seven, Pitch.B0); } }
+		public static Chord ebm7 { get { return new Chord(Pitch.DSharp0, ChordQuality.Minor, ChordAdded.Seven); } }
+		public static Chord ADb { get { return new Chord(Pitch.A0, ChordQuality.NotSpecified, ChordAdded.None, Pitch.CSharp0); } }
+		public static Chord Bmaj7 { get { return new Chord(Pitch.B0, ChordQuality.Major, ChordAdded.Seven); } }
+		public static Chord gbm7 { get { return new Chord(Pitch.FSharp0, ChordQuality.Minor, ChordAdded.Seven); } }
+		public static Chord E7B { get { return new Chord(Pitch.E0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.B0); } }
+		public static Chord D7A { get { return new Chord(Pitch.D0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.A0); } }
+		public static Chord dbdim { get { return new Chord(Pitch.CSharp0, ChordQuality.Diminished); } }
+		public static Chord fm6 { get { return new Chord(Pitch.F0, ChordQuality.Minor, ChordAdded.Six); } }
+		public static Chord Ebmaj7 { get { return new Chord(Pitch.DSharp0, ChordQuality.Major, ChordAdded.Seven); } }
 	}
 }
