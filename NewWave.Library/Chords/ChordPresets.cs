@@ -97,5 +97,6 @@ namespace NewWave.Library.Chords
 		public static Chord D7F { get { return new Chord(Pitch.D0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.F0); } }
 		public static Chord D7C { get { return new Chord(Pitch.D0, ChordQuality.NotSpecified, ChordAdded.Seven, Pitch.C0); } }
 		public static Chord Fmaj7C { get { return new Chord(Pitch.F0, ChordQuality.Major, ChordAdded.Seven, Pitch.C0); } }
+		public static Chord em7B { get { return new Chord(Pitch.E0, ChordQuality.Minor, ChordAdded.Seven, Pitch.B0); } }
 	}
 }
