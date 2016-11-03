@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NewWave.Core;
 using NewWave.Library.Grooves;
+using NewWave.Midi;
 
 namespace NewWave.Test
 {
@@ -26,7 +27,7 @@ namespace NewWave.Test
 			{
 				drums.Notes.Add(new List<PercussionNote>());
 
-				foreach (var percussionNote in groove.Notes())
+				foreach (var percussionNote in groove.Notes(Percussion.ClosedHiHat, false))
 				{
 					drums.Notes[measure].Add(percussionNote);
 				}

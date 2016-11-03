@@ -109,14 +109,17 @@ namespace NewWave.Core
 			{
 				foreach (var note in unrolledInstrument.Notes)
 				{
-					t.Insert(TickBuffer + note.StartInTicks(StandardMidiTicksPerBeat) / StandardMidiTicksPerBeat, new ChannelMessage(ChannelCommand.NoteOn, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					var noteStartInTicks = note.StartInTicks(StandardMidiTicksPerBeat);
+					var noteLengthInTicks = note.LengthInTicks(StandardMidiTicksPerBeat);
+
+					t.Insert(TickBuffer + noteStartInTicks, new ChannelMessage(ChannelCommand.NoteOn, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
 
 					// NOTE: You cannot have NoteOff and NoteOn events for the same pitch
 					// on the same tick. NoteOff gets priority and the second note will not
 					// be played. So move the end of the last note back by a tick.
 					// We could check each note individually, but that takes extra time that's
 					// not really worth saving.
-					t.Insert(TickBuffer + note.StartInTicks(StandardMidiTicksPerBeat) + note.LengthInTicks(StandardMidiTicksPerBeat) - 1, new ChannelMessage(ChannelCommand.NoteOff, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					t.Insert(TickBuffer + noteStartInTicks + noteLengthInTicks - 1, new ChannelMessage(ChannelCommand.NoteOff, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
 				}
 			}
 
@@ -137,8 +140,8 @@ namespace NewWave.Core
 			var retVal = new List<Note>();
 			for (var m = 0; m < notes.Count; m++)
 			{
-				var tickAtMeasureStart = m * MeasureLengthInTicks(m);
-				retVal.AddRange(notes[m].Select(note => new Note(tickAtMeasureStart + note.Start, note.Length, note.Pitch, note.Velocity)));
+				var beatAtMeasureStart = m * TimeSignatureAtMeasure(m).BeatCount;
+				retVal.AddRange(notes[m].Select(note => new Note(beatAtMeasureStart + note.Start, note.Length, note.Pitch, note.Velocity)));
 			}
 			return retVal;
 		}
