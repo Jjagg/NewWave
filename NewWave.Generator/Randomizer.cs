@@ -13,10 +13,10 @@ namespace NewWave.Generator
 			return R.Next();
 		}
 
-        public static int Next(int maxValue)
-        {
-            return R.Next(0, maxValue);
-        }
+		public static int Next(int maxValue)
+		{
+			return R.Next(0, maxValue);
+		}
 
 		public static int Next(int minValue, int maxValue)
 		{
@@ -49,6 +49,16 @@ namespace NewWave.Generator
 			}
 
 			return input.Count - 1;
+		}
+
+		public static double NextNormalized(double mean, double standardDeviation)
+		{
+			// Box–Muller transform
+			// http://stackoverflow.com/a/2751988/436282
+			var u1 = NextDouble();
+			var u2 = NextDouble();
+			var normal = Math.Sqrt(-2 * Math.Log(u1)) * Math.Cos(2 * Math.PI * u2);
+			return normal * standardDeviation + mean;
 		}
 	}
 }

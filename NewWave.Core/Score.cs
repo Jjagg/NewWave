@@ -103,23 +103,33 @@ namespace NewWave.Core
 
 				tickAtStartOfMeasure += MeasureLengthInTicks(measure);
 			}
-
+			
 			// Create events for unrolled instrument tracks
 			foreach (var unrolledInstrument in unrolledInstruments)
 			{
-				foreach (var note in unrolledInstrument.Notes)
+				var renderedInstrument = new RenderedInstrument
 				{
-					var noteStartInTicks = note.StartInTicks(StandardMidiTicksPerBeat);
-					var noteLengthInTicks = note.LengthInTicks(StandardMidiTicksPerBeat);
+					Channel = unrolledInstrument.Channel,
+					Notes = unrolledInstrument.Notes.Select(n => new MidiNote(
+						TickBuffer + n.StartInTicks(StandardMidiTicksPerBeat),
+						n.LengthInTicks(StandardMidiTicksPerBeat),
+						n.Pitch,
+						n.Velocity)).ToList()
+				};
 
-					t.Insert(TickBuffer + noteStartInTicks, new ChannelMessage(ChannelCommand.NoteOn, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+				foreach (var note in renderedInstrument.Notes)
+				{
+					t.Insert(note.Start, new ChannelMessage(ChannelCommand.NoteOn, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
 
-					// NOTE: You cannot have NoteOff and NoteOn events for the same pitch
-					// on the same tick. NoteOff gets priority and the second note will not
-					// be played. So move the end of the last note back by a tick.
-					// We could check each note individually, but that takes extra time that's
-					// not really worth saving.
-					t.Insert(TickBuffer + noteStartInTicks + noteLengthInTicks - 1, new ChannelMessage(ChannelCommand.NoteOff, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					var note1 = note;
+					if (!renderedInstrument.Notes.Any(e => e.Pitch == note1.Pitch && e.Start == note1.End))
+					{
+						// NOTE: You cannot have NoteOff and NoteOn events for the same pitch
+						// on the same tick. NoteOff gets priority and the second note will not
+						// be played. So if two notes collide, don't write the NoteOff command
+						// for the first one.
+						t.Insert(note.End, new ChannelMessage(ChannelCommand.NoteOff, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					}
 				}
 			}
 
@@ -227,6 +237,28 @@ namespace NewWave.Core
 		{
 			public Channel Channel;
 			public List<Note> Notes;
+		}
+
+		private struct RenderedInstrument
+		{
+			public Channel Channel;
+			public List<MidiNote> Notes;
+		}
+
+		private struct MidiNote
+		{
+			public int Start;
+			public int End;
+			public Pitch Pitch;
+			public Velocity Velocity;
+
+			public MidiNote(int start, int length, Pitch pitch, Velocity velocity)
+			{
+				Start = start;
+				End = start + length;
+				Velocity = velocity;
+				Pitch = pitch;
+			}
 		}
 
 		#endregion
