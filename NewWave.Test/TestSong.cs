@@ -34,7 +34,6 @@ namespace NewWave.Test
 			return new Score(measures,
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, 120 } },
-				new Dictionary<int, int> { { 0, _feel } },
 				new List<InstrumentTrack>(),
 				drums);
 		}
