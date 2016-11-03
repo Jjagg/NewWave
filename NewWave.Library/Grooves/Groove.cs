@@ -13,19 +13,19 @@ namespace NewWave.Library.Grooves
 		private readonly TimeSignature _timeSignature;
 		private readonly int _feel;
 
-		private readonly List<int> _hihat; 
-		private readonly List<int> _snare; 
-		private readonly List<int> _kick; 
+		private readonly List<double> _hihat;
+		private readonly List<double> _snare;
+		private readonly List<double> _kick;
 
-		public Groove(string name, TimeSignature timeSignature, int feel, int timekeepFreq, List<int> snare, List<int> kick)
+		public Groove(string name, TimeSignature timeSignature, int feel, int timekeepFreq, List<double> kick, List<double> snare)
 		{
 			_name = name;
 			_timeSignature = timeSignature;
 			_feel = feel;
 
-			_hihat = Enumerable.Range(0, _timeSignature.BeatCount * feel).Where(i => i % timekeepFreq == 0).ToList();
-			_snare = snare;
+			_hihat = Enumerable.Range(0, _timeSignature.BeatCount * feel).Where(i => i % timekeepFreq == 0).Select(d => (double)d / feel).ToList();
 			_kick = kick;
+			_snare = snare;
 		}
 
 		public List<PercussionNote> Notes(Percussion timekeeper, bool addCrash)
@@ -48,11 +48,11 @@ namespace NewWave.Library.Grooves
 		{
 			var sb = new StringBuilder();
 
-			foreach (var drumVoice in new List<Tuple<string, string, List<int>>>
+			foreach (var drumVoice in new List<Tuple<string, string, List<double>>>
 			{
-				new Tuple<string, string, List<int>>("H", "x", _hihat),
-				new Tuple<string, string, List<int>>("S", "o", _snare),
-				new Tuple<string, string, List<int>>("K", "o", _kick)
+				new Tuple<string, string, List<double>>("H", "x", _hihat.Select(h => h * 4).ToList()),
+				new Tuple<string, string, List<double>>("S", "o", _snare.Select(s => s * 4).ToList()),
+				new Tuple<string, string, List<double>>("K", "o", _kick.Select(k => k * 4).ToList())
 			})
 			{
 				sb.AppendLine(string.Format("{0}|{1}|", drumVoice.Item1,
