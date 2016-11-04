@@ -47,7 +47,7 @@ namespace NewWave.Generator
 			do
 			{
 				chords = ChordProgressionGenerator.ChordProgression(Pitch.E0, MinorOrDiminshedFilter);
-			} while (chords.Count <= 1);
+			} while (chords.Count <= 2);
 
 			if (chords.Count == 3)
 			{
@@ -60,21 +60,23 @@ namespace NewWave.Generator
 			{
 				var chordIndex = measure % chords.Count;
 				var pitches = chords[chordIndex].Pitches();
+				var grooveNotes = groove.Notes(timeKeeper, measure == 0);
+				var kicks = grooveNotes.Where(gn => gn.Percussion == Percussion.BassDrum1).ToList();
 
-				var g = new List<Note>();
-				var b = new List<Note>();
-				for (var beat = 0.0; beat < _time.BeatCount; beat += 0.5)
-				{
-					g.AddRange(pitches.Select(p => new Note(beat, 0.5, p, Velocity.Fff)));
-					b.Add(new Note(beat, 0.5, pitches[0].AddOctave(-1), Velocity.Fff));
-				}
-
-				guitar.Notes.Add(g);
-				bass.Notes.Add(b);
-				drums.Notes.Add(groove.Notes(timeKeeper, measure == 0));
+				guitar.Notes.Add(kicks.SelectMany((gn, i) => pitches.Select(p => new Note(gn.Start, GetLength(gn, i, kicks), p, Velocity.F))).ToList());
+				bass.Notes.Add(kicks.Select((gn, i) => new Note(gn.Start, GetLength(gn, i, kicks), pitches[0].AddOctave(-1), Velocity.Fff)).ToList());
+				drums.Notes.Add(grooveNotes);
 
 			}
 			return measures;
+		}
+
+		private static double GetLength(PercussionNote gn, int i, IReadOnlyList<PercussionNote> kicks)
+		{
+			var start = gn.Start;
+			var nextStart = i == kicks.Count - 1 ? 4 : kicks[i + 1].Start;
+			var length = nextStart - start;
+			return length;
 		}
 
 		public override string DisplayName
