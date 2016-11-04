@@ -195,8 +195,7 @@ namespace NewWave.Core
 
 		private int MeasureLengthInTicks(int measure)
 		{
-			// For the sake of our calculations, one "beat" always equals one quarter note.
-			return (int)(TimeSignatureAtMeasure(measure).TotalBeatsPerMeasure * StandardMidiTicksPerBeat);
+			return TimeSignatureAtMeasure(measure).BeatCount * StandardMidiTicksPerBeat;
 		}
 
 		/// <summary>

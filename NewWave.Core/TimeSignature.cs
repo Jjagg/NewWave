@@ -34,15 +34,6 @@ namespace NewWave.Core
 			get { return new TimeSignature(4, 4); }
 		}
 
-		// AKA Total Quarter Notes Per Measure
-		public double TotalBeatsPerMeasure
-		{
-			get
-			{
-				return BeatCount * (4.0 / BeatUnit);
-			}
-		}
-
 		public override string ToString()
 		{
 			return string.Format("{0}/{1}", BeatCount, BeatUnit);

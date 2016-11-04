@@ -27,7 +27,7 @@ namespace NewWave.Test
 			{
 				drums.Notes.Add(new List<PercussionNote>());
 
-				foreach (var percussionNote in groove.Notes(Percussion.ClosedHiHat, false))
+				foreach (var percussionNote in groove.Notes(Percussion.ClosedHiHat, false, _time))
 				{
 					drums.Notes[measure].Add(percussionNote);
 				}

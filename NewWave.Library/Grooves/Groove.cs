@@ -28,8 +28,9 @@ namespace NewWave.Library.Grooves
 			_snare = snare;
 		}
 
-		public List<PercussionNote> Notes(Percussion timekeeper, bool addCrash)
+		public List<PercussionNote> Notes(Percussion timekeeper, bool addCrash, TimeSignature timeSignature)
 		{
+			var ratio = (double)timeSignature.BeatUnit / _timeSignature.BeatUnit;
 			var notes = new List<PercussionNote>();
 
 		    if (addCrash)
@@ -37,11 +38,11 @@ namespace NewWave.Library.Grooves
                 notes.Add(new PercussionNote(0, Percussion.CrashCymbal1, Velocity.Fff));
 		    }
 
-            notes.AddRange(_hihat.Skip(addCrash ? 1 : 0).Select(hihatNote => new PercussionNote(hihatNote, timekeeper, Velocity.Fff)));
-			notes.AddRange(_snare.Select(snareNote => new PercussionNote(snareNote, Percussion.SnareDrum1, Velocity.Fff)));
-			notes.AddRange(_kick.Select(kickNote => new PercussionNote(kickNote, Percussion.BassDrum1, Velocity.Fff)));
+            notes.AddRange(_hihat.Skip(addCrash ? 1 : 0).Select(hihatNote => new PercussionNote(hihatNote * ratio, timekeeper, Velocity.Fff)));
+			notes.AddRange(_snare.Select(snareNote => new PercussionNote(snareNote * ratio, Percussion.SnareDrum1, Velocity.Fff)));
+			notes.AddRange(_kick.Select(kickNote => new PercussionNote(kickNote * ratio, Percussion.BassDrum1, Velocity.Fff)));
 
-			return notes;
+			return notes.Where(n => n.Start < timeSignature.BeatCount).ToList();
 		}
 
 		public string AsTab()

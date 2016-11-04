@@ -16,7 +16,7 @@ namespace NewWave.Generator
 
 		public override string Generate()
 		{
-			_tempo = (int)Randomizer.NextNormalized(150, 10);
+			_tempo = (int)Randomizer.NextNormalized(180, 10);
 			_time = new TimeSignature(4, 4);
 
 			return "Finished";
@@ -60,21 +60,23 @@ namespace NewWave.Generator
 			{
 				var chordIndex = measure % chords.Count;
 				var pitches = chords[chordIndex].Pitches();
-				var grooveNotes = groove.Notes(timeKeeper, measure == 0);
+				var grooveNotes = groove.Notes(timeKeeper, measure == 0, _time).ToList();
 				var kicks = grooveNotes.Where(gn => gn.Percussion == Percussion.BassDrum1).ToList();
 
 				guitar.Notes.Add(kicks.SelectMany((gn, i) => pitches.Select(p => new Note(gn.Start, GetLength(gn, i, kicks), p, Velocity.F))).ToList());
 				bass.Notes.Add(kicks.Select((gn, i) => new Note(gn.Start, GetLength(gn, i, kicks), pitches[0].AddOctave(-1), Velocity.Fff)).ToList());
+				//guitar.Notes.Add(new List<Note>());
+				//bass.Notes.Add(new List<Note>());
 				drums.Notes.Add(grooveNotes);
-
 			}
+
 			return measures;
 		}
 
-		private static double GetLength(PercussionNote gn, int i, IReadOnlyList<PercussionNote> kicks)
+		private double GetLength(PercussionNote gn, int i, IReadOnlyList<PercussionNote> kicks)
 		{
 			var start = gn.Start;
-			var nextStart = i == kicks.Count - 1 ? 4 : kicks[i + 1].Start;
+			var nextStart = i == kicks.Count - 1 ? _time.BeatCount : kicks[i + 1].Start;
 			var length = nextStart - start;
 			return length;
 		}
