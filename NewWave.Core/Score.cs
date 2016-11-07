@@ -77,7 +77,7 @@ namespace NewWave.Core
 				renderedInstruments.Add(new RenderedInstrument
 				{
 					Channel = channel,
-					Notes = Unroll(instrumentTrack.Notes).Select(n => new MidiNote(n.StartInTicks(StandardMidiTicksPerBeat), n.LengthInTicks(StandardMidiTicksPerBeat), n.Pitch, n.Velocity)).ToList()
+					Notes = Unroll(instrumentTrack.Notes).Select(n => new MidiNote(TickBuffer + n.StartInTicks(StandardMidiTicksPerBeat), n.LengthInTicks(StandardMidiTicksPerBeat), n.Pitch, n.Velocity)).ToList()
 				});
 
 				t.Insert(0, new ChannelMessage(ChannelCommand.ProgramChange, (int)channel, (int)instrumentTrack.Instrument));
