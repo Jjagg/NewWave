@@ -71,13 +71,13 @@ namespace NewWave.Core
 			// (we don't need to unroll percussion because it
 			// doesn't have any issue with overlapping notes)
 			var channel = Channel.Channel1;
-			var unrolledInstruments = new List<UnrolledInstrument>();
+			var renderedInstruments = new List<RenderedInstrument>();
 			foreach (var instrumentTrack in _instrumentTracks)
 			{
-				unrolledInstruments.Add(new UnrolledInstrument
+				renderedInstruments.Add(new RenderedInstrument
 				{
 					Channel = channel,
-					Notes = Unroll(instrumentTrack.Notes).ToList()
+					Notes = Unroll(instrumentTrack.Notes).Select(n => new MidiNote(n.StartInTicks(StandardMidiTicksPerBeat), n.LengthInTicks(StandardMidiTicksPerBeat), n.Pitch, n.Velocity)).ToList()
 				});
 
 				t.Insert(0, new ChannelMessage(ChannelCommand.ProgramChange, (int)channel, (int)instrumentTrack.Instrument));
@@ -103,20 +103,22 @@ namespace NewWave.Core
 
 				tickAtStartOfMeasure += MeasureLengthInTicks(measure);
 			}
-
+			
 			// Create events for unrolled instrument tracks
-			foreach (var unrolledInstrument in unrolledInstruments)
+			foreach (var renderedInstrument in renderedInstruments)
 			{
-				foreach (var note in unrolledInstrument.Notes)
+				foreach (var note in renderedInstrument.Notes)
 				{
-					t.Insert(TickBuffer + note.StartInTicks(StandardMidiTicksPerBeat) / StandardMidiTicksPerBeat, new ChannelMessage(ChannelCommand.NoteOn, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
-
-					// NOTE: You cannot have NoteOff and NoteOn events for the same pitch
-					// on the same tick. NoteOff gets priority and the second note will not
-					// be played. So move the end of the last note back by a tick.
-					// We could check each note individually, but that takes extra time that's
-					// not really worth saving.
-					t.Insert(TickBuffer + note.StartInTicks(StandardMidiTicksPerBeat) + note.LengthInTicks(StandardMidiTicksPerBeat) - 1, new ChannelMessage(ChannelCommand.NoteOff, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					t.Insert(note.Start, new ChannelMessage(ChannelCommand.NoteOn, (int)renderedInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					
+					if (!renderedInstrument.Notes.Any(e => e.Pitch == note.Pitch && e.Start == note.End))
+					{
+						// NOTE: You cannot have NoteOff and NoteOn events for the same pitch
+						// on the same tick. NoteOff gets priority and the second note will not
+						// be played. So if two notes collide, don't write the NoteOff command
+						// for the first one.
+						t.Insert(note.End, new ChannelMessage(ChannelCommand.NoteOff, (int)renderedInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					}
 				}
 			}
 
@@ -137,8 +139,8 @@ namespace NewWave.Core
 			var retVal = new List<Note>();
 			for (var m = 0; m < notes.Count; m++)
 			{
-				var tickAtMeasureStart = m * MeasureLengthInTicks(m);
-				retVal.AddRange(notes[m].Select(note => new Note(tickAtMeasureStart + note.Start, note.Length, note.Pitch, note.Velocity)));
+				var beatAtMeasureStart = m * TimeSignatureAtMeasure(m).BeatCount;
+				retVal.AddRange(notes[m].Select(note => new Note(beatAtMeasureStart + note.Start, note.Length, note.Pitch, note.Velocity)));
 			}
 			return retVal;
 		}
@@ -193,8 +195,7 @@ namespace NewWave.Core
 
 		private int MeasureLengthInTicks(int measure)
 		{
-			// For the sake of our calculations, one "beat" always equals one quarter note.
-			return (int)(TimeSignatureAtMeasure(measure).TotalBeatsPerMeasure * StandardMidiTicksPerBeat);
+			return TimeSignatureAtMeasure(measure).BeatCount * StandardMidiTicksPerBeat;
 		}
 
 		/// <summary>
@@ -220,10 +221,26 @@ namespace NewWave.Core
 
 		#region Private classes
 
-		private struct UnrolledInstrument
+		private struct RenderedInstrument
 		{
 			public Channel Channel;
-			public List<Note> Notes;
+			public List<MidiNote> Notes;
+		}
+
+		private struct MidiNote
+		{
+			public readonly int Start;
+			public readonly int End;
+			public readonly Pitch Pitch;
+			public readonly Velocity Velocity;
+
+			public MidiNote(int start, int length, Pitch pitch, Velocity velocity)
+			{
+				Start = start;
+				End = start + length;
+				Velocity = velocity;
+				Pitch = pitch;
+			}
 		}
 
 		#endregion

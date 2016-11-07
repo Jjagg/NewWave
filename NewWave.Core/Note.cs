@@ -47,12 +47,12 @@ namespace NewWave.Core
 
 		public int StartInTicks(int ticksPerBeat)
 		{
-			return (int)(Start * ticksPerBeat);
+			return (int)Math.Round(Start * ticksPerBeat);
 		}
 
 		public int LengthInTicks(int ticksPerBeat)
 		{
-			return (int)(Length * ticksPerBeat);
+			return (int)Math.Round(Length * ticksPerBeat);
 		}
 
 		public override string ToString()

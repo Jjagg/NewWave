@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NewWave.Core;
 using NewWave.Library.Grooves;
+using NewWave.Midi;
 
 namespace NewWave.Test.LibraryTests
 {
@@ -11,7 +13,7 @@ namespace NewWave.Test.LibraryTests
 		public void RockGroove()
 		{
 			var groove = GrooveLibrary.GetGroove();
-			var notes = groove.Notes();
+			var notes = groove.Notes(Percussion.ClosedHiHat, false, TimeSignature.CommonTime);
 
 			Assert.AreEqual(12, notes.Count);
 
