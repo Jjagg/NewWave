@@ -9,7 +9,7 @@ namespace NewWave.Generator.ChordProgressions
 	{
 		public static List<Chord> ChordProgression(Pitch key, Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> filterFunc)
 		{
-			var guitarBase = key.LowestAbovePitch(Pitch.E3);
+			var guitarBase = key.LowestAbovePitch(Pitch.E2);
 
 			var chords = new List<Chord>();
 			var chain = ChordProgressionLibrary.Chain;

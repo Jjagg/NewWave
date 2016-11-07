@@ -24,20 +24,21 @@ namespace NewWave.Generator
 
 		public override Score Render()
 		{
-			var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
+			var guitarL = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Left, new List<List<Note>>());
+			var guitarR = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Right, new List<List<Note>>());
 			var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-			var sections = Enumerable.Range(0, 8).Select(i => RenderSection(guitar, bass, drums));
+			var sections = Enumerable.Range(0, 8).Select(i => RenderSection(guitarR, guitarL, bass, drums));
 
 			return new Score(sections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, _tempo } },
-				new List<InstrumentTrack> { guitar, bass },
+				new List<InstrumentTrack> { guitarL, guitarR, bass },
 				drums);
 		}
 
-		private int RenderSection(InstrumentTrack guitar, InstrumentTrack bass, PercussionTrack drums)
+		private int RenderSection(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums)
 		{
 			const int measures = 8;
 			var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
@@ -61,12 +62,11 @@ namespace NewWave.Generator
 				var chordIndex = measure % chords.Count;
 				var pitches = chords[chordIndex].Pitches();
 				var grooveNotes = groove.Notes(timeKeeper, measure == 0, _time).ToList();
-				var kicks = grooveNotes.Where(gn => gn.Percussion == Percussion.BassDrum1).ToList();
+				var kicks = grooveNotes.Where(gn => gn.Percussion == timeKeeper || gn.Start == 0).ToList();
 
-				guitar.Notes.Add(kicks.SelectMany((gn, i) => pitches.Select(p => new Note(gn.Start, GetLength(gn, i, kicks), p, Velocity.F))).ToList());
+				guitarR.Notes.Add(kicks.SelectMany((gn, i) => pitches.Take(2).Select(p => new Note(gn.Start, GetLength(gn, i, kicks), p, Velocity.F))).ToList());
+				guitarL.Notes.Add(kicks.SelectMany((gn, i) => pitches.Skip(2).Select(p => new Note(gn.Start, GetLength(gn, i, kicks), p, Velocity.F))).ToList());
 				bass.Notes.Add(kicks.Select((gn, i) => new Note(gn.Start, GetLength(gn, i, kicks), pitches[0].AddOctave(-1), Velocity.Fff)).ToList());
-				//guitar.Notes.Add(new List<Note>());
-				//bass.Notes.Add(new List<Note>());
 				drums.Notes.Add(grooveNotes);
 			}
 
@@ -112,7 +112,7 @@ namespace NewWave.Generator
 			{
 				return n =>
 					n.Data.Quality == ChordQuality.Minor
-						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes)
+						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
 						: n;
 			}
 		}

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Generator;
 using NewWave.Generator.ChordProgressions;
@@ -21,7 +22,7 @@ namespace NewWave.Test
 		{
 			for (var i = 0; i < 50; i++)
 			{
-			    Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(Pitch.G3, n => n)));
+			    Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(Pitch.C3, n => n)));
 			}
 		}
 
@@ -30,7 +31,7 @@ namespace NewWave.Test
         {
             for (var i = 0; i < 50; i++)
             {
-                Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(Pitch.G3, MinorOrDiminshedFilter)));
+                Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(Pitch.C3, MinorOrDiminshedFilter)));
             }
         }
 
@@ -40,7 +41,7 @@ namespace NewWave.Test
 	        {
 	            return n =>
 	                n.Data.Quality != ChordQuality.Minor && n.Data.Quality != ChordQuality.Diminished
-	                    ? new MarkovChainNode<Chord>(n.Data, n.Probability * 0.25, n.ChildNodes)
+	                    ? new MarkovChainNode<Chord>(n.Data, n.Probability * 0.25, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
 	                    : n;
 	        }
 	    }
