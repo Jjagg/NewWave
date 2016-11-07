@@ -46,8 +46,8 @@ namespace NewWave.Generator
 			List<Chord> chords;
 			do
 			{
-				chords = ChordProgressionGenerator.ChordProgression(Pitch.E0, MinorOrDiminshedFilter);
-			} while (chords.Count <= 2);
+				chords = ChordProgressionGenerator.ChordProgression(Pitch.G0, MinorOrDiminshedFilter);
+			} while (chords.Count <= 2 && chords.Count(c => c.Quality == ChordQuality.Minor) < 2);
 
 			if (chords.Count == 3)
 			{
@@ -111,8 +111,8 @@ namespace NewWave.Generator
 			get
 			{
 				return n =>
-					n.Data.Quality == ChordQuality.Minor || n.Data.Quality == ChordQuality.Diminished
-						? new MarkovChainNode<Chord>(n.Data, n.Probability * 4.0)
+					n.Data.Quality == ChordQuality.Minor
+						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes)
 						: n;
 			}
 		}

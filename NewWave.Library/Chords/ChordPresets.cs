@@ -110,5 +110,10 @@ namespace NewWave.Library.Chords
 		public static Chord Gb { get { return new Chord(Pitch.ASharp0); } }
 		public static Chord DA { get { return new Chord(Pitch.D0, ChordQuality.NotSpecified, ChordAdded.None, Pitch.A0); } }
 		public static Chord ebm { get { return new Chord(Pitch.DSharp0, ChordQuality.Minor); } }
+		public static Chord B7 { get { return new Chord(Pitch.B0, ChordQuality.NotSpecified, ChordAdded.Seven); } }
+		public static Chord ebdim { get { return new Chord(Pitch.DSharp0, ChordQuality.Diminished); } }
+		public static Chord abm7 { get { return new Chord(Pitch.GSharp0, ChordQuality.Minor, ChordAdded.Seven); } }
+		public static Chord gmBb { get { return new Chord(Pitch.G0, ChordQuality.Minor, ChordAdded.None, Pitch.ASharp0); } }
+		public static Chord bdimD { get { return new Chord(Pitch.B0, ChordQuality.Diminished, ChordAdded.None, Pitch.D0); } }
 	}
 }
