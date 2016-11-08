@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
 using NewWave.Generator;
@@ -19,7 +20,13 @@ namespace NewWave.Test.GeneratorTests
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 			var section = new SongSection(TimeSignature.CommonTime, guitarR, guitarL, bass, drums);
 
-			Console.WriteLine(string.Join(" - ", section.Chords));
+			var totalBeats = section.Measures * section.Time.BeatCount;
+			Console.WriteLine("Total beats: {0}", totalBeats);
+			for (var beat = 0; beat < totalBeats; beat++)
+			{
+				var chordHere = section.Chords.FirstOrDefault(c => c.Item1 == beat);
+				Console.WriteLine("{0} {1} - {2}", beat % section.Time.BeatCount == 0 ? "-" : " ", beat, chordHere?.Item2);
+			}
 		}
 	}
 }
