@@ -50,8 +50,8 @@ namespace NewWave.Generator
 				for (var beat = 0; beat < Time.BeatCount; beat++)
 				{
 					var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
-					guitarRnotes.AddRange(pitches.Take(2).Select(p => new Note(beat, 1, p, Velocity.F)));
-					guitarLnotes.AddRange(pitches.Skip(2).Select(p => new Note(beat, 1, p, Velocity.F)));
+					guitarRnotes.AddRange(pitches.Select(p => new Note(beat, 1, p, Velocity.F)));
+					guitarLnotes.AddRange(pitches.Select(p => new Note(beat, 1, p, Velocity.F)));
 					bassNotes.Add(new Note(beat, 1, pitches[0].AddOctave(-1), Velocity.Fff));
 				}
 

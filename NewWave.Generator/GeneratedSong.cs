@@ -21,7 +21,7 @@ namespace NewWave.Generator
 		public override Score Render()
 		{
 			var guitarL = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Left, new List<List<Note>>());
-			var guitarR = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Right, new List<List<Note>>());
+			var guitarR = new InstrumentTrack(Instrument.OverdrivenGuitar, Pan.Right, new List<List<Note>>());
 			var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
