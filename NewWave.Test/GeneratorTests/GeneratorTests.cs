@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Generator;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Library.Chords;
-using NewWave.Midi;
 
 namespace NewWave.Test.GeneratorTests
 {
@@ -22,7 +21,7 @@ namespace NewWave.Test.GeneratorTests
 		{
 			for (var i = 0; i < 50; i++)
 			{
-			    Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(Pitch.C3, n => n)));
+			    Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(n => n)));
 			}
 		}
 
@@ -31,7 +30,7 @@ namespace NewWave.Test.GeneratorTests
         {
             for (var i = 0; i < 50; i++)
             {
-                Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(Pitch.C3, MinorOrDiminshedFilter)));
+                Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter)));
             }
         }
 

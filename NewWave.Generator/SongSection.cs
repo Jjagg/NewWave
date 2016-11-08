@@ -69,7 +69,7 @@ namespace NewWave.Generator
 			List<Chord> chordList;
 			do
 			{
-				chordList = ChordProgressionGenerator.ChordProgression(Pitch.G0, MinorOrDiminshedFilter);
+				chordList = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter).Select(c => TransposeForKey(Pitch.E3, c)).ToList();
 			} while (chordList.Count <= 2 && chordList.Count(c => c.Quality == ChordQuality.Minor) < 2);
 
 			var sectionLengthInBeats = Measures * Time.BeatCount;
@@ -103,6 +103,13 @@ namespace NewWave.Generator
 			var options = Enumerable.Range(0, Measures).Select(m => m * Time.BeatCount).ToList();
 			var distances = options.Select(o => Math.Abs(input - o)).ToList();
 			return options[distances.IndexOf(distances.Min())];
+		}
+
+		private static Chord TransposeForKey(Pitch key, Chord result)
+		{
+			var transposeDiff = key - Pitch.C0;
+			result.Transpose(transposeDiff);
+			return result;
 		}
 	}
 }

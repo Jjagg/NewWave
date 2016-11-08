@@ -104,16 +104,16 @@ namespace NewWave.Library.Chords
 			switch (_added)
 			{
 				case ChordAdded.Six:
-					quality = "6";
+					added = "6";
 					break;
 				case ChordAdded.Seven:
-					quality = "7";
+					added = "7";
 					break;
 				case ChordAdded.Nine:
-					quality = "9";
+					added = "9";
 					break;
 				case ChordAdded.Eleven:
-					quality = "11";
+					added = "11";
 					break;
 			}
 
