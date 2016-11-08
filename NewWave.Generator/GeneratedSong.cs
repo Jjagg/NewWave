@@ -25,7 +25,7 @@ namespace NewWave.Generator
 			var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-			var sections = Enumerable.Range(0, 4).Select(i => new SongSection(_time, guitarR, guitarL, bass, drums));
+			var sections = Enumerable.Range(0, 8).Select(i => new SongSection(_time, guitarR, guitarL, bass, drums));
 			var renderedSections = sections.Select(s => s.Render());
 
 			return new Score(renderedSections.Sum(s => s),
