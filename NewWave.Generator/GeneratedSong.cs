@@ -47,7 +47,7 @@ namespace NewWave.Generator
 			List<Chord> chords;
 			do
 			{
-				chords = ChordProgressionGenerator.ChordProgression(Pitch.G0, MinorOrDiminshedFilter);
+				chords = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter).Select(c => TransposeForKey(Pitch.E0, c)).ToList();
 			} while (chords.Count <= 2 && chords.Count(c => c.Quality == ChordQuality.Minor) < 2);
 
 			if (chords.Count == 3)
@@ -115,6 +115,13 @@ namespace NewWave.Generator
 						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
 						: n;
 			}
+		}
+
+		private static Chord TransposeForKey(Pitch key, Chord result)
+		{
+			var transposeDiff = key - Pitch.C0;
+			result.Transpose(transposeDiff);
+			return result;
 		}
 	}
 }
