@@ -75,7 +75,7 @@ namespace NewWave.Generator
 			{
 				chordList = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter)
 					.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
-					.Select(c => TransposeForKey(Pitch.G3, c))
+					.Select(c => TransposeForKey(Pitch.G2, c))
 					.ToList();
 			} while (chordList.Count(c => c.Quality == ChordQuality.Minor) < 2);
 
