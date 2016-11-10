@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
+using NewWave.Generator.Grooves;
 using NewWave.Library.Chords;
 using NewWave.Library.Grooves;
 using NewWave.Midi;
@@ -22,7 +22,7 @@ namespace NewWave.Generator
 		internal readonly List<Tuple<int, Chord>> Chords;
 		private Groove _groove;
 
-		internal SongSection(TimeSignature time, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums)
+		internal SongSection(TimeSignature time, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums, ChordProgression chordProgression)
 		{
 			Time = time;
 			_guitarR = guitarR;
@@ -31,7 +31,7 @@ namespace NewWave.Generator
 			_drums = drums;
 
 			Measures = new List<int> { 8, 4 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
-			Chords = GetChordProgression();
+			Chords = GetChordProgression(chordProgression);
 			GetGroove();
 		}
 
@@ -45,7 +45,7 @@ namespace NewWave.Generator
 
 			for (var measure = 0; measure < Measures; measure++)
 			{
-				var grooveNotes = _groove.Notes(timeKeeper, measure == 0, Time).ToList();
+				var grooveNotes = AddFill(measure, _groove.Notes(timeKeeper, measure == 0, Time));
 
 				var guitarRnotes = new List<Note>();
 				var guitarLnotes = new List<Note>();
@@ -54,6 +54,7 @@ namespace NewWave.Generator
 				for (var beat = 0; beat < Time.BeatCount; beat++)
 				{
 					var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
+
 					guitarRnotes.AddRange(Enumerable.Range(0, notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
 					guitarLnotes.AddRange(Enumerable.Range(0, notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
 					bassNotes.Add(new Note(beat, 1, pitches[0].AddOctave(-1), Velocity.Fff));
@@ -68,22 +69,31 @@ namespace NewWave.Generator
 			return Measures;
 		}
 
-		private List<Tuple<int, Chord>> GetChordProgression()
+		private List<PercussionNote> AddFill(int measure, List<PercussionNote> grooveNotes)
 		{
-			List<Chord> chordList;
-			do
+			if (measure == Measures - 1)
 			{
-				chordList = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter)
-					.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
-					.Select(c => TransposeForKey(Pitch.G2, c))
-					.ToList();
-			} while (chordList.Count(c => c.Quality == ChordQuality.Minor) < 2);
+				// Add fill
+				var fillLength = new List<double> { 2.0, 4.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
+				var fill = FillGenerator.GetFill(Time.BeatCount - fillLength, fillLength);
+				grooveNotes = grooveNotes.Where(n => n.Start < Time.BeatCount - fillLength).Union(fill).ToList();
+			}
+			return grooveNotes;
+		}
 
-			Debug.WriteLine(string.Join(" - ", chordList));
+		private List<Tuple<int, Chord>> GetChordProgression(ChordProgression progression)
+		{
+			var chordList = progression
+				.Chords
+				.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
+				.Select(c => TransposeForKey(Pitch.G2, c))
+				.ToList();
+
+			Console.WriteLine(string.Join(" - ", chordList));
 			return AssignChords(chordList, Measures * Time.BeatCount);
 		}
 
-		private List<Tuple<int, Chord>> AssignChords(IReadOnlyList<Chord> chords, int maxValue)
+		private static List<Tuple<int, Chord>> AssignChords(IReadOnlyList<Chord> chords, int maxValue)
 		{
 			if (chords.Count == 1)
 			{
@@ -122,7 +132,7 @@ namespace NewWave.Generator
 			return assignments1.Union(assignments2.Select(a => new Tuple<int, Chord>(a.Item1 + beatSplitPoint, a.Item2))).ToList();
 		}
 
-		private int GetSplitPoint(int maxValue)
+		private static int GetSplitPoint(int maxValue)
 		{
 			if (Randomizer.ProbabilityOfTrue(0.9))
 			{
@@ -130,17 +140,6 @@ namespace NewWave.Generator
 			}
 
 			return GetSplitPoint(maxValue / 2) + (Randomizer.ProbabilityOfTrue(0.5) ? maxValue / 2 : 0);
-		}
-
-		private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
-		{
-			get
-			{
-				return n =>
-					n.Data.Quality == ChordQuality.Minor
-						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
-						: n;
-			}
 		}
 
 		private void GetGroove()
