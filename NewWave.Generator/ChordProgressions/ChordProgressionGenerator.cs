@@ -6,7 +6,7 @@ namespace NewWave.Generator.ChordProgressions
 {
 	public static class ChordProgressionGenerator
 	{
-		public static List<Chord> ChordProgression(Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> filterFunc)
+		public static ChordProgression ChordProgression(Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> filterFunc)
 		{
 			var chords = new List<Chord>();
 			var chain = ChordProgressionLibrary.Chain;
@@ -21,7 +21,7 @@ namespace NewWave.Generator.ChordProgressions
 				}
 			} while (chain != null && chain.Count > 0);
 
-			return chords;
+			return new ChordProgression(chords);
 		}
 	}
 }

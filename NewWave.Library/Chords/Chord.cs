@@ -81,6 +81,17 @@ namespace NewWave.Library.Chords
 			_inversion += halfsteps;
 		}
 
+		public override bool Equals(object obj)
+		{
+			var other = obj as Chord;
+			return other != null &&
+				_basePitch == other._basePitch &&
+				_added == other._added &&
+				_isInverted == other._isInverted &&
+				(!_isInverted || _inversion == other._inversion) &&
+				Quality == other.Quality;
+		}
+
 		public override string ToString()
 		{
 			var quality = string.Empty;

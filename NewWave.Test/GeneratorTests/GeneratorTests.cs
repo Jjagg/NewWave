@@ -21,7 +21,7 @@ namespace NewWave.Test.GeneratorTests
 		{
 			for (var i = 0; i < 50; i++)
 			{
-			    Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(n => n)));
+			    Console.WriteLine(ChordProgressionGenerator.ChordProgression(n => n));
 			}
 		}
 
@@ -30,7 +30,7 @@ namespace NewWave.Test.GeneratorTests
         {
             for (var i = 0; i < 50; i++)
             {
-                Console.WriteLine(string.Join(" - ", ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter)));
+                Console.WriteLine(ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter));
             }
         }
 

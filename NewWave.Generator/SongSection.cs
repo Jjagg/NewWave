@@ -23,7 +23,7 @@ namespace NewWave.Generator
 		internal readonly List<Tuple<int, Chord>> Chords;
 		private Groove _groove;
 
-		internal SongSection(TimeSignature time, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums)
+		internal SongSection(TimeSignature time, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums, ChordProgression chordProgression)
 		{
 			Time = time;
 			_guitarR = guitarR;
@@ -32,7 +32,7 @@ namespace NewWave.Generator
 			_drums = drums;
 
 			Measures = new List<int> { 8, 4 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
-			Chords = GetChordProgression();
+			Chords = GetChordProgression(chordProgression);
 			GetGroove();
 		}
 
@@ -81,12 +81,13 @@ namespace NewWave.Generator
 			return grooveNotes;
 		}
 
-		private List<Tuple<int, Chord>> GetChordProgression()
+		private List<Tuple<int, Chord>> GetChordProgression(ChordProgression progression)
 		{
 			List<Chord> chordList;
 			do
 			{
-				chordList = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter)
+				chordList = progression
+					.Chords
 					.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
 					.Select(c => TransposeForKey(Pitch.G2, c))
 					.ToList();
@@ -96,7 +97,7 @@ namespace NewWave.Generator
 			return AssignChords(chordList, Measures * Time.BeatCount);
 		}
 
-		private List<Tuple<int, Chord>> AssignChords(IReadOnlyList<Chord> chords, int maxValue)
+		private static List<Tuple<int, Chord>> AssignChords(IReadOnlyList<Chord> chords, int maxValue)
 		{
 			if (chords.Count == 1)
 			{
@@ -143,17 +144,6 @@ namespace NewWave.Generator
 			}
 
 			return GetSplitPoint(maxValue / 2) + (Randomizer.ProbabilityOfTrue(0.5) ? maxValue / 2 : 0);
-		}
-
-		private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
-		{
-			get
-			{
-				return n =>
-					n.Data.Quality == ChordQuality.Minor
-						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
-						: n;
-			}
 		}
 
 		private void GetGroove()
