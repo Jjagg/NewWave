@@ -3,7 +3,7 @@ using NewWave.Midi;
 
 namespace NewWave.Library.Chords
 {
-	public class Chord
+	public struct Chord
 	{
 		private Pitch _basePitch;
 	    public readonly ChordQuality Quality;
@@ -17,6 +17,7 @@ namespace NewWave.Library.Chords
 			Quality = quality;
 			_added = added;
 			_isInverted = false;
+			_inversion = Pitch.ANeg1;
 		}
 
 		public Chord(Pitch basePitch, ChordQuality quality, ChordAdded added, Pitch inversion)
@@ -83,8 +84,10 @@ namespace NewWave.Library.Chords
 
 		public override bool Equals(object obj)
 		{
-			var other = obj as Chord;
-			return other != null &&
+			if (!(obj is Chord)) return false;
+
+			var other = (Chord)obj;
+			return
 				_basePitch == other._basePitch &&
 				_added == other._added &&
 				_isInverted == other._isInverted &&

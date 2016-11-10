@@ -55,6 +55,7 @@ namespace NewWave.Generator
 				for (var beat = 0; beat < Time.BeatCount; beat++)
 				{
 					var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
+
 					guitarRnotes.AddRange(Enumerable.Range(0, notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
 					guitarLnotes.AddRange(Enumerable.Range(0, notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
 					bassNotes.Add(new Note(beat, 1, pitches[0].AddOctave(-1), Velocity.Fff));
@@ -83,15 +84,11 @@ namespace NewWave.Generator
 
 		private List<Tuple<int, Chord>> GetChordProgression(ChordProgression progression)
 		{
-			List<Chord> chordList;
-			do
-			{
-				chordList = progression
-					.Chords
-					.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
-					.Select(c => TransposeForKey(Pitch.G2, c))
-					.ToList();
-			} while (chordList.Count(c => c.Quality == ChordQuality.Minor) < 2);
+			var chordList = progression
+				.Chords
+				.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
+				.Select(c => TransposeForKey(Pitch.G2, c))
+				.ToList();
 
 			Debug.WriteLine(string.Join(" - ", chordList));
 			return AssignChords(chordList, Measures * Time.BeatCount);
