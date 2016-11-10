@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
@@ -90,7 +89,7 @@ namespace NewWave.Generator
 				.Select(c => TransposeForKey(Pitch.G2, c))
 				.ToList();
 
-			Debug.WriteLine(string.Join(" - ", chordList));
+			Console.WriteLine(string.Join(" - ", chordList));
 			return AssignChords(chordList, Measures * Time.BeatCount);
 		}
 

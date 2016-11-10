@@ -31,14 +31,28 @@ namespace NewWave.Generator
 
 			var chordProgressions = GetDistinctChordProgressions(sectionCount);
 
-			var sections = Enumerable.Range(0, sectionCount).Select(i => new SongSection(_time, guitarR, guitarL, bass, drums, chordProgressions[i]));
+			var sections = Enumerable.Range(0, sectionCount).Select(i => new SongSection(_time, guitarR, guitarL, bass, drums, chordProgressions[i])).ToList();
 			var renderedSections = sections.Select(s => s.Render());
+
+			WriteStats(sections);
 
 			return new Score(renderedSections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, _tempo } },
 				new List<InstrumentTrack> { guitarL, guitarR, bass },
 				drums);
+		}
+
+		private void WriteStats(List<SongSection> sections)
+		{
+			var totalBeatCount = sections.Sum(s => s.Measures * s.Time.BeatCount);
+			var totalMinutes = (double)totalBeatCount / _tempo;
+			var minutes = (int)totalMinutes;
+			var seconds = (int)((totalMinutes - minutes) * 60);
+
+			Console.WriteLine("----------");
+			Console.WriteLine("Measures: {0}", sections.Sum(s => s.Measures));
+			Console.WriteLine("Song length: {0}:{1:00}", minutes, seconds);
 		}
 
 		private static List<ChordProgression> GetDistinctChordProgressions(int amount)
