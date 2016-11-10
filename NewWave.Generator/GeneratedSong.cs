@@ -26,7 +26,7 @@ namespace NewWave.Generator
 		{
 			var guitarL = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Left, new List<List<Note>>());
 			var guitarR = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Right, new List<List<Note>>());
-			var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
+			var bass = new InstrumentTrack(Instrument.ElectricBassPick, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
 			var sections = Enumerable.Range(0, 8).Select(i => RenderSection(guitarR, guitarL, bass, drums));
@@ -47,7 +47,7 @@ namespace NewWave.Generator
 			List<Chord> chords;
 			do
 			{
-				chords = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter).Select(c => TransposeForKey(Pitch.E0, c)).ToList();
+				chords = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter).Select(c => TransposeForKey(Pitch.G2, c)).ToList();
 			} while (chords.Count <= 2 && chords.Count(c => c.Quality == ChordQuality.Minor) < 2);
 
 			if (chords.Count == 3)
@@ -61,7 +61,7 @@ namespace NewWave.Generator
 			{
 				var chordIndex = measure % chords.Count;
 				var pitches = chords[chordIndex].Pitches();
-				var grooveNotes = groove.Notes(timeKeeper, measure == 0, _time).ToList();
+				var grooveNotes = groove.Notes(timeKeeper, measure == 0, _time, measure == measures - 1).ToList();
 				var kicks = grooveNotes.Where(gn => gn.Percussion == timeKeeper || gn.Start == 0).ToList();
 
 				guitarR.Notes.Add(kicks.SelectMany((gn, i) => pitches.Take(2).Select(p => new Note(gn.Start, GetLength(gn, i, kicks), p, Velocity.F))).ToList());

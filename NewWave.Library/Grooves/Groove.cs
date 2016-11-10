@@ -28,21 +28,38 @@ namespace NewWave.Library.Grooves
 			_snare = snare;
 		}
 
-		public List<PercussionNote> Notes(Percussion timekeeper, bool addCrash, TimeSignature timeSignature)
+		public List<PercussionNote> Notes(Percussion timekeeper, bool addCrash, TimeSignature timeSignature, bool addFill)
 		{
+			var lengthOfSection = timeSignature.BeatCount;
 			var ratio = (double)timeSignature.BeatUnit / _timeSignature.BeatUnit;
 			var notes = new List<PercussionNote>();
 
-		    if (addCrash)
-		    {
-                notes.Add(new PercussionNote(0, Percussion.CrashCymbal1, Velocity.Fff));
-		    }
+			if (addCrash)
+			{
+				notes.Add(new PercussionNote(0, Percussion.CrashCymbal1, Velocity.Fff));
+			}
 
-            notes.AddRange(_hihat.Skip(addCrash ? 1 : 0).Select(hihatNote => new PercussionNote(hihatNote * ratio, timekeeper, Velocity.Fff)));
+			notes.AddRange(_hihat.Select((hihatNote, i) => new PercussionNote(hihatNote * ratio, timekeeper, i % 2 == 1 ? Velocity.F : Velocity.Fff)));
 			notes.AddRange(_snare.Select(snareNote => new PercussionNote(snareNote * ratio, Percussion.SnareDrum1, Velocity.Fff)));
 			notes.AddRange(_kick.Select(kickNote => new PercussionNote(kickNote * ratio, Percussion.BassDrum1, Velocity.Fff)));
 
-			return notes.Where(n => n.Start < timeSignature.BeatCount).ToList();
+			// Trim leftover notes
+			notes = notes.Where(n => n.Start < lengthOfSection).ToList();
+
+			if (addFill)
+			{
+				const int fillLength = 2;
+				var fill = GetFill(lengthOfSection - fillLength, fillLength);
+				notes = notes.Where(n => n.Start < lengthOfSection - fillLength).Union(fill).ToList();
+			}
+
+			return notes;
+		}
+
+		private static IEnumerable<PercussionNote> GetFill(double delay, int fillLengthInBeats)
+		{
+			const double lengthOfNote = 0.25;
+			return Enumerable.Range(0, (int)(fillLengthInBeats / lengthOfNote)).Select(i => new PercussionNote(delay + i * lengthOfNote, Percussion.SnareDrum1, Velocity.Ff));
 		}
 
 		public string AsTab()

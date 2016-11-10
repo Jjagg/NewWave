@@ -13,7 +13,7 @@ namespace NewWave.Test.LibraryTests
 		public void RockGroove()
 		{
 			var groove = GrooveLibrary.GetGroove();
-			var notes = groove.Notes(Percussion.ClosedHiHat, false, TimeSignature.CommonTime);
+			var notes = groove.Notes(Percussion.ClosedHiHat, false, TimeSignature.CommonTime, false);
 
 			Assert.AreEqual(12, notes.Count);
 
