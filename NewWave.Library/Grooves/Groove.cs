@@ -30,19 +30,21 @@ namespace NewWave.Library.Grooves
 
 		public List<PercussionNote> Notes(Percussion timekeeper, bool addCrash, TimeSignature timeSignature)
 		{
+			var lengthOfSection = timeSignature.BeatCount;
 			var ratio = (double)timeSignature.BeatUnit / _timeSignature.BeatUnit;
 			var notes = new List<PercussionNote>();
 
-		    if (addCrash)
-		    {
-                notes.Add(new PercussionNote(0, Percussion.CrashCymbal1, Velocity.Fff));
-		    }
+			if (addCrash)
+			{
+				notes.Add(new PercussionNote(0, Percussion.CrashCymbal1, Velocity.Fff));
+			}
 
-            notes.AddRange(_hihat.Skip(addCrash ? 1 : 0).Select(hihatNote => new PercussionNote(hihatNote * ratio, timekeeper, Velocity.Fff)));
+			notes.AddRange(_hihat.Select((hihatNote, i) => new PercussionNote(hihatNote * ratio, timekeeper, i % 2 == 1 ? Velocity.F : Velocity.Fff)));
 			notes.AddRange(_snare.Select(snareNote => new PercussionNote(snareNote * ratio, Percussion.SnareDrum1, Velocity.Fff)));
 			notes.AddRange(_kick.Select(kickNote => new PercussionNote(kickNote * ratio, Percussion.BassDrum1, Velocity.Fff)));
 
-			return notes.Where(n => n.Start < timeSignature.BeatCount).ToList();
+			// Trim leftover notes
+			return notes.Where(n => n.Start < lengthOfSection).ToList();
 		}
 
 		public string AsTab()
