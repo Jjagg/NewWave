@@ -12358,10 +12358,11 @@ namespace NewWave.Generator.ChordProgressions
 						}),
 						new MarkovChainNode<Chord>(ChordPresets.am, 0.18, new List<MarkovChainNode<Chord>>
 						{
-							new MarkovChainNode<Chord>(ChordPresets.C, 0.05),
-							new MarkovChainNode<Chord>(ChordPresets.am, 0.21),
-							new MarkovChainNode<Chord>(ChordPresets.F, 0.49),
-							new MarkovChainNode<Chord>(ChordPresets.dm, 0.09)
+							new MarkovChainNode<Chord>(ChordPresets.C, 0.18),
+							new MarkovChainNode<Chord>(ChordPresets.dm, 0.12),
+							new MarkovChainNode<Chord>(ChordPresets.G, 0.18),
+							new MarkovChainNode<Chord>(ChordPresets.F, 0.21),
+							new MarkovChainNode<Chord>(ChordPresets.em, 0.07)
 						})
 					}),
 					new MarkovChainNode<Chord>(ChordPresets.em, 0.03, new List<MarkovChainNode<Chord>>
