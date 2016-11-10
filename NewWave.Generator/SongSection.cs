@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
+using NewWave.Generator.Grooves;
 using NewWave.Library.Chords;
 using NewWave.Library.Grooves;
 using NewWave.Midi;
@@ -46,6 +47,14 @@ namespace NewWave.Generator
 			for (var measure = 0; measure < Measures; measure++)
 			{
 				var grooveNotes = _groove.Notes(timeKeeper, measure == 0, Time).ToList();
+
+				if (measure == Measures - 1)
+				{
+					// Add fill
+					var fillLength = new List<double> { 2.0, 4.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
+					var fill = FillGenerator.GetFill(Time.BeatCount - fillLength, fillLength);
+					grooveNotes = grooveNotes.Where(n => n.Start < Time.BeatCount - fillLength).Union(fill).ToList();
+				}
 
 				var guitarRnotes = new List<Note>();
 				var guitarLnotes = new List<Note>();
