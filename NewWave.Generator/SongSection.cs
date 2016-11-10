@@ -46,15 +46,7 @@ namespace NewWave.Generator
 
 			for (var measure = 0; measure < Measures; measure++)
 			{
-				var grooveNotes = _groove.Notes(timeKeeper, measure == 0, Time).ToList();
-
-				if (measure == Measures - 1)
-				{
-					// Add fill
-					var fillLength = new List<double> { 2.0, 4.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
-					var fill = FillGenerator.GetFill(Time.BeatCount - fillLength, fillLength);
-					grooveNotes = grooveNotes.Where(n => n.Start < Time.BeatCount - fillLength).Union(fill).ToList();
-				}
+				var grooveNotes = AddFill(measure, _groove.Notes(timeKeeper, measure == 0, Time));
 
 				var guitarRnotes = new List<Note>();
 				var guitarLnotes = new List<Note>();
@@ -75,6 +67,18 @@ namespace NewWave.Generator
 			}
 
 			return Measures;
+		}
+
+		private List<PercussionNote> AddFill(int measure, List<PercussionNote> grooveNotes)
+		{
+			if (measure == Measures - 1)
+			{
+				// Add fill
+				var fillLength = new List<double> { 2.0, 4.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
+				var fill = FillGenerator.GetFill(Time.BeatCount - fillLength, fillLength);
+				grooveNotes = grooveNotes.Where(n => n.Start < Time.BeatCount - fillLength).Union(fill).ToList();
+			}
+			return grooveNotes;
 		}
 
 		private List<Tuple<int, Chord>> GetChordProgression()
@@ -131,7 +135,7 @@ namespace NewWave.Generator
 			return assignments1.Union(assignments2.Select(a => new Tuple<int, Chord>(a.Item1 + beatSplitPoint, a.Item2))).ToList();
 		}
 
-		private int GetSplitPoint(int maxValue)
+		private static int GetSplitPoint(int maxValue)
 		{
 			if (Randomizer.ProbabilityOfTrue(0.9))
 			{
