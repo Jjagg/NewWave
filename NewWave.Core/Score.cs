@@ -122,7 +122,12 @@ namespace NewWave.Core
 				}
 			}
 
-			t.Insert(tickAtStartOfMeasure, new MetaMessage(MetaType.EndOfTrack, new byte[0]));
+            // Add an empty note one measure after the actual end of the song, just for some extra buffer
+		    var endingBuffer = TimeSignatureAtMeasure(_measureCount - 1).BeatCount * StandardMidiTicksPerBeat;
+		    t.Insert(tickAtStartOfMeasure + endingBuffer, new ChannelMessage(ChannelCommand.NoteOff, (int)Channel.Channel10, 0));
+
+            // End meta message
+            t.Insert(tickAtStartOfMeasure + endingBuffer, new MetaMessage(MetaType.EndOfTrack, new byte[0]));
 
 			s.Add(t);
 			s.Save(filename);
