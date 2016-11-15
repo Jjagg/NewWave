@@ -144,7 +144,7 @@ namespace NewWave.Generator
 
 		private void GetGroove()
 		{
-			_groove = GrooveLibrary.AllGrooves[Randomizer.Next(GrooveLibrary.AllGrooves.Count)];
+		    _groove = GrooveGenerator.GenerateGroove(Time);
 		}
 
 		private static Chord TransposeForKey(Pitch key, Chord result)

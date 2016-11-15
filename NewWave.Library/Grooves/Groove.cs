@@ -14,7 +14,9 @@ namespace NewWave.Library.Grooves
 		private readonly List<double> _snare;
 		private readonly List<double> _kick;
 
-		public Groove(string name, TimeSignature timeSignature, int feel, int timekeepFreq, List<double> kick, List<double> snare)
+        public readonly int Feel;
+
+	    public Groove(string name, TimeSignature timeSignature, int feel, int timekeepFreq, List<double> kick, List<double> snare)
 		{
 			_name = name;
 			_timeSignature = timeSignature;
@@ -22,6 +24,7 @@ namespace NewWave.Library.Grooves
 			_hihat = Enumerable.Range(0, _timeSignature.BeatCount * feel).Where(i => i % timekeepFreq == 0).Select(d => (double)d / feel).ToList();
 			_kick = kick;
 			_snare = snare;
+		    Feel = feel;
 		}
 
 		public List<PercussionNote> Notes(Percussion timekeeper, bool addCrash, TimeSignature timeSignature)

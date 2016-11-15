@@ -43,6 +43,7 @@
     <Compile Include="ChordProgressions\ChordProgressionGenerator.cs" />
     <Compile Include="ChordProgressions\ChordProgressionLibrary.cs" />
     <Compile Include="Grooves\FillGenerator.cs" />
+    <Compile Include="Grooves\GrooveGenerator.cs" />
     <Compile Include="MarkovChainNode.cs" />
     <Compile Include="GeneratedSong.cs" />
     <Compile Include="MarkovChainNodeFunc.cs" />
