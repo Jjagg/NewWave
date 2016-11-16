@@ -13,6 +13,7 @@ namespace NewWave.Generator
 	internal class SongSection
 	{
 		internal readonly TimeSignature Time;
+		private readonly int _feel;
 		private readonly InstrumentTrack _guitarR;
 		private readonly InstrumentTrack _guitarL;
 		private readonly InstrumentTrack _bass;
@@ -25,6 +26,7 @@ namespace NewWave.Generator
 		internal SongSection(TimeSignature time, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums, ChordProgression chordProgression)
 		{
 			Time = time;
+			_feel = Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3;
 			_guitarR = guitarR;
 			_guitarL = guitarL;
 			_bass = bass;
@@ -40,7 +42,7 @@ namespace NewWave.Generator
 			var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
 			var timeKeeper = timeKeepers[Randomizer.Next(timeKeepers.Count)];
 
-			var notesPerBeat = new List<int> { 1, 2, 4 }[Randomizer.GetWeightedIndex(new List<double> { 1, 0.5, 0.25 })];
+			var notesPerBeat = Math.Max(1, (int)(new List<double> { 0.25, 0.5, 1 }[Randomizer.GetWeightedIndex(new List<double> { 1, 0.5, 0.25 })] * _feel));
 			var noteLength = 1.0 / notesPerBeat;
 
 			for (var measure = 0; measure < Measures; measure++)
@@ -75,7 +77,7 @@ namespace NewWave.Generator
 			{
 				// Add fill
 				var fillLength = new List<double> { 2.0, 4.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
-				var fill = FillGenerator.GetFill(Time.BeatCount - fillLength, fillLength);
+				var fill = FillGenerator.GetFill(Time.BeatCount - fillLength, fillLength, _feel);
 				grooveNotes = grooveNotes.Where(n => n.Start < Time.BeatCount - fillLength).Union(fill).ToList();
 			}
 			return grooveNotes;
@@ -144,7 +146,7 @@ namespace NewWave.Generator
 
 		private void GetGroove()
 		{
-		    _groove = GrooveGenerator.GenerateGroove(Time);
+		    _groove = GrooveGenerator.GenerateGroove(Time, _feel);
 		}
 
 		private static Chord TransposeForKey(Pitch key, Chord result)

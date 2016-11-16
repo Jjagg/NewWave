@@ -16,7 +16,7 @@ namespace NewWave.Generator
 		public override string Generate()
 		{
 			_tempo = (int)Randomizer.NextNormalized(180, 10);
-			_time = new TimeSignature(4, 4);
+			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 :3, 4);
 
 			return "Finished";
 		}
