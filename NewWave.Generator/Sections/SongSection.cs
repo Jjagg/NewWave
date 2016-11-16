@@ -8,34 +8,28 @@ using NewWave.Library.Chords;
 using NewWave.Library.Grooves;
 using NewWave.Midi;
 
-namespace NewWave.Generator
+namespace NewWave.Generator.Sections
 {
 	internal class SongSection
 	{
+		internal readonly SectionType Type;
 		internal readonly TimeSignature Time;
-		private readonly InstrumentTrack _guitarR;
-		private readonly InstrumentTrack _guitarL;
-		private readonly InstrumentTrack _bass;
-		private readonly PercussionTrack _drums;
 
 		internal readonly int Measures;
 		internal readonly List<Tuple<int, Chord>> Chords;
 		private Groove _groove;
 
-		internal SongSection(TimeSignature time, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums, ChordProgression chordProgression)
+		internal SongSection(SectionType type, TimeSignature time, ChordProgression chordProgression)
 		{
+			Type = type;
 			Time = time;
-			_guitarR = guitarR;
-			_guitarL = guitarL;
-			_bass = bass;
-			_drums = drums;
 
 			Measures = new List<int> { 8, 4 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
 			Chords = GetChordProgression(chordProgression);
 			GetGroove();
 		}
 
-		internal int Render()
+		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums)
 		{
 			var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
 			var timeKeeper = timeKeepers[Randomizer.Next(timeKeepers.Count)];
@@ -60,10 +54,10 @@ namespace NewWave.Generator
 					bassNotes.Add(new Note(beat, 1, pitches[0].AddOctave(-1), Velocity.Fff));
 				}
 
-				_guitarL.Notes.Add(guitarLnotes);
-				_guitarR.Notes.Add(guitarRnotes);
-				_bass.Notes.Add(bassNotes);
-				_drums.Notes.Add(grooveNotes);
+				guitarL.Notes.Add(guitarLnotes);
+				guitarR.Notes.Add(guitarRnotes);
+				bass.Notes.Add(bassNotes);
+				drums.Notes.Add(grooveNotes);
 			}
 
 			return Measures;
@@ -88,8 +82,7 @@ namespace NewWave.Generator
 				.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
 				.Select(c => TransposeForKey(Pitch.G2, c))
 				.ToList();
-
-			Console.WriteLine(string.Join(" - ", chordList));
+			
 			return AssignChords(chordList, Measures * Time.BeatCount);
 		}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
+using NewWave.Generator.Sections;
 using NewWave.Library.Chords;
 using NewWave.Midi;
 
@@ -12,29 +13,30 @@ namespace NewWave.Generator
 	{
 		private int _tempo;
 		private TimeSignature _time;
+		internal List<SongSection> Sections;
 
 		public override string Generate()
 		{
 			_tempo = (int)Randomizer.NextNormalized(180, 10);
 			_time = new TimeSignature(4, 4);
 
+			const int sectionCount = 8;
+			var chordProgressions = GetDistinctChordProgressions(sectionCount);
+			Sections = Enumerable.Range(0, sectionCount).Select(i => new SongSection(SectionType.None, _time, chordProgressions[i])).ToList();
+			
 			return "Finished";
 		}
 
 		public override Score Render()
 		{
-			const int sectionCount = 8;
 			var guitarL = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Left, new List<List<Note>>());
 			var guitarR = new InstrumentTrack(Instrument.OverdrivenGuitar, Pan.Right, new List<List<Note>>());
 			var bass = new InstrumentTrack(Instrument.ElectricBassPick, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-			var chordProgressions = GetDistinctChordProgressions(sectionCount);
+			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, bass, drums));
 
-			var sections = Enumerable.Range(0, sectionCount).Select(i => new SongSection(_time, guitarR, guitarL, bass, drums, chordProgressions[i])).ToList();
-			var renderedSections = sections.Select(s => s.Render());
-
-			WriteStats(sections);
+			WriteStats(Sections);
 
 			return new Score(renderedSections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _time } },
