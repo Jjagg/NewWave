@@ -11,9 +11,25 @@ namespace NewWave.Test.GeneratorTests
 	public class BasicGeneratorTests
 	{
 		[TestMethod]
+		public void GenerateTest()
+		{
+			var song = new GeneratedSong();
+			Console.WriteLine(song.Generate());
+			foreach (var section in song.Sections)
+			{
+				Console.WriteLine("{0}: {1} meas, {2}", section.Type, section.Measures, string.Join(" - ", section.Chords.Select(c => c.Item2)));
+			}
+		}
+
+		[TestMethod]
 		public void RenderTest()
 		{
-			Common.RenderAndPlay(new GeneratedSong(), "output.mid");
+			var song = new GeneratedSong();
+			Common.RenderAndPlay(song, "output.mid");
+			foreach (var section in song.Sections)
+			{
+				Console.WriteLine("{0}: {1} meas, {2}", section.Type, section.Measures, string.Join(" - ", section.Chords.Select(c => c.Item2)));
+			}
 		}
 
 		[TestMethod]

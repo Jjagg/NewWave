@@ -39,7 +39,7 @@ namespace NewWave.Library.Grooves
 			}
 
 			notes.AddRange(_hihat.Select((hihatNote, i) => new PercussionNote(hihatNote * ratio, timekeeper, i % 2 == 1 ? Velocity.F : Velocity.Fff)).Where(p => p.Start == 0 ? !addCrash : true));
-			notes.AddRange(_snare.Select(snareNote => new PercussionNote(snareNote * ratio, Percussion.SnareDrum1, Velocity.Fff)));
+			notes.AddRange(_snare.Select(snareNote => new PercussionNote(snareNote * ratio, Percussion.SnareDrum1, _snare.Count > 4 ? Velocity.F : Velocity.Fff)));
 			notes.AddRange(_kick.Select(kickNote => new PercussionNote(kickNote * ratio, Percussion.BassDrum1, Velocity.Fff)));
 
 			// Trim leftover notes

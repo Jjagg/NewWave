@@ -51,7 +51,9 @@
     <Compile Include="MarkovChainNodeFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
-    <Compile Include="SongSection.cs" />
+    <Compile Include="Sections\SectionLayoutGenerator.cs" />
+    <Compile Include="Sections\SectionType.cs" />
+    <Compile Include="Sections\SongSection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NewWave.Core\NewWave.Core.csproj">
