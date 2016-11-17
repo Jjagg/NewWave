@@ -31,9 +31,9 @@ namespace NewWave.Generator.Sections
 
 		private static List<Func<MarkovChainNodeFunc<SectionType>>> ChorusChain => new List<Func<MarkovChainNodeFunc<SectionType>>>
 		{
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.6, VerseChain),
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.5, VerseChain),
 			() => new MarkovChainNodeFunc<SectionType>(SectionType.Bridge, 0.3, BridgeChain),
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Outro, 0.1, OutroChain)
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Outro, 0.2, OutroChain)
 		};
 
 		private static List<Func<MarkovChainNodeFunc<SectionType>>> BridgeChain => new List<Func<MarkovChainNodeFunc<SectionType>>>

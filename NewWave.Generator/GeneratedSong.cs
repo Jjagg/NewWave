@@ -21,10 +21,12 @@ namespace NewWave.Generator
 			_tempo = (int)Randomizer.NextNormalized(180, 10);
 			_time = new TimeSignature(4, 4);
 
-			const int sectionCount = 8;
-			var chordProgressions = GetDistinctChordProgressions(sectionCount);
-			Sections = Enumerable.Range(0, sectionCount).Select(i => new SongSection(SectionType.None, _time, chordProgressions[i])).ToList();
-			
+			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
+			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
+			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
+			var sectionTypes = mappedChordProgressions.Distinct()
+				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, _time, chordProgressions[s.Item1]));
+			Sections = sections.Select(s => sectionTypes[s]).ToList();
 			return WriteStats();
 		}
 

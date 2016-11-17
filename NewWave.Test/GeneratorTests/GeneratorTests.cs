@@ -17,7 +17,7 @@ namespace NewWave.Test.GeneratorTests
 			Console.WriteLine(song.Generate());
 			foreach (var section in song.Sections)
 			{
-				Console.WriteLine("{0}: {1}", section.Type, string.Join(" - ", section.Chords.Select(c => c.Item2)));
+				Console.WriteLine("{0}: {1} meas, {2}", section.Type, section.Measures, string.Join(" - ", section.Chords.Select(c => c.Item2)));
 			}
 		}
 

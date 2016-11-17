@@ -17,7 +17,10 @@ namespace NewWave.Generator.Sections
 
 		internal readonly int Measures;
 		internal readonly List<Tuple<int, Chord>> Chords;
-		private Groove _groove;
+
+		private readonly Groove _groove;
+		private readonly Percussion _timeKeeper;
+		private readonly int _notesPerBeat;
 
 		internal SongSection(SectionType type, TimeSignature time, ChordProgression chordProgression)
 		{
@@ -26,20 +29,19 @@ namespace NewWave.Generator.Sections
 
 			Measures = new List<int> { 8, 4 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
 			Chords = GetChordProgression(chordProgression);
-			GetGroove();
+			_groove = GetGroove();
+
+			_timeKeeper = GetTimeKeeper();
+			_notesPerBeat = new List<int> { 1, 2, 4 }[Randomizer.GetWeightedIndex(new List<double> { 1, 0.5, 0.25 })];
 		}
 
 		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums)
 		{
-			var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
-			var timeKeeper = timeKeepers[Randomizer.Next(timeKeepers.Count)];
-
-			var notesPerBeat = new List<int> { 1, 2, 4 }[Randomizer.GetWeightedIndex(new List<double> { 1, 0.5, 0.25 })];
-			var noteLength = 1.0 / notesPerBeat;
+			var noteLength = 1.0 / _notesPerBeat;
 
 			for (var measure = 0; measure < Measures; measure++)
 			{
-				var grooveNotes = AddFill(measure, _groove.Notes(timeKeeper, measure == 0, Time));
+				var grooveNotes = AddFill(measure, _groove.Notes(_timeKeeper, measure == 0, Time));
 
 				var guitarRnotes = new List<Note>();
 				var guitarLnotes = new List<Note>();
@@ -49,8 +51,8 @@ namespace NewWave.Generator.Sections
 				{
 					var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
 
-					guitarRnotes.AddRange(Enumerable.Range(0, notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
-					guitarLnotes.AddRange(Enumerable.Range(0, notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
+					guitarRnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
+					guitarLnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
 					bassNotes.Add(new Note(beat, 1, pitches[0].AddOctave(-1), Velocity.Fff));
 				}
 
@@ -61,6 +63,12 @@ namespace NewWave.Generator.Sections
 			}
 
 			return Measures;
+		}
+
+		private static Percussion GetTimeKeeper()
+		{
+			var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
+			return timeKeepers[Randomizer.Next(timeKeepers.Count)];
 		}
 
 		private List<PercussionNote> AddFill(int measure, List<PercussionNote> grooveNotes)
@@ -135,9 +143,9 @@ namespace NewWave.Generator.Sections
 			return GetSplitPoint(maxValue / 2) + (Randomizer.ProbabilityOfTrue(0.5) ? maxValue / 2 : 0);
 		}
 
-		private void GetGroove()
+		private Groove GetGroove()
 		{
-			_groove = GrooveLibrary.AllGrooves[Randomizer.Next(GrooveLibrary.AllGrooves.Count)];
+			return GrooveLibrary.AllGrooves[Randomizer.Next(GrooveLibrary.AllGrooves.Count)];
 		}
 
 		private static Chord TransposeForKey(Pitch key, Chord result)
