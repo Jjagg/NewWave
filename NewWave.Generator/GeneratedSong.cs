@@ -25,7 +25,7 @@ namespace NewWave.Generator
 			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
 			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
 			var sectionTypes = mappedChordProgressions.Distinct()
-				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, _time, chordProgressions[s.Item1]));
+				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, RepeatsPerSection(s.Item2), _time, chordProgressions[s.Item1]));
 			Sections = sections.Select(s => sectionTypes[s]).ToList();
 			return WriteStats();
 		}
@@ -86,5 +86,23 @@ namespace NewWave.Generator
 		}
 
 		public override string DisplayName => "Generated song";
+
+		private static int RepeatsPerSection(SectionType type)
+		{
+			switch (type)
+			{
+				case SectionType.Verse:
+				case SectionType.Chorus:
+					return Randomizer.ProbabilityOfTrue(0.5) ? 4 : 2;
+				case SectionType.Intro:
+				case SectionType.Outro:
+				case SectionType.Prechorus:
+					return 1;
+				case SectionType.Bridge:
+					return Randomizer.ProbabilityOfTrue(0.5) ? 2 : 1;
+			}
+
+			return 1;
+		}
 	}
 }

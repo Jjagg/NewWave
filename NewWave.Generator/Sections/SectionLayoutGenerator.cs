@@ -13,8 +13,13 @@ namespace NewWave.Generator.Sections
 
 		private static List<MarkovChainNodeFunc<SectionType>> Chain => new List<MarkovChainNodeFunc<SectionType>>
 		{
-			new MarkovChainNodeFunc<SectionType>(SectionType.Intro, 0.7, VerseChain),
+			new MarkovChainNodeFunc<SectionType>(SectionType.Intro, 0.7, JustVerseChain),
 			new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.3, VerseChain)
+		};
+
+		private static List<Func<MarkovChainNodeFunc<SectionType>>> JustVerseChain => new List<Func<MarkovChainNodeFunc<SectionType>>>
+		{
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 1, VerseChain)
 		};
 
 		private static List<Func<MarkovChainNodeFunc<SectionType>>> VerseChain => new List<Func<MarkovChainNodeFunc<SectionType>>>

@@ -13,7 +13,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void SectionTest()
 		{
-			var section = new SongSection(SectionType.None, TimeSignature.CommonTime, ChordProgressionGenerator.ChordProgression(n => n));
+			var section = new SongSection(SectionType.None, 1, TimeSignature.CommonTime, ChordProgressionGenerator.ChordProgression(n => n));
 
 			var totalBeats = section.Measures * section.Time.BeatCount;
 			Console.WriteLine("Total beats: {0}", totalBeats);
