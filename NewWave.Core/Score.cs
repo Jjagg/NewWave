@@ -103,14 +103,14 @@ namespace NewWave.Core
 
 				tickAtStartOfMeasure += MeasureLengthInTicks(measure);
 			}
-			
+
 			// Create events for unrolled instrument tracks
 			foreach (var renderedInstrument in renderedInstruments)
 			{
 				foreach (var note in renderedInstrument.Notes)
 				{
 					t.Insert(note.Start, new ChannelMessage(ChannelCommand.NoteOn, (int)renderedInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
-					
+
 					if (!renderedInstrument.Notes.Any(e => e.Pitch == note.Pitch && e.Start == note.End))
 					{
 						// NOTE: You cannot have NoteOff and NoteOn events for the same pitch
@@ -122,12 +122,12 @@ namespace NewWave.Core
 				}
 			}
 
-            // Add an empty note one measure after the actual end of the song, just for some extra buffer
-		    var endingBuffer = TimeSignatureAtMeasure(_measureCount - 1).BeatCount * StandardMidiTicksPerBeat;
-		    t.Insert(tickAtStartOfMeasure + endingBuffer, new ChannelMessage(ChannelCommand.NoteOff, (int)Channel.Channel10, 0));
+			// Add an empty note one measure after the actual end of the song, just for some extra buffer
+			var endingBuffer = TimeSignatureAtMeasure(_measureCount - 1).BeatCount * StandardMidiTicksPerBeat;
+			t.Insert(tickAtStartOfMeasure + endingBuffer, new ChannelMessage(ChannelCommand.NoteOff, (int)Channel.Channel10, 0));
 
-            // End meta message
-            t.Insert(tickAtStartOfMeasure + endingBuffer, new MetaMessage(MetaType.EndOfTrack, new byte[0]));
+			// End meta message
+			t.Insert(tickAtStartOfMeasure + endingBuffer, new MetaMessage(MetaType.EndOfTrack, new byte[0]));
 
 			s.Add(t);
 			s.Save(filename);

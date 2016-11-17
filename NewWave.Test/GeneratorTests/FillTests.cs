@@ -17,21 +17,22 @@ namespace NewWave.Test.GeneratorTests
 		public void GetFill()
 		{
 			const double lengthInBeats = 4.0;
-			Console.WriteLine(TabWriter.AsTab(4, FillGenerator.GetFill(0, lengthInBeats).ToList(), (int)lengthInBeats));
+			Console.WriteLine(TabWriter.AsTab(3, FillGenerator.GetFill(0, lengthInBeats, 3).ToList(), (int)lengthInBeats));
 		}
 
 		[TestMethod]
 		public void GrooveWithFill()
 		{
 			var time = TimeSignature.CommonTime;
+			var feel = Randomizer.ProbabilityOfTrue(0.6) ? 4 : 3;
 			const int measures = 4;
 			var totalLength = measures * time.BeatCount;
-			var groove = GrooveLibrary.GetGroove();
+		    var groove = GrooveGenerator.GenerateGroove(time, feel);
 			var grooveNotes = Enumerable.Range(0, measures).SelectMany(i => groove.Notes(Percussion.OpenHiHat, i == 0, time).Select(n => new PercussionNote(n.Start + i * time.BeatCount, n.Percussion, n.Velocity)));
-			var fillLength = new List<double> { 2.0, 4.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
-			var fill = FillGenerator.GetFill(totalLength - fillLength, fillLength);
+			var fillLength = Randomizer.ProbabilityOfTrue(0.5) ? 2 : 4;
+			var fill = FillGenerator.GetFill(totalLength - fillLength, fillLength, feel);
 			grooveNotes = grooveNotes.Where(n => n.Start < totalLength - fillLength).Union(fill);
-			Console.WriteLine(TabWriter.AsTab(4, grooveNotes.ToList(), measures * time.BeatCount));
+			Console.WriteLine(TabWriter.AsTab(feel, grooveNotes.ToList(), measures * time.BeatCount));
 		}
 	}
 }
