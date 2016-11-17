@@ -24,11 +24,11 @@ namespace NewWave.Generator.Sections
 		private readonly int _notesPerBeat;
 		private readonly int _repeats;
 
-		internal SongSection(SectionType type, int repeats, TimeSignature time, ChordProgression chordProgression)
+		internal SongSection(SectionType type, int repeats, TimeSignature time, int feel, ChordProgression chordProgression)
 		{
 			Type = type;
 			Time = time;
-			_feel = Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3;
+			_feel = feel;
 
 			_measures = new List<int> { 8, 4 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
 			Chords = GetChordProgression(chordProgression);

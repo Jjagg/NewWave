@@ -14,18 +14,20 @@ namespace NewWave.Generator
 	{
 		private int _tempo;
 		private TimeSignature _time;
+		private int _feel;
 		internal List<SongSection> Sections;
 
 		public override string Generate()
 		{
 			_tempo = (int)Randomizer.NextNormalized(180, 10);
-			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 :3, 4);
+			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
+			_feel = Randomizer.ProbabilityOfTrue(_time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
 
 			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
 			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
 			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
 			var sectionTypes = mappedChordProgressions.Distinct()
-				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, RepeatsPerSection(s.Item2), _time, chordProgressions[s.Item1]));
+				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, RepeatsPerSection(s.Item2), _time, _feel, chordProgressions[s.Item1]));
 			Sections = sections.Select(s => sectionTypes[s]).ToList();
 			return WriteStats();
 		}
