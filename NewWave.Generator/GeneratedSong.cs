@@ -57,6 +57,8 @@ namespace NewWave.Generator
 			sb.AppendLine("----------");
 			sb.AppendLine(string.Format("Measures: {0}", Sections.Sum(s => s.Measures)));
 			sb.AppendLine(string.Format("Song length: {0}:{1:00}", minutes, seconds));
+			sb.AppendLine(string.Format("Time signature: {0}", _time));
+			sb.AppendLine(string.Format("Tempo: {0}", _tempo));
 			return sb.ToString();
 		}
 

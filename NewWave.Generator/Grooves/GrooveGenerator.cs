@@ -55,7 +55,7 @@ namespace NewWave.Generator.Grooves
 
 		private static double GetSplitPoint(double maxValue)
 		{
-			if (Randomizer.ProbabilityOfTrue(0.8))
+			if (maxValue <= 0.5 || Randomizer.ProbabilityOfTrue(0.8))
 			{
 				return maxValue / 2;
 			}
