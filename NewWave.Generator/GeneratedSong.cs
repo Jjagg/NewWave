@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Generator.Sections;
@@ -24,7 +25,7 @@ namespace NewWave.Generator
 			var chordProgressions = GetDistinctChordProgressions(sectionCount);
 			Sections = Enumerable.Range(0, sectionCount).Select(i => new SongSection(SectionType.None, _time, chordProgressions[i])).ToList();
 			
-			return "Finished";
+			return WriteStats();
 		}
 
 		public override Score Render()
@@ -36,8 +37,6 @@ namespace NewWave.Generator
 
 			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, bass, drums));
 
-			WriteStats(Sections);
-
 			return new Score(renderedSections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, _tempo } },
@@ -45,16 +44,18 @@ namespace NewWave.Generator
 				drums);
 		}
 
-		private void WriteStats(List<SongSection> sections)
+		private string WriteStats()
 		{
-			var totalBeatCount = sections.Sum(s => s.Measures * s.Time.BeatCount);
+			var totalBeatCount = Sections.Sum(s => s.Measures * s.Time.BeatCount);
 			var totalMinutes = (double)totalBeatCount / _tempo;
 			var minutes = (int)totalMinutes;
 			var seconds = (int)((totalMinutes - minutes) * 60);
 
-			Console.WriteLine("----------");
-			Console.WriteLine("Measures: {0}", sections.Sum(s => s.Measures));
-			Console.WriteLine("Song length: {0}:{1:00}", minutes, seconds);
+			var sb = new StringBuilder();
+			sb.AppendLine("----------");
+			sb.AppendLine(string.Format("Measures: {0}", Sections.Sum(s => s.Measures)));
+			sb.AppendLine(string.Format("Song length: {0}:{1:00}", minutes, seconds));
+			return sb.ToString();
 		}
 
 		private static List<ChordProgression> GetDistinctChordProgressions(int amount)

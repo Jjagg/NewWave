@@ -14,10 +14,10 @@ namespace NewWave.Test.GeneratorTests
 		public void GenerateTest()
 		{
 			var song = new GeneratedSong();
-			song.Generate();
+			Console.WriteLine(song.Generate());
 			foreach (var section in song.Sections)
 			{
-				Console.WriteLine("Section: {0}", string.Join(" - ", section.Chords.Select(c => c.Item2)));
+				Console.WriteLine("{0}: {1}", section.Type, string.Join(" - ", section.Chords.Select(c => c.Item2)));
 			}
 		}
 
