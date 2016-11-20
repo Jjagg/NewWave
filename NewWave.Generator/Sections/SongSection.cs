@@ -4,6 +4,7 @@ using System.Linq;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Generator.Grooves;
+using NewWave.Generator.Riffs;
 using NewWave.Library.Chords;
 using NewWave.Library.Grooves;
 using NewWave.Midi;
@@ -17,13 +18,14 @@ namespace NewWave.Generator.Sections
 		private readonly int _feel;
 
 		internal readonly List<Tuple<int, Chord>> Chords;
+		internal readonly IEnumerable<Note> Riff;
 
 		private readonly int _measures;
 		private readonly Groove _groove;
 		private readonly Percussion _timeKeeper;
 		private readonly int _notesPerBeat;
 		private readonly int _repeats;
-
+		
 		internal SongSection(SectionType type, int repeats, TimeSignature time, int feel, ChordProgression chordProgression)
 		{
 			Type = type;
@@ -37,44 +39,53 @@ namespace NewWave.Generator.Sections
 			_timeKeeper = GetTimeKeeper();
 			_notesPerBeat = new List<int> { 1, 2, 4 }[Randomizer.GetWeightedIndex(new List<double> { 1, 0.5, 0.25 })];
 			_repeats = repeats;
+			Riff = RiffGenerator.GetRiff(_measures * Time.BeatCount, Chords);
 		}
 
 		internal int Measures => _measures * _repeats;
 
-		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack bass, PercussionTrack drums)
+		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack bass, PercussionTrack drums)
 		{
 			var noteLength = 1.0 / _notesPerBeat;
 
 			for (var repeat = 0; repeat < _repeats; repeat++)
 			{
+				guitarC.Notes.Add(Riff.ToList());
+
 				for (var measure = 0; measure < _measures; measure++)
-			{
+				{
 					var grooveNotes = repeat == _repeats - 1
 						? AddFill(measure, _groove.Notes(_timeKeeper, measure == 0, Time))
 						: _groove.Notes(_timeKeeper, measure == 0, Time);
 
-				var guitarRnotes = new List<Note>();
-				var guitarLnotes = new List<Note>();
-				var bassNotes = new List<Note>();
+					var guitarRnotes = new List<Note>();
+					var guitarLnotes = new List<Note>();
+					var bassNotes = new List<Note>();
 
-				for (var beat = 0; beat < Time.BeatCount; beat++)
-				{
-					var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
-					if (_notesPerBeat >= 4)
+					for (var beat = 0; beat < Time.BeatCount; beat++)
 					{
-						pitches = new List<Pitch> { pitches.Min() };
+						var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
+						if (_notesPerBeat >= 4)
+						{
+							pitches = new List<Pitch> { pitches.Min() };
+						}
+
+						guitarRnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
+						guitarLnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
+						bassNotes.AddRange(Enumerable.Range(0, _notesPerBeat).Select(s => new Note(beat + noteLength * s, noteLength, pitches[0].AddOctave(-1), Velocity.Fff)));
 					}
 
-					guitarRnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
-					guitarLnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
-						bassNotes.AddRange(Enumerable.Range(0, _notesPerBeat).Select(s => new Note(beat + noteLength * s, noteLength, pitches[0].AddOctave(-1), Velocity.Fff)));
-				}
+					guitarL.Notes.Add(guitarLnotes);
+					guitarR.Notes.Add(guitarRnotes);
+					bass.Notes.Add(bassNotes);
+					drums.Notes.Add(grooveNotes);
 
-				guitarL.Notes.Add(guitarLnotes);
-				guitarR.Notes.Add(guitarRnotes);
-				bass.Notes.Add(bassNotes);
-				drums.Notes.Add(grooveNotes);
-			}
+					if (measure != 0)
+					{
+						// All the riff notes are actually in the first measure, so add empty ones after it
+						guitarC.Notes.Add(new List<Note>());
+					}
+				}
 			}
 
 			return Measures;
