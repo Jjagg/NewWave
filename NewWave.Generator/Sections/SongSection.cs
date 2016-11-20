@@ -35,7 +35,7 @@ namespace NewWave.Generator.Sections
 			Chords = GetChordProgression(chordProgression);
 			_groove = GetGroove();
 
-			_timeKeeper = GetTimeKeeper();
+			_timeKeeper = GetTimeKeeper(type);
 			_repeats = repeats;
 			Riff = RiffGenerator.GetRiff(_measures * Time.BeatCount, Chords);
 		}
@@ -70,13 +70,19 @@ namespace NewWave.Generator.Sections
 						var noteLength = tuple.Item2;
 
 						var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + start).Item2.Pitches();
-						if (gNotes.Count >= 4)
+
+						var pitchCount = 100;
+						if (gNotes.Count >= 6)
 						{
-							pitches = new List<Pitch> { pitches.Min() };
+							pitchCount = 1;
+						}
+						else if (gNotes.Count >= 4)
+						{
+							pitchCount = 2;
 						}
 						
-						guitarRnotes.AddRange(pitches.Select(p => new Note(start, noteLength, p, Velocity.F)));
-						guitarLnotes.AddRange(pitches.Select(p => new Note(start, noteLength, p, Velocity.F)));
+						guitarRnotes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, Velocity.F)));
+						guitarLnotes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, Velocity.F)));
 						bassNotes.Add(new Note(start, noteLength, pitches[0].AddOctave(-1), Velocity.F));
 					}
 
@@ -96,9 +102,32 @@ namespace NewWave.Generator.Sections
 			return Measures;
 		}
 
-		private static Percussion GetTimeKeeper()
+		private static Percussion GetTimeKeeper(SectionType type)
 		{
-			var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
+			List<Percussion> timeKeepers;
+			switch (type)
+			{
+				case SectionType.Intro:
+				case SectionType.Outro:
+					timeKeepers = new List<Percussion> { Percussion.RideBell, Percussion.RideCymbal1, Percussion.LowTom1 };
+					break;
+				case SectionType.Chorus:
+					timeKeepers = new List<Percussion> { Percussion.OpenHiHat, Percussion.CrashCymbal2 };
+					break;
+				case SectionType.Prechorus:
+					timeKeepers = new List<Percussion> { Percussion.CrashCymbal2, Percussion.RideCymbal1, Percussion.HighTom1, Percussion.RideBell };
+					break;
+				case SectionType.Verse:
+					timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat };
+					break;
+				case SectionType.Bridge:
+					timeKeepers = new List<Percussion> { Percussion.LowTom1, Percussion.RideCymbal1, Percussion.RideCymbal2 };
+					break;
+				default:
+					timeKeepers = new List<Percussion> { Percussion.ClosedHiHat };
+					break;
+			}
+			
 			return timeKeepers[Randomizer.Next(timeKeepers.Count)];
 		}
 
