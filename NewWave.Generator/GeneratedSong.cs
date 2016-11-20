@@ -36,15 +36,16 @@ namespace NewWave.Generator
 		{
 			var guitarL = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Left, new List<List<Note>>());
 			var guitarR = new InstrumentTrack(Instrument.OverdrivenGuitar, Pan.Right, new List<List<Note>>());
+			var guitarC = new InstrumentTrack(Instrument.OverdrivenGuitar, Pan.Center, new List<List<Note>>());
 			var bass = new InstrumentTrack(Instrument.ElectricBassPick, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, bass, drums));
+			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, guitarC, bass, drums));
 
 			return new Score(renderedSections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, _tempo } },
-				new List<InstrumentTrack> { guitarL, guitarR, bass },
+				new List<InstrumentTrack> { guitarL, guitarR, guitarC, bass },
 				drums);
 		}
 

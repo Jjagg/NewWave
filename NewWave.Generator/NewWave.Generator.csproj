@@ -51,6 +51,7 @@
     <Compile Include="MarkovChainNodeFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
+    <Compile Include="Riffs\RiffGenerator.cs" />
     <Compile Include="Sections\SectionLayoutGenerator.cs" />
     <Compile Include="Sections\SectionType.cs" />
     <Compile Include="Sections\SongSection.cs" />
@@ -72,6 +73,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
