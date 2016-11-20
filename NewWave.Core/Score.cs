@@ -156,7 +156,7 @@ namespace NewWave.Core
 		{
 			if (dictionary == null)
 			{
-				throw new ArgumentNullException(nameof(dictionary));
+				throw new ArgumentNullException("dictionary");
 			}
 
 			if (!dictionary.ContainsKey(0))
@@ -169,7 +169,7 @@ namespace NewWave.Core
 		{
 			if (track == null)
 			{
-				throw new ArgumentNullException(nameof(track));
+				throw new ArgumentNullException("track");
 			}
 
 			if (track.Notes.Count != length)
@@ -182,7 +182,7 @@ namespace NewWave.Core
 		{
 			if (track == null)
 			{
-				throw new ArgumentNullException(nameof(track));
+				throw new ArgumentNullException("track");
 			}
 
 			if (track.Notes.Count != length)

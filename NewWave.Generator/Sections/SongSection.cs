@@ -48,29 +48,33 @@ namespace NewWave.Generator.Sections
 			for (var repeat = 0; repeat < _repeats; repeat++)
 			{
 				for (var measure = 0; measure < _measures; measure++)
-				{
+			{
 					var grooveNotes = repeat == _repeats - 1
 						? AddFill(measure, _groove.Notes(_timeKeeper, measure == 0, Time))
 						: _groove.Notes(_timeKeeper, measure == 0, Time);
 
-					var guitarRnotes = new List<Note>();
-					var guitarLnotes = new List<Note>();
-					var bassNotes = new List<Note>();
+				var guitarRnotes = new List<Note>();
+				var guitarLnotes = new List<Note>();
+				var bassNotes = new List<Note>();
 
-					for (var beat = 0; beat < Time.BeatCount; beat++)
+				for (var beat = 0; beat < Time.BeatCount; beat++)
+				{
+					var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
+					if (_notesPerBeat >= 4)
 					{
-						var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
-
-						guitarRnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
-						guitarLnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
-						bassNotes.AddRange(Enumerable.Range(0, _notesPerBeat).Select(s => new Note(beat + noteLength * s, noteLength, pitches[0].AddOctave(-1), Velocity.Fff)));
+						pitches = new List<Pitch> { pitches.Min() };
 					}
 
-					guitarL.Notes.Add(guitarLnotes);
-					guitarR.Notes.Add(guitarRnotes);
-					bass.Notes.Add(bassNotes);
-					drums.Notes.Add(grooveNotes);
+					guitarRnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
+					guitarLnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
+						bassNotes.AddRange(Enumerable.Range(0, _notesPerBeat).Select(s => new Note(beat + noteLength * s, noteLength, pitches[0].AddOctave(-1), Velocity.Fff)));
 				}
+
+				guitarL.Notes.Add(guitarLnotes);
+				guitarR.Notes.Add(guitarRnotes);
+				bass.Notes.Add(bassNotes);
+				drums.Notes.Add(grooveNotes);
+			}
 			}
 
 			return Measures;
@@ -101,7 +105,7 @@ namespace NewWave.Generator.Sections
 				.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
 				.Select(c => TransposeForKey(Pitch.G2, c))
 				.ToList();
-			
+
 			return AssignChords(chordList, _measures * Time.BeatCount);
 		}
 
