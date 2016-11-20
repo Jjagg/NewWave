@@ -9,13 +9,13 @@ namespace NewWave.Generator.Riffs
 {
 	internal static class RiffGenerator
 	{
-		internal static IEnumerable<Note> GetRiff(int length, IEnumerable<Tuple<int, Chord>> chordProgression)
+		internal static IEnumerable<Note> GetRiff(int length, List<Tuple<int, Chord>> chordProgression)
 		{
 			var notes = new List<Note>();
 			var lastIndex = -1;
-			var thisChord = chordProgression.First().Item2;
 			for (var note = 0; note < length; note++)
 			{
+				var thisChord = chordProgression.Last(c => c.Item1 <= note).Item2;
 				var thisScale = GetScale(thisChord).ToList();
 				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5), -7, 7);
 				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count);
@@ -33,11 +33,11 @@ namespace NewWave.Generator.Riffs
 
 			switch (chord.Quality)
 			{
-				case ChordQuality.NotSpecified:
 				case ChordQuality.Minor:
 				case ChordQuality.Diminished:
 					notes =  MinorPentatonicScale.Select(n => pitch + n).ToList();
 					break;
+				case ChordQuality.NotSpecified:
 				case ChordQuality.Major:
 					notes = MajorPentatonicScale.Select(n => pitch + n).ToList();
 					break;
