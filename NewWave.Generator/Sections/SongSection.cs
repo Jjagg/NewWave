@@ -23,7 +23,6 @@ namespace NewWave.Generator.Sections
 		private readonly int _measures;
 		private readonly Groove _groove;
 		private readonly Percussion _timeKeeper;
-		private readonly int _notesPerBeat;
 		private readonly int _repeats;
 		
 		internal SongSection(SectionType type, int repeats, TimeSignature time, int feel, ChordProgression chordProgression)
@@ -37,7 +36,6 @@ namespace NewWave.Generator.Sections
 			_groove = GetGroove();
 
 			_timeKeeper = GetTimeKeeper();
-			_notesPerBeat = new List<int> { 1, 2, 4 }[Randomizer.GetWeightedIndex(new List<double> { 1, 0.5, 0.25 })];
 			_repeats = repeats;
 			Riff = RiffGenerator.GetRiff(_measures * Time.BeatCount, Chords);
 		}
@@ -46,8 +44,6 @@ namespace NewWave.Generator.Sections
 
 		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack bass, PercussionTrack drums)
 		{
-			var noteLength = 1.0 / _notesPerBeat;
-
 			for (var repeat = 0; repeat < _repeats; repeat++)
 			{
 				guitarC.Notes.Add(Riff.ToList());
@@ -57,22 +53,31 @@ namespace NewWave.Generator.Sections
 					var grooveNotes = repeat == _repeats - 1
 						? AddFill(measure, _groove.Notes(_timeKeeper, measure == 0, Time))
 						: _groove.Notes(_timeKeeper, measure == 0, Time);
+					var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
+					var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : Time.BeatCount - k.Start)).ToList();
+					if (!gNotes.Any())
+					{
+						gNotes.Add(new Tuple<double, double>(0, Time.BeatCount));
+					}
 
 					var guitarRnotes = new List<Note>();
 					var guitarLnotes = new List<Note>();
 					var bassNotes = new List<Note>();
 
-					for (var beat = 0; beat < Time.BeatCount; beat++)
+					foreach (var tuple in gNotes)
 					{
-						var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + beat).Item2.Pitches();
-						if (_notesPerBeat >= 4)
+						var start = tuple.Item1;
+						var noteLength = tuple.Item2;
+
+						var pitches = Chords.Last(c => c.Item1 <= measure * Time.BeatCount + start).Item2.Pitches();
+						if (gNotes.Count >= 4)
 						{
 							pitches = new List<Pitch> { pitches.Min() };
 						}
-
-						guitarRnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
-						guitarLnotes.AddRange(Enumerable.Range(0, _notesPerBeat).SelectMany(s => pitches.Select(p => new Note(beat + noteLength * s, noteLength, p, Velocity.F))));
-						bassNotes.AddRange(Enumerable.Range(0, _notesPerBeat).Select(s => new Note(beat + noteLength * s, noteLength, pitches[0].AddOctave(-1), Velocity.Fff)));
+						
+						guitarRnotes.AddRange(pitches.Select(p => new Note(start, noteLength, p, Velocity.F)));
+						guitarLnotes.AddRange(pitches.Select(p => new Note(start, noteLength, p, Velocity.F)));
+						bassNotes.Add(new Note(start, noteLength, pitches[0].AddOctave(-1), Velocity.F));
 					}
 
 					guitarL.Notes.Add(guitarLnotes);
