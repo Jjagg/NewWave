@@ -52,15 +52,27 @@ namespace NewWave.Test.GeneratorTests
 		}
 
 		[TestMethod]
-		public void PentatonicScaleTest()
+		public void MajorPentatonicScaleTest()
 		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.E0));
+			var scale = RiffGenerator.GetScale(new Chord(Pitch.C0));
 			Assert.AreEqual(5, scale.Count);
-			Assert.AreEqual(Pitch.E0, scale[0]);
-			Assert.AreEqual(Pitch.G0, scale[1]);
-			Assert.AreEqual(Pitch.A0, scale[2]);
-			Assert.AreEqual(Pitch.B0, scale[3]);
-			Assert.AreEqual(Pitch.D1, scale[4]);
+			Assert.AreEqual(Pitch.C0, scale[0]);
+			Assert.AreEqual(Pitch.D0, scale[1]);
+			Assert.AreEqual(Pitch.E0, scale[2]);
+			Assert.AreEqual(Pitch.G0, scale[3]);
+			Assert.AreEqual(Pitch.A0, scale[4]);
+		}
+
+		[TestMethod]
+		public void MinorPentatonicScaleTest()
+		{
+			var scale = RiffGenerator.GetScale(new Chord(Pitch.C0));
+			Assert.AreEqual(5, scale.Count);
+			Assert.AreEqual(Pitch.C0, scale[0]);
+			Assert.AreEqual(Pitch.DSharp0, scale[1]);
+			Assert.AreEqual(Pitch.F0, scale[2]);
+			Assert.AreEqual(Pitch.G0, scale[3]);
+			Assert.AreEqual(Pitch.ASharp0, scale[4]);
 		}
 	}
 }
