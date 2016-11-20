@@ -7,17 +7,18 @@ namespace NewWave.Library.Chords
 	{
 		public Pitch BasePitch;
 	    public readonly ChordQuality Quality;
-		private readonly ChordAdded _added;
-		private Pitch _inversion;
-		private readonly bool _isInverted;
+		public readonly bool IsInverted;
+		public Pitch Inversion;
 
+		private readonly ChordAdded _added;
+		
 		public Chord(Pitch basePitch, ChordQuality quality = ChordQuality.NotSpecified, ChordAdded added = ChordAdded.None)
 		{
 			BasePitch = basePitch;
 			Quality = quality;
 			_added = added;
-			_isInverted = false;
-			_inversion = Pitch.ANeg1;
+			IsInverted = false;
+			Inversion = Pitch.ANeg1;
 		}
 
 		public Chord(Pitch basePitch, ChordQuality quality, ChordAdded added, Pitch inversion)
@@ -25,13 +26,13 @@ namespace NewWave.Library.Chords
 			BasePitch = basePitch;
 			Quality = quality;
 			_added = added;
-			_inversion = inversion;
-			_isInverted = true;
+			Inversion = inversion;
+			IsInverted = true;
 		}
 
 		public List<Pitch> Pitches()
 		{
-			var pitches = new List<Pitch> { _isInverted ? _inversion : BasePitch };
+			var pitches = new List<Pitch> { IsInverted ? Inversion : BasePitch };
 
 			// Second note
 			if (Quality == ChordQuality.Minor || Quality == ChordQuality.Diminished)
@@ -79,7 +80,7 @@ namespace NewWave.Library.Chords
 		public void Transpose(int halfsteps)
 		{
 			BasePitch += halfsteps;
-			_inversion += halfsteps;
+			Inversion += halfsteps;
 		}
 
 		public override bool Equals(object obj)
@@ -90,8 +91,8 @@ namespace NewWave.Library.Chords
 			return
 				BasePitch == other.BasePitch &&
 				_added == other._added &&
-				_isInverted == other._isInverted &&
-				(!_isInverted || _inversion == other._inversion) &&
+				IsInverted == other.IsInverted &&
+				(!IsInverted || Inversion == other.Inversion) &&
 				Quality == other.Quality;
 		}
 
@@ -131,7 +132,7 @@ namespace NewWave.Library.Chords
 					break;
 			}
 
-			var inverted = _isInverted ? string.Format("/{0}", _inversion.NoteName()) : string.Empty;
+			var inverted = IsInverted ? string.Format("/{0}", Inversion.NoteName()) : string.Empty;
 
 			return string.Format("{0}{1}{2}{3}", BasePitch.NoteName(), quality, added, inverted);
 		}
