@@ -13,18 +13,62 @@ namespace NewWave.Generator.Riffs
 		{
 			var notes = new List<Note>();
 			var lastIndex = -1;
-			for (var note = 0; note < length; note++)
+		    var thisStart = 0.0;
+		    var lengths = GetNoteLengths(length);
+
+			for (var note = 0; note < lengths.Count; note++)
 			{
 				var thisChord = chordProgression.Last(c => c.Item1 <= note).Item2;
 				var thisScale = GetScale(thisChord).ToList();
 				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5), -7, 7);
 				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count);
 				var thisPitch = thisScale[thisIndex];
-				notes.Add(new Note(note, 1, thisPitch + 12, Velocity.Ff));
+			    var thisLength = lengths[note];
+
+			    if (thisStart + thisLength > length)
+			    {
+			        thisLength = length - thisStart;
+			    }
+
+			    if (thisStart >= length)
+			    {
+			        break;
+			    }
+
+                notes.Add(new Note(thisStart, thisLength, thisPitch + 12, Velocity.Ff));
 				lastIndex = thisIndex;
+			    thisStart += thisLength;
 			}
 			return notes;
 		}
+
+	    private static List<double> GetNoteLengths(int totalLength)
+	    {
+	        var thisLength = 0.0;
+	        var lengths = new List<double>();
+	        while (thisLength < totalLength)
+	        {
+	            var seg = LengthSegments[Randomizer.Next(LengthSegments.Count)];
+                lengths.AddRange(seg);
+	            thisLength += seg.Sum();
+	        }
+
+	        return lengths;
+	    }
+
+        private static List<List<double>> LengthSegments => new List<List<double>>
+        {
+            new List<double> { 2 },
+            new List<double> { 2, 1, 1 },
+            new List<double> { 1, 2, 1 },
+            new List<double> { 1 },
+            new List<double> { 1, 1 },
+            new List<double> { 0.5, 0.5 },
+            new List<double> { 1.5, 1, 1.5 },
+            new List<double> { 1.5, 1.5 },
+            new List<double> { 0.5, 1, 0.5 },
+            new List<double> { 0.5, 0.5 }
+        };
 
 		internal static List<Pitch> GetScale(Chord chord)
 		{
