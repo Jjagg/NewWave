@@ -42,11 +42,18 @@ namespace NewWave.Generator.Sections
 
 		internal int Measures => _measures * _repeats;
 
-		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack bass, PercussionTrack drums)
+		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums)
 		{
 			for (var repeat = 0; repeat < _repeats; repeat++)
 			{
-				guitarC.Notes.Add(Riff.ToList());
+			    if (Type == SectionType.Verse || Type == SectionType.Chorus)
+			    {
+			        guitarC.Notes.Add(Riff.ToList());
+                }
+                else
+                {
+                    guitarC.Notes.Add(new List<Note>());
+                }
 
 				for (var measure = 0; measure < _measures; measure++)
 				{
@@ -86,8 +93,20 @@ namespace NewWave.Generator.Sections
 						bassNotes.Add(new Note(start, noteLength, pitches[0].AddOctave(-1), Velocity.F));
 					}
 
-					guitarL.Notes.Add(guitarLnotes);
-					guitarR.Notes.Add(guitarRnotes);
+				    if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
+                    {
+                        guitarLc.Notes.Add(guitarLnotes);
+                        guitarRc.Notes.Add(guitarRnotes);
+                        guitarL.Notes.Add(new List<Note>());
+                        guitarR.Notes.Add(new List<Note>());
+                    }
+				    else
+                    {
+                        guitarL.Notes.Add(guitarLnotes);
+                        guitarR.Notes.Add(guitarRnotes);
+                        guitarLc.Notes.Add(new List<Note>());
+                        guitarRc.Notes.Add(new List<Note>());
+                    }
 					bass.Notes.Add(bassNotes);
 					drums.Notes.Add(grooveNotes);
 
