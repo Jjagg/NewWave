@@ -37,7 +37,7 @@ namespace NewWave.Generator.Sections
 
 			_timeKeeper = GetTimeKeeper(type);
 			_repeats = repeats;
-			Riff = RiffGenerator.GetRiff(_measures * Time.BeatCount, Chords);
+			Riff = RiffGenerator.GetRiff(_measures * Time.BeatCount, Chords, _feel);
 		}
 
 		internal int Measures => _measures * _repeats;
