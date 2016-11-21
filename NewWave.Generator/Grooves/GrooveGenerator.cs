@@ -51,7 +51,7 @@ namespace NewWave.Generator.Grooves
 
 			return beatPoints;
 		}
-		
+
 		private static List<List<double>> LengthSegments4 => new List<List<double>>
 		{
 			new List<double> { 2 },
@@ -65,7 +65,10 @@ namespace NewWave.Generator.Grooves
 			new List<double> { 0.5, 1, 0.5 },
 			new List<double> { 0.5, 0.5 },
 			new List<double> { 0.5, 1.5 },
-			new List<double> { 1.5, 1.5, 1 }
+			new List<double> { 1.5, 1.5, 1 },
+			new List<double> { 0.5, 0.5, 0.5, 0.5 },
+			new List<double> { 0.5, 0.5, 1 },
+			new List<double> { 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25 }
 		};
 
 		private static List<List<double>> LengthSegments3 => new List<List<double>>
@@ -78,7 +81,8 @@ namespace NewWave.Generator.Grooves
 			new List<double> { 0.33, 0.33, 0.33 },
 			new List<double> { 0.33, 0.67 },
 			new List<double> { 0.67, 0.33 },
-			new List<double> { 0.67, 0.67, 0.67 }
+			new List<double> { 0.67, 0.67, 0.67 },
+			new List<double> { 0.33, 0.33, 0.33, 0.33, 0.33, 0.33 }
 		};
 	}
 }

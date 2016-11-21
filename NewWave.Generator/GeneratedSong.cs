@@ -19,7 +19,7 @@ namespace NewWave.Generator
 
 		public override string Generate()
 		{
-			_tempo = (int)Randomizer.NextNormalized(180, 10);
+			_tempo = (int)Randomizer.NextNormalized(150, 20);
 			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
 			_feel = Randomizer.ProbabilityOfTrue(_time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
 
