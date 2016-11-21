@@ -17,23 +17,28 @@ namespace NewWave.Generator.Grooves
 				maxBeat = maxBeat / 2;
 			}
 
-			var beats = GetBeatPoints2(maxBeat, feel);
+			var beats = GetBeatPoints(maxBeat, feel);
 			if (halfSize)
 			{
 				beats = beats.Union(beats.Select(b => maxBeat + b)).ToList();
 			}
 
-			var snares = Randomizer.ProbabilityOfTrue(0.5)
-				? new List<double> { 1, 3 }
-				: new List<double> { 2 };
-			var kicks = beats.Where(b => !snares.Contains(b)).ToList();
+			var isFastKick = beats.Count >= timeSignature.BeatCount * feel / 2;
+			var snares = feel == 4 && isFastKick && Randomizer.ProbabilityOfTrue(0.5)
+				? Enumerable.Range(0, timeSignature.BeatCount * feel / 2).Select(n => 0.25 + n / (double)feel * 2).ToList() // Blastbeat
+				: Randomizer.ProbabilityOfTrue(0.5)
+					? new List<double> { 1, 3 }
+					: new List<double> { 2 };
+			var kicks = isFastKick
+				? beats
+				: beats.Where(b => !snares.Contains(b)).ToList();
 
 			var timeKeeperFreq = beats.Count > timeSignature.BeatCount || Randomizer.ProbabilityOfTrue(0.33) ? feel / 2 : feel;
 
 			return new Groove("Generated groove", timeSignature, feel, timeKeeperFreq, kicks, snares);
 		}
 
-		private static List<double> GetBeatPoints2(double maxBeat, int feel)
+		private static List<double> GetBeatPoints(double maxBeat, int feel)
 		{
 			var thisBeat = 0.0;
 			var beatPoints = new List<double>();
@@ -67,8 +72,7 @@ namespace NewWave.Generator.Grooves
 			new List<double> { 0.5, 1.5 },
 			new List<double> { 1.5, 1.5, 1 },
 			new List<double> { 0.5, 0.5, 0.5, 0.5 },
-			new List<double> { 0.5, 0.5, 1 },
-			new List<double> { 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25 }
+			new List<double> { 0.5, 0.5, 1 }
 		};
 
 		private static List<List<double>> LengthSegments3 => new List<List<double>>
