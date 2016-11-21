@@ -17,7 +17,7 @@ namespace NewWave.Generator.Grooves
 				maxBeat = maxBeat / 2;
 			}
 
-			var beats = GetBeatPoints(maxBeat);
+			var beats = GetBeatPoints2(maxBeat, feel);
 			if (halfSize)
 			{
 				beats = beats.Union(beats.Select(b => maxBeat + b)).ToList();
@@ -33,34 +33,56 @@ namespace NewWave.Generator.Grooves
 			return new Groove("Generated groove", timeSignature, feel, timeKeeperFreq, kicks, snares);
 		}
 
-		private static List<double> GetBeatPoints(double maxBeat)
+		private static List<double> GetBeatPoints2(double maxBeat, int feel)
 		{
-			var beatSplitPoint = GetSplitPoint(maxBeat);
-			
-			var firstSectionLength = beatSplitPoint;
-			var secondSectionLength = maxBeat - beatSplitPoint;
-
-			var assignments1 = GetAssignments(firstSectionLength);
-			var assignments2 = GetAssignments(secondSectionLength);
-
-			return assignments1.Union(assignments2.Select(a => a + beatSplitPoint)).ToList();
-		}
-
-		private static List<double> GetAssignments(double sectionLength)
-		{
-			return sectionLength > 3 || (sectionLength > 1 && Randomizer.ProbabilityOfTrue(0.5))
-				? GetBeatPoints(sectionLength)
-				: new List<double> { 0 };
-		}
-
-		private static double GetSplitPoint(double maxValue)
-		{
-			if (maxValue <= 0.5 || Randomizer.ProbabilityOfTrue(0.8))
+			var thisBeat = 0.0;
+			var beatPoints = new List<double>();
+			while (thisBeat < maxBeat)
 			{
-				return maxValue / 2;
+				var seg = feel == 4
+					? LengthSegments4[Randomizer.Next(LengthSegments4.Count)]
+					: LengthSegments3[Randomizer.Next(LengthSegments3.Count)];
+				foreach (var point in seg)
+				{
+					beatPoints.Add(thisBeat);
+					thisBeat += point;
+				}
 			}
 
-			return GetSplitPoint(maxValue / 2) + (Randomizer.ProbabilityOfTrue(0.5) ? maxValue / 2 : 0);
+			return beatPoints;
 		}
+
+		private static List<List<double>> LengthSegments4 => new List<List<double>>
+		{
+			new List<double> { 2 },
+			new List<double> { 2, 1, 1 },
+			new List<double> { 1, 2, 1 },
+			new List<double> { 1 },
+			new List<double> { 1, 1 },
+			new List<double> { 0.5, 0.5 },
+			new List<double> { 1.5, 1, 1.5 },
+			new List<double> { 1.5, 1.5 },
+			new List<double> { 0.5, 1, 0.5 },
+			new List<double> { 0.5, 0.5 },
+			new List<double> { 0.5, 1.5 },
+			new List<double> { 1.5, 1.5, 1 },
+			new List<double> { 0.5, 0.5, 0.5, 0.5 },
+			new List<double> { 0.5, 0.5, 1 },
+			new List<double> { 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25 }
+		};
+
+		private static List<List<double>> LengthSegments3 => new List<List<double>>
+		{
+			new List<double> { 2 },
+			new List<double> { 2, 1, 1 },
+			new List<double> { 1, 2, 1 },
+			new List<double> { 1 },
+			new List<double> { 1, 1 },
+			new List<double> { 0.33, 0.33, 0.33 },
+			new List<double> { 0.33, 0.67 },
+			new List<double> { 0.67, 0.33 },
+			new List<double> { 0.67, 0.67, 0.67 },
+			new List<double> { 0.33, 0.33, 0.33, 0.33, 0.33, 0.33 }
+		};
 	}
 }

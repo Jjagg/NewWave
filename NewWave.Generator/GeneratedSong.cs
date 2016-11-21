@@ -14,35 +14,40 @@ namespace NewWave.Generator
 	{
 		private int _tempo;
 		private TimeSignature _time;
+		private int _feel;
 		internal List<SongSection> Sections;
 
 		public override string Generate()
 		{
-			_tempo = (int)Randomizer.NextNormalized(180, 10);
-			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 :3, 4);
+			_tempo = (int)Randomizer.NextNormalized(150, 20);
+			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
+			_feel = Randomizer.ProbabilityOfTrue(_time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
 
 			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
 			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
 			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
 			var sectionTypes = mappedChordProgressions.Distinct()
-				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, RepeatsPerSection(s.Item2), _time, chordProgressions[s.Item1]));
+				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, RepeatsPerSection(s.Item2), _time, _feel, chordProgressions[s.Item1]));
 			Sections = sections.Select(s => sectionTypes[s]).ToList();
 			return WriteStats();
 		}
 
 		public override Score Render()
 		{
+			var guitarLc = new InstrumentTrack(Instrument.ElectricGuitarJazz, Pan.Left, new List<List<Note>>());
 			var guitarL = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Left, new List<List<Note>>());
+			var guitarRc = new InstrumentTrack(Instrument.ElectricGuitarClean, Pan.Right, new List<List<Note>>());
 			var guitarR = new InstrumentTrack(Instrument.OverdrivenGuitar, Pan.Right, new List<List<Note>>());
+			var guitarC = new InstrumentTrack(Instrument.OverdrivenGuitar, Pan.Center, new List<List<Note>>());
 			var bass = new InstrumentTrack(Instrument.ElectricBassPick, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, bass, drums));
+			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums));
 
 			return new Score(renderedSections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, _tempo } },
-				new List<InstrumentTrack> { guitarL, guitarR, bass },
+				new List<InstrumentTrack> { guitarL, guitarR, guitarC, guitarLc, guitarRc, bass },
 				drums);
 		}
 
@@ -59,6 +64,7 @@ namespace NewWave.Generator
 			sb.AppendLine(string.Format("Song length: {0}:{1:00}", minutes, seconds));
 			sb.AppendLine(string.Format("Time signature: {0}", _time));
 			sb.AppendLine(string.Format("Tempo: {0}", _tempo));
+			sb.AppendLine(string.Format("Feel: 1/{0}", _feel));
 			return sb.ToString();
 		}
 
