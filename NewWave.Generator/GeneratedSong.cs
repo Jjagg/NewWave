@@ -62,6 +62,7 @@ namespace NewWave.Generator
 			sb.AppendLine(string.Format("Song length: {0}:{1:00}", minutes, seconds));
 			sb.AppendLine(string.Format("Time signature: {0}", _time));
 			sb.AppendLine(string.Format("Tempo: {0}", _tempo));
+			sb.AppendLine(string.Format("Feel: 1/{0}", _feel));
 			return sb.ToString();
 		}
 
