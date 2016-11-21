@@ -8,9 +8,9 @@ namespace NewWave.Generator.Grooves
 {
 	public static class FillGenerator
 	{
-		public static IEnumerable<PercussionNote> GetFill(double delay, double fillLengthInBeats)
+		public static IEnumerable<PercussionNote> GetFill(double delay, double fillLengthInBeats, int feel)
 		{
-			const double lengthOfNote = 0.25;
+			var lengthOfNote = 1.0 / feel;
 			var chain = FillChain(n => n, fillLengthInBeats).ToList();
 			var hits = new List<PercussionNote>();
 			foreach (var c in chain)
