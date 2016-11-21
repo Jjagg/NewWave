@@ -60,5 +60,19 @@ namespace NewWave.Generator
 			var normal = Math.Sqrt(-2 * Math.Log(u1)) * Math.Cos(2 * Math.PI * u2);
 			return normal * standardDeviation + mean;
 		}
+
+		public static int Clamp(double value, int min, int max)
+		{
+			return value < min
+				? min
+				: value > max
+					? max
+					: (int)value;
+		}
+
+		public static bool ProbabilityOfTrue(double probability)
+		{
+			return NextDouble() < probability;
+		}
 	}
 }

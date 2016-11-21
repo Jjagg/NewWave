@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
+using NewWave.Generator.Sections;
 using NewWave.Library.Chords;
-using NewWave.Library.Grooves;
 using NewWave.Midi;
 
 namespace NewWave.Generator
@@ -13,97 +14,72 @@ namespace NewWave.Generator
 	{
 		private int _tempo;
 		private TimeSignature _time;
+		private int _feel;
+		internal List<SongSection> Sections;
 
 		public override string Generate()
 		{
-			_tempo = (int)Randomizer.NextNormalized(180, 10);
-			_time = new TimeSignature(4, 4);
+			_tempo = (int)Randomizer.NextNormalized(150, 20);
+			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
+			_feel = Randomizer.ProbabilityOfTrue(_time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
 
-			return "Finished";
+			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
+			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
+			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
+			var sectionTypes = mappedChordProgressions.Distinct()
+				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, RepeatsPerSection(s.Item2), _time, _feel, chordProgressions[s.Item1]));
+			Sections = sections.Select(s => sectionTypes[s]).ToList();
+			return WriteStats();
 		}
 
 		public override Score Render()
 		{
-			var guitar = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Center, new List<List<Note>>());
-			var bass = new InstrumentTrack(Instrument.ElectricBassFinger, Pan.Center, new List<List<Note>>());
+			var guitarLc = new InstrumentTrack(Instrument.ElectricGuitarJazz, Pan.Left, new List<List<Note>>());
+			var guitarL = new InstrumentTrack(Instrument.DistortionGuitar, Pan.Left, new List<List<Note>>());
+			var guitarRc = new InstrumentTrack(Instrument.ElectricGuitarClean, Pan.Right, new List<List<Note>>());
+			var guitarR = new InstrumentTrack(Instrument.OverdrivenGuitar, Pan.Right, new List<List<Note>>());
+			var guitarC = new InstrumentTrack(Instrument.OverdrivenGuitar, Pan.Center, new List<List<Note>>());
+			var bass = new InstrumentTrack(Instrument.ElectricBassPick, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-			var sections = Enumerable.Range(0, 8).Select(i => RenderSection(guitar, bass, drums));
+			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums));
 
-			return new Score(sections.Sum(s => s),
+			return new Score(renderedSections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _time } },
 				new Dictionary<int, int> { { 0, _tempo } },
-				new List<InstrumentTrack> { guitar, bass },
+				new List<InstrumentTrack> { guitarL, guitarR, guitarC, guitarLc, guitarRc, bass },
 				drums);
 		}
 
-		private int RenderSection(InstrumentTrack guitar, InstrumentTrack bass, PercussionTrack drums)
+		private string WriteStats()
 		{
-			const int measures = 8;
-			var timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat, Percussion.RideCymbal1 };
-			var timeKeeper = timeKeepers[Randomizer.Next(timeKeepers.Count)];
+			var totalBeatCount = Sections.Sum(s => s.Measures * s.Time.BeatCount);
+			var totalMinutes = (double)totalBeatCount / _tempo;
+			var minutes = (int)totalMinutes;
+			var seconds = (int)((totalMinutes - minutes) * 60);
 
-			List<Chord> chords;
-			do
-			{
-				chords = ChordProgressionGenerator.ChordProgression(Pitch.G0, MinorOrDiminshedFilter);
-			} while (chords.Count <= 2 && chords.Count(c => c.Quality == ChordQuality.Minor) < 2);
-
-			if (chords.Count == 3)
-			{
-				chords = AugmentThreeChordProgression(chords);
-			}
-
-			var groove = GrooveLibrary.AllGrooves[Randomizer.Next(GrooveLibrary.AllGrooves.Count)];
-
-			for (var measure = 0; measure < measures; measure++)
-			{
-				var chordIndex = measure % chords.Count;
-				var pitches = chords[chordIndex].Pitches();
-				var grooveNotes = groove.Notes(timeKeeper, measure == 0, _time).ToList();
-				var kicks = grooveNotes.Where(gn => gn.Percussion == Percussion.BassDrum1).ToList();
-
-				guitar.Notes.Add(kicks.SelectMany((gn, i) => pitches.Select(p => new Note(gn.Start, GetLength(gn, i, kicks), p, Velocity.F))).ToList());
-				bass.Notes.Add(kicks.Select((gn, i) => new Note(gn.Start, GetLength(gn, i, kicks), pitches[0].AddOctave(-1), Velocity.Fff)).ToList());
-				//guitar.Notes.Add(new List<Note>());
-				//bass.Notes.Add(new List<Note>());
-				drums.Notes.Add(grooveNotes);
-			}
-
-			return measures;
+			var sb = new StringBuilder();
+			sb.AppendLine("----------");
+			sb.AppendLine(string.Format("Measures: {0}", Sections.Sum(s => s.Measures)));
+			sb.AppendLine(string.Format("Song length: {0}:{1:00}", minutes, seconds));
+			sb.AppendLine(string.Format("Time signature: {0}", _time));
+			sb.AppendLine(string.Format("Tempo: {0}", _tempo));
+			sb.AppendLine(string.Format("Feel: 1/{0}", _feel));
+			return sb.ToString();
 		}
 
-		private double GetLength(PercussionNote gn, int i, IReadOnlyList<PercussionNote> kicks)
+		private static List<ChordProgression> GetDistinctChordProgressions(int amount)
 		{
-			var start = gn.Start;
-			var nextStart = i == kicks.Count - 1 ? _time.BeatCount : kicks[i + 1].Start;
-			var length = nextStart - start;
-			return length;
-		}
-
-		public override string DisplayName
-		{
-			get { return "Generated song"; }
-		}
-
-		private static List<Chord> AugmentThreeChordProgression(List<Chord> chords)
-		{
-			if (chords.Count != 3) throw new ArgumentException("Must have three chords");
-
-			switch (new[] { 0, 1, 2 }[Randomizer.GetWeightedIndex(new List<double> { 0.2, 0.3, 0.5 })])
+			var progressions = new List<ChordProgression>();
+			while (progressions.Count < amount)
 			{
-				case 0: // Extend chord 1
-					chords.Insert(1, chords[0]);
-					break;
-				case 1: // Extend chord 2
-					chords.Insert(2, chords[1]);
-					break;
-				default: // Extend chord 3
-					chords.Add(chords[2]);
-					break;
+				var prog = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter);
+				if (progressions.All(p => !Equals(p, prog)))
+				{
+					progressions.Add(prog);
+				}
 			}
-
-			return chords;
+			return progressions;
 		}
 
 		private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
@@ -112,9 +88,29 @@ namespace NewWave.Generator
 			{
 				return n =>
 					n.Data.Quality == ChordQuality.Minor
-						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes)
+						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
 						: n;
 			}
+		}
+
+		public override string DisplayName => "Generated song";
+
+		private static int RepeatsPerSection(SectionType type)
+		{
+			switch (type)
+			{
+				case SectionType.Verse:
+				case SectionType.Chorus:
+					return Randomizer.ProbabilityOfTrue(0.5) ? 4 : 2;
+				case SectionType.Intro:
+				case SectionType.Outro:
+				case SectionType.Prechorus:
+					return 1;
+				case SectionType.Bridge:
+					return Randomizer.ProbabilityOfTrue(0.5) ? 2 : 1;
+			}
+
+			return 1;
 		}
 	}
 }

@@ -53,9 +53,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="GeneratorTests\GrooveTests.cs" />
+    <Compile Include="GeneratorTests\FillTests.cs" />
+    <Compile Include="GeneratorTests\RiffTests.cs" />
+    <Compile Include="GeneratorTests\SectionTests.cs" />
     <Compile Include="LibraryTests\ChordTests.cs" />
     <Compile Include="LibraryTests\GrooveTests.cs" />
-    <Compile Include="GeneratorTests.cs" />
+    <Compile Include="GeneratorTests\GeneratorTests.cs" />
     <Compile Include="SimpleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSong.cs" />

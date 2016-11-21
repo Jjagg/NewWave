@@ -50,6 +50,7 @@
     <Compile Include="Chords\ChordQuality.cs" />
     <Compile Include="Grooves\Groove.cs" />
     <Compile Include="Grooves\GrooveLibrary.cs" />
+    <Compile Include="Grooves\TabWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
