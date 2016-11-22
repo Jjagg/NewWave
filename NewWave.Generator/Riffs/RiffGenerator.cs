@@ -9,12 +9,12 @@ namespace NewWave.Generator.Riffs
 {
 	internal static class RiffGenerator
 	{
-		internal static IEnumerable<Note> GetRiff(int length, List<Tuple<int, Chord>> chordProgression)
+		internal static IEnumerable<Note> GetRiff(SongInfo songInfo, int length, List<Tuple<int, Chord>> chordProgression)
 		{
 			var notes = new List<Note>();
 			var lastIndex = -1;
-		    var thisStart = 0.0;
-		    var lengths = GetNoteLengths(length);
+			var thisStart = 0.0;
+			var lengths = GetNoteLengths(length, songInfo.Feel);
 
 			for (var note = 0; note < lengths.Count; note++)
 			{
@@ -23,52 +23,69 @@ namespace NewWave.Generator.Riffs
 				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5), -7, 7);
 				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count);
 				var thisPitch = thisScale[thisIndex];
-			    var thisLength = lengths[note];
+				var thisLength = lengths[note];
 
-			    if (thisStart + thisLength > length)
-			    {
-			        thisLength = length - thisStart;
-			    }
+				if (thisStart + thisLength > length)
+				{
+					thisLength = length - thisStart;
+				}
 
-			    if (thisStart >= length)
-			    {
-			        break;
-			    }
+				if (thisStart >= length)
+				{
+					break;
+				}
 
-                notes.Add(new Note(thisStart, thisLength, thisPitch + 12, Velocity.Ff));
+				notes.Add(new Note(thisStart, thisLength, thisPitch + 12, Velocity.Ff));
 				lastIndex = thisIndex;
-			    thisStart += thisLength;
+				thisStart += thisLength;
 			}
 			return notes;
 		}
 
-	    private static List<double> GetNoteLengths(int totalLength)
-	    {
-	        var thisLength = 0.0;
-	        var lengths = new List<double>();
-	        while (thisLength < totalLength)
-	        {
-	            var seg = LengthSegments[Randomizer.Next(LengthSegments.Count)];
-                lengths.AddRange(seg);
-	            thisLength += seg.Sum();
-	        }
+		private static List<double> GetNoteLengths(int totalLength, int feel)
+		{
+			var thisLength = 0.0;
+			var lengths = new List<double>();
+			while (thisLength < totalLength)
+			{
+				var seg = feel == 4
+					? LengthSegments4[Randomizer.Next(LengthSegments4.Count)]
+					: LengthSegments3[Randomizer.Next(LengthSegments3.Count)];
+				lengths.AddRange(seg);
+				thisLength += seg.Sum();
+			}
 
-	        return lengths;
-	    }
+			return lengths;
+		}
 
-        private static List<List<double>> LengthSegments => new List<List<double>>
-        {
-            new List<double> { 2 },
-            new List<double> { 2, 1, 1 },
-            new List<double> { 1, 2, 1 },
-            new List<double> { 1 },
-            new List<double> { 1, 1 },
-            new List<double> { 0.5, 0.5 },
-            new List<double> { 1.5, 1, 1.5 },
-            new List<double> { 1.5, 1.5 },
-            new List<double> { 0.5, 1, 0.5 },
-            new List<double> { 0.5, 0.5 }
-        };
+		private static List<List<double>> LengthSegments4 => new List<List<double>>
+		{
+			new List<double> { 2 },
+			new List<double> { 2, 1, 1 },
+			new List<double> { 1, 2, 1 },
+			new List<double> { 1 },
+			new List<double> { 1, 1 },
+			new List<double> { 0.5, 0.5 },
+			new List<double> { 1.5, 1, 1.5 },
+			new List<double> { 1.5, 1.5 },
+			new List<double> { 0.5, 1, 0.5 },
+			new List<double> { 0.5, 0.5 },
+			new List<double> { 0.5, 0.5, 0.5, 0.5 },
+			new List<double> { 0.5, 0.5, 1 }
+		};
+
+		private static List<List<double>> LengthSegments3 => new List<List<double>>
+		{
+			new List<double> { 2 },
+			new List<double> { 2, 1, 1 },
+			new List<double> { 1, 2, 1 },
+			new List<double> { 1 },
+			new List<double> { 1, 1 },
+			new List<double> { 0.33, 0.33, 0.33 },
+			new List<double> { 0.33, 0.67 },
+			new List<double> { 0.67, 0.33 },
+			new List<double> { 0.67, 0.67, 0.67 }
+		};
 
 		internal static List<Pitch> GetScale(Chord chord)
 		{
@@ -79,7 +96,7 @@ namespace NewWave.Generator.Riffs
 			{
 				case ChordQuality.Minor:
 				case ChordQuality.Diminished:
-					notes =  MinorPentatonicScale.Select(n => pitch + n).ToList();
+					notes = MinorPentatonicScale.Select(n => pitch + n).ToList();
 					break;
 				case ChordQuality.NotSpecified:
 				case ChordQuality.Major:

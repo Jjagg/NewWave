@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NewWave.Core;
 
 namespace NewWave.Test
 {
@@ -8,7 +9,9 @@ namespace NewWave.Test
 		[TestMethod]
 		public void RenderTest()
 		{
-			Common.RenderAndPlay(new TestSong(), "output.mid");
+			Common.RenderAndPlay(new Parameters(), new TestSong(), "output.mid");
 		}
+
+		private class Parameters : IParameters { }
 	}
 }
