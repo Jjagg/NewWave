@@ -165,7 +165,7 @@ namespace NewWave.Generator.Sections
 			var chordList = progression
 				.Chords
 				.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
-				.Select(c => TransposeForKey(Pitch.G2, c))
+				.Select(c => TransposeForKey(_songInfo.MajorKey, c))
 				.ToList();
 
 			return AssignChords(chordList, _measures * _songInfo.TimeSignature.BeatCount);

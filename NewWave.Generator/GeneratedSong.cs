@@ -22,7 +22,7 @@ namespace NewWave.Generator
 			_tempo = (int)Randomizer.NextNormalized(150, 20);
 			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
 			_feel = Randomizer.ProbabilityOfTrue(_time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
-			var songInfo = new SongInfo(_time, _feel);
+			var songInfo = new SongInfo(_time, _feel) { MinorKey = Pitch.E2 };
 
 			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
 			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
