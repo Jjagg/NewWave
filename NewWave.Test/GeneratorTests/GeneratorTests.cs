@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
@@ -12,20 +13,25 @@ namespace NewWave.Test.GeneratorTests
 	[TestClass]
 	public class BasicGeneratorTests
 	{
-		private readonly Parameters _parameters = new Parameters
+		private const Pitch LowestPitch = Pitch.E2;
+		private static readonly Parameters Parameters = new Parameters
 		{
-			MinorKey = Pitch.E2,
+			MinorKeyFunc = () => new List<Pitch> { LowestPitch, LowestPitch + 5, LowestPitch + 2 }[Randomizer.GetWeightedIndex(new List<double>
+			{
+				0.5, 0.3, 0.2
+			})],
 			TempoMean = 150,
 			TempoStandardDeviation = 20,
 			TimeSignatureFunc = () => new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4),
-			FeelFunc = t => Randomizer.ProbabilityOfTrue(t.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3
+			FeelFunc = t => Randomizer.ProbabilityOfTrue(t.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3,
+			LowestPossibleNote = LowestPitch
 		};
 
 		[TestMethod]
 		public void GenerateTest()
 		{
 			var song = new GeneratedSong();
-			Console.WriteLine(song.Generate(_parameters));
+			Console.WriteLine(song.Generate(Parameters));
 			foreach (var section in song.Sections)
 			{
 				Console.WriteLine("{0}: {1} meas, {2}", section.Type, section.Measures, string.Join(" - ", section.Chords.Select(c => c.Item2)));
@@ -36,7 +42,7 @@ namespace NewWave.Test.GeneratorTests
 		public void RenderTest()
 		{
 			var song = new GeneratedSong();
-			Common.RenderAndPlay(_parameters, song, "output.mid");
+			Common.RenderAndPlay(Parameters, song, "output.mid");
 			foreach (var section in song.Sections)
 			{
 				Console.WriteLine("{0}: {1} meas, {2}", section.Type, section.Measures, string.Join(" - ", section.Chords.Select(c => c.Item2)));

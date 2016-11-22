@@ -30,7 +30,7 @@ namespace NewWave.Generator.Sections
 			_songInfo = songInfo;
 
 			_measures = new List<int> { 8, 4 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
-			Chords = GetChordProgression(chordProgression);
+			Chords = GetChordProgression(songInfo.Parameters.LowestPossibleNote, chordProgression);
 			_groove = GetGroove();
 
 			_timeKeeper = GetTimeKeeper(type);
@@ -160,12 +160,12 @@ namespace NewWave.Generator.Sections
 			return grooveNotes;
 		}
 
-		private List<Tuple<int, Chord>> GetChordProgression(ChordProgression progression)
+		private List<Tuple<int, Chord>> GetChordProgression(Pitch lowestPossibleNote, ChordProgression progression)
 		{
 			var chordList = progression
 				.Chords
 				.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
-				.Select(c => TransposeForKey(_songInfo.Parameters.MajorKey, c))
+				.Select(c => TransposeForLowestNote(lowestPossibleNote, TransposeForKey(_songInfo.Parameters.MajorKey, c)))
 				.ToList();
 
 			return AssignChords(chordList, _measures * _songInfo.TimeSignature.BeatCount);
@@ -229,6 +229,17 @@ namespace NewWave.Generator.Sections
 		{
 			var transposeDiff = key - Pitch.C0;
 			result.Transpose(transposeDiff);
+			return result;
+		}
+
+		private static Chord TransposeForLowestNote(Pitch lowestPossibleNote, Chord result)
+		{
+			var currentLowest = result.Pitches().Min();
+			var minPitchToTranspose = lowestPossibleNote.AddOctave(1);
+			if (currentLowest >= minPitchToTranspose)
+			{
+				result.Transpose(-12);
+			}
 			return result;
 		}
 	}
