@@ -10,7 +10,7 @@ namespace NewWave.Test
 		private int _tempo;
 		private TimeSignature _time;
 
-		public override string Generate()
+		public override string Generate(Parameters parameters)
 		{
 			_time = new TimeSignature(4, 4);
 			_tempo = 150;

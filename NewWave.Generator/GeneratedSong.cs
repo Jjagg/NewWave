@@ -15,17 +15,8 @@ namespace NewWave.Generator
 		private SongInfo _songInfo;
 		internal List<SongSection> Sections;
 
-		public override string Generate()
+		public override string Generate(Parameters parameters)
 		{
-			var parameters = new Parameters
-			{
-				MinorKey = Pitch.E2,
-				TempoMean = 150,
-				TempoStandardDeviation = 20,
-				TimeSignatureFunc = () => new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4),
-				FeelFunc = t => Randomizer.ProbabilityOfTrue(t.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3
-			};
-
 			var time = parameters.TimeSignatureFunc();
 			var feel = parameters.FeelFunc(time);
 			_songInfo = new SongInfo(time, feel)

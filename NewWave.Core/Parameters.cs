@@ -1,8 +1,7 @@
 using System;
-using NewWave.Core;
 using NewWave.Midi;
 
-namespace NewWave.Generator
+namespace NewWave.Core
 {
 	public class Parameters
 	{
@@ -21,6 +20,8 @@ namespace NewWave.Generator
 		public Parameters()
 		{
 			// Defaults (can be set manually after constructor)
+			TempoMean = 120;
+			TempoStandardDeviation = 0;
 			MajorKey = Pitch.A0;
 			TimeSignatureFunc = () => TimeSignature.CommonTime;
 			FeelFunc = t => 4;
