@@ -5,7 +5,6 @@ using System.Text;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Generator.Sections;
-using NewWave.Library.Chords;
 using NewWave.Midi;
 
 namespace NewWave.Generator
@@ -26,7 +25,7 @@ namespace NewWave.Generator
 			};
 
 			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
-			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
+			var chordProgressions = GetDistinctChordProgressions(param, sections.Distinct().Count());
 			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
 			var sectionTypes = mappedChordProgressions.Distinct()
 				.ToDictionary(s => s.Item2, s => new SongSection(_songInfo, s.Item2, RepeatsPerSection(s.Item2), chordProgressions[s.Item1]));
@@ -71,29 +70,18 @@ namespace NewWave.Generator
 			return sb.ToString();
 		}
 
-		private static List<ChordProgression> GetDistinctChordProgressions(int amount)
+		private static List<ChordProgression> GetDistinctChordProgressions(Parameters parameters, int amount)
 		{
 			var progressions = new List<ChordProgression>();
 			while (progressions.Count < amount)
 			{
-				var prog = ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter);
+				var prog = ChordProgressionGenerator.ChordProgression(parameters.ChordProgressionFilter);
 				if (progressions.All(p => !Equals(p, prog)))
 				{
 					progressions.Add(prog);
 				}
 			}
 			return progressions;
-		}
-
-		private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
-		{
-			get
-			{
-				return n =>
-					n.Data.Quality == ChordQuality.Minor
-						? new MarkovChainNode<Chord>(n.Data, n.Probability * 8.0, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
-						: n;
-			}
 		}
 
 		public override string DisplayName => "Generated song";

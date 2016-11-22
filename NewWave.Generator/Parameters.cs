@@ -1,5 +1,6 @@
 using System;
 using NewWave.Core;
+using NewWave.Library.Chords;
 using NewWave.Midi;
 
 namespace NewWave.Generator
@@ -12,6 +13,7 @@ namespace NewWave.Generator
 		public Func<TimeSignature> TimeSignatureFunc;
 		public Func<TimeSignature, int> FeelFunc;
 		public Pitch LowestPossibleNote;
+		public Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> ChordProgressionFilter;
 
 		public Pitch MinorKey
 		{
@@ -38,6 +40,7 @@ namespace NewWave.Generator
 			TimeSignatureFunc = () => TimeSignature.CommonTime;
 			FeelFunc = t => 4;
 			LowestPossibleNote = Pitch.E2;
+			ChordProgressionFilter = node => node;
 		}
 	}
 }

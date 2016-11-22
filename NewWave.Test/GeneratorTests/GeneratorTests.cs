@@ -24,7 +24,8 @@ namespace NewWave.Test.GeneratorTests
 			TempoStandardDeviation = 20,
 			TimeSignatureFunc = () => new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4),
 			FeelFunc = t => Randomizer.ProbabilityOfTrue(t.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3,
-			LowestPossibleNote = LowestPitch
+			LowestPossibleNote = LowestPitch,
+			ChordProgressionFilter = MinorOrDiminshedFilter
 		};
 
 		[TestMethod]
@@ -54,28 +55,28 @@ namespace NewWave.Test.GeneratorTests
 		{
 			for (var i = 0; i < 50; i++)
 			{
-			    Console.WriteLine(ChordProgressionGenerator.ChordProgression(n => n));
+				Console.WriteLine(ChordProgressionGenerator.ChordProgression(n => n));
 			}
 		}
 
-        [TestMethod]
-        public void ChordProgressionMinorOrDiminishedOnlyTest()
-        {
-            for (var i = 0; i < 50; i++)
-            {
-                Console.WriteLine(ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter));
-            }
-        }
+		[TestMethod]
+		public void ChordProgressionMinorOrDiminishedOnlyTest()
+		{
+			for (var i = 0; i < 50; i++)
+			{
+				Console.WriteLine(ChordProgressionGenerator.ChordProgression(MinorOrDiminshedFilter));
+			}
+		}
 
-	    private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
-	    {
-	        get
-	        {
-	            return n =>
-	                n.Data.Quality != ChordQuality.Minor && n.Data.Quality != ChordQuality.Diminished
-	                    ? new MarkovChainNode<Chord>(n.Data, n.Probability * 0.25, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
-	                    : n;
-	        }
-	    }
+		private static Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> MinorOrDiminshedFilter
+		{
+			get
+			{
+				return n =>
+					n.Data.Quality != ChordQuality.Minor && n.Data.Quality != ChordQuality.Diminished
+						? new MarkovChainNode<Chord>(n.Data, n.Probability * 0.25, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
+						: n;
+			}
+		}
 	}
 }
