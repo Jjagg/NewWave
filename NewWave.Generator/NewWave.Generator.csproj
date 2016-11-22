@@ -49,9 +49,11 @@
     <Compile Include="MarkovChainNode.cs" />
     <Compile Include="GeneratedSong.cs" />
     <Compile Include="MarkovChainNodeFunc.cs" />
+    <Compile Include="Parameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
     <Compile Include="Riffs\RiffGenerator.cs" />
+    <Compile Include="SongInfo.cs" />
     <Compile Include="Sections\SectionLayoutGenerator.cs" />
     <Compile Include="Sections\SectionType.cs" />
     <Compile Include="Sections\SongSection.cs" />

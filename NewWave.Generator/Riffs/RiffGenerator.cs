@@ -9,12 +9,12 @@ namespace NewWave.Generator.Riffs
 {
 	internal static class RiffGenerator
 	{
-		internal static IEnumerable<Note> GetRiff(int length, List<Tuple<int, Chord>> chordProgression, int feel)
+		internal static IEnumerable<Note> GetRiff(SongInfo songInfo, int length, List<Tuple<int, Chord>> chordProgression)
 		{
 			var notes = new List<Note>();
 			var lastIndex = -1;
 			var thisStart = 0.0;
-			var lengths = GetNoteLengths(length, feel);
+			var lengths = GetNoteLengths(length, songInfo.Feel);
 
 			for (var note = 0; note < lengths.Count; note++)
 			{

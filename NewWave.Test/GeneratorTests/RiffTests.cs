@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
+using NewWave.Generator;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Generator.Riffs;
 using NewWave.Generator.Sections;
@@ -15,7 +16,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void RiffTest()
 		{
-			var section = new SongSection(SectionType.None, 1, TimeSignature.CommonTime, 4, ChordProgressionGenerator.ChordProgression(n => n));
+			var section = new SongSection(new SongInfo(TimeSignature.CommonTime, 4), SectionType.None, 1, ChordProgressionGenerator.ChordProgression(n => n));
 			var riff = section.Riff;
 			foreach (var note in riff)
 			{

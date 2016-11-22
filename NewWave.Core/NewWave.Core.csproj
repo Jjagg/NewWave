@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstrumentTrack.cs" />
+    <Compile Include="IParameters.cs" />
     <Compile Include="Note.cs" />
     <Compile Include="PercussionNote.cs" />
     <Compile Include="PercussionTrack.cs" />

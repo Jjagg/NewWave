@@ -18,7 +18,7 @@ namespace NewWave.Test.GeneratorTests
 			{
 				var timeSignature = new TimeSignature(Randomizer.ProbabilityOfTrue(0.7) ? 4 : 3, 4);
 				var feel = Randomizer.ProbabilityOfTrue(0.6) ? 4 : 3;
-				var groove = GrooveGenerator.GenerateGroove(timeSignature, feel);
+				var groove = GrooveGenerator.GenerateGroove(new SongInfo(timeSignature, feel));
 				Console.WriteLine(TabWriter.AsTab(groove.Feel, groove.Notes(Percussion.RideCymbal1, false, timeSignature), timeSignature.BeatCount));
 			}
 		}
