@@ -1,5 +1,4 @@
 ﻿using NewWave.Core;
-using NewWave.Midi;
 
 namespace NewWave.Generator
 {
@@ -9,12 +8,19 @@ namespace NewWave.Generator
 		public readonly int Feel;
 
 		public int Tempo;
-		public Pitch MajorKey;
 
-		public Pitch MinorKey
+		private Parameters _parameters;
+		public Parameters Parameters
 		{
-			get { return MajorKey - 3; }
-			set { MajorKey = value + 3; }
+			get { return _parameters; }
+			set
+			{
+				_parameters = value;
+				if (_parameters != null)
+				{
+					Tempo = (int)Randomizer.NextNormalized(value.TempoMean, value.TempoStandardDeviation);
+				}
+			}
 		}
 
 		public SongInfo(TimeSignature timeSignature, int feel)
@@ -23,8 +29,8 @@ namespace NewWave.Generator
 			Feel = feel;
 
 			// Defaults (can be set manually after constructor)
-			MajorKey = Pitch.A0;
 			Tempo = 150;
+			Parameters = new Parameters();
 		}
 	}
 }

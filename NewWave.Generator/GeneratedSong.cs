@@ -17,12 +17,18 @@ namespace NewWave.Generator
 
 		public override string Generate()
 		{
+			var parameters = new Parameters
+			{
+				MinorKey = Pitch.E2,
+				TempoMean = 150,
+				TempoStandardDeviation = 20
+			};
+
 			var time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
 			var feel = Randomizer.ProbabilityOfTrue(time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
 			_songInfo = new SongInfo(time, feel)
 			{
-				MinorKey = Pitch.E2,
-				Tempo = (int)Randomizer.NextNormalized(150, 20)
+				Parameters = parameters
 			};
 
 			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
@@ -67,6 +73,7 @@ namespace NewWave.Generator
 			sb.AppendLine(string.Format("Time signature: {0}", _songInfo.TimeSignature));
 			sb.AppendLine(string.Format("Tempo: {0}", _songInfo.Tempo));
 			sb.AppendLine(string.Format("Feel: 1/{0}", _songInfo.Feel));
+			sb.AppendLine(string.Format("Key: {0}maj / {1}min", _songInfo.Parameters.MajorKey.NoteName(), _songInfo.Parameters.MinorKey.NoteName()));
 			return sb.ToString();
 		}
 
