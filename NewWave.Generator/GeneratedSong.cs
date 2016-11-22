@@ -22,14 +22,15 @@ namespace NewWave.Generator
 			_tempo = (int)Randomizer.NextNormalized(150, 20);
 			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
 			_feel = Randomizer.ProbabilityOfTrue(_time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
+			var songInfo = new SongInfo(_time, _feel);
 
 			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
 			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
 			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
 			var sectionTypes = mappedChordProgressions.Distinct()
-				.ToDictionary(s => s.Item2, s => new SongSection(s.Item2, RepeatsPerSection(s.Item2), _time, _feel, chordProgressions[s.Item1]));
+				.ToDictionary(s => s.Item2, s => new SongSection(songInfo, s.Item2, RepeatsPerSection(s.Item2), chordProgressions[s.Item1]));
 			Sections = sections.Select(s => sectionTypes[s]).ToList();
-			return WriteStats();
+			return WriteStats(songInfo);
 		}
 
 		public override Score Render()
@@ -51,9 +52,9 @@ namespace NewWave.Generator
 				drums);
 		}
 
-		private string WriteStats()
+		private string WriteStats(SongInfo songInfo)
 		{
-			var totalBeatCount = Sections.Sum(s => s.Measures * s.Time.BeatCount);
+			var totalBeatCount = Sections.Sum(s => s.Measures * songInfo.TimeSignature.BeatCount);
 			var totalMinutes = (double)totalBeatCount / _tempo;
 			var minutes = (int)totalMinutes;
 			var seconds = (int)((totalMinutes - minutes) * 60);

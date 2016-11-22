@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
+using NewWave.Generator;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Generator.Sections;
 
@@ -13,14 +14,15 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void SectionTest()
 		{
-			var section = new SongSection(SectionType.None, 1, TimeSignature.CommonTime, 4, ChordProgressionGenerator.ChordProgression(n => n));
+			var time = TimeSignature.CommonTime;
+			var section = new SongSection(new SongInfo(time, 4),  SectionType.None, 1, ChordProgressionGenerator.ChordProgression(n => n));
 
-			var totalBeats = section.Measures * section.Time.BeatCount;
+			var totalBeats = section.Measures * time.BeatCount;
 			Console.WriteLine("Total beats: {0}", totalBeats);
 			for (var beat = 0; beat < totalBeats; beat++)
 			{
 				var chordHere = section.Chords.FirstOrDefault(c => c.Item1 == beat);
-				Console.WriteLine("{0} {1} - {2}", beat % section.Time.BeatCount == 0 ? "-" : " ", beat, chordHere?.Item2);
+				Console.WriteLine("{0} {1} - {2}", beat % time.BeatCount == 0 ? "-" : " ", beat, chordHere?.Item2);
 			}
 		}
 

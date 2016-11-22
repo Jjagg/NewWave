@@ -1,31 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NewWave.Core;
 using NewWave.Library.Grooves;
 
 namespace NewWave.Generator.Grooves
 {
 	internal static class GrooveGenerator
 	{
-		internal static Groove GenerateGroove(TimeSignature timeSignature, int feel)
+		internal static Groove GenerateGroove(SongInfo songInfo)
 		{
 			var halfSize = false;
-			var maxBeat = timeSignature.BeatCount;
+			var maxBeat = songInfo.TimeSignature.BeatCount;
 			if (maxBeat % 2 == 0 && Randomizer.ProbabilityOfTrue(0.75))
 			{
 				halfSize = true;
 				maxBeat = maxBeat / 2;
 			}
 
-			var beats = GetBeatPoints(maxBeat, feel);
+			var beats = GetBeatPoints(maxBeat, songInfo.Feel);
 			if (halfSize)
 			{
 				beats = beats.Union(beats.Select(b => maxBeat + b)).ToList();
 			}
 
-			var isFastKick = beats.Count >= timeSignature.BeatCount * feel / 2;
-			var snares = feel == 4 && isFastKick && Randomizer.ProbabilityOfTrue(0.5)
-				? Enumerable.Range(0, timeSignature.BeatCount * feel / 2).Select(n => 0.25 + n / (double)feel * 2).ToList() // Blastbeat
+			var isFastKick = beats.Count >= songInfo.TimeSignature.BeatCount * songInfo.Feel / 2;
+			var snares = songInfo.Feel == 4 && isFastKick && Randomizer.ProbabilityOfTrue(0.5)
+				? Enumerable.Range(0, songInfo.TimeSignature.BeatCount * songInfo.Feel / 2).Select(n => 0.25 + n / (double)songInfo.Feel * 2).ToList() // Blastbeat
 				: Randomizer.ProbabilityOfTrue(0.5)
 					? new List<double> { 1, 3 }
 					: new List<double> { 2 };
@@ -33,9 +32,9 @@ namespace NewWave.Generator.Grooves
 				? beats
 				: beats.Where(b => !snares.Contains(b)).ToList();
 
-			var timeKeeperFreq = beats.Count > timeSignature.BeatCount || Randomizer.ProbabilityOfTrue(0.33) ? feel / 2 : feel;
+			var timeKeeperFreq = beats.Count > songInfo.TimeSignature.BeatCount || Randomizer.ProbabilityOfTrue(0.33) ? songInfo.Feel / 2 : songInfo.Feel;
 
-			return new Groove("Generated groove", timeSignature, feel, timeKeeperFreq, kicks, snares);
+			return new Groove("Generated groove", songInfo.TimeSignature, songInfo.Feel, timeKeeperFreq, kicks, snares);
 		}
 
 		private static List<double> GetBeatPoints(double maxBeat, int feel)
