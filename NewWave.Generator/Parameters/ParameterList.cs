@@ -1,46 +1,19 @@
-using System;
-using NewWave.Core;
-using NewWave.Library.Chords;
-using NewWave.Midi;
-
 namespace NewWave.Generator.Parameters
 {
-	public class ParameterList : IParameterList
+	public class FastSongParameterList : ParameterListBase
 	{
-		public double TempoMean;
-		public double TempoStandardDeviation;
-		public Pitch MajorKey;
-		public Func<TimeSignature> TimeSignatureFunc;
-		public Func<TimeSignature, int> FeelFunc;
-		public Pitch LowestPossibleNote;
-		public Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> ChordProgressionFilter;
-
-		public Pitch MinorKey
+		public FastSongParameterList()
 		{
-			get { return MajorKey - 3; }
-			set { MajorKey = value + 3; }
+			TempoMean = 200;
+			TempoStandardDeviation = 10;
 		}
-
-		public Func<Pitch> MajorKeyFunc
+	}
+	public class SlowSongParameterList : ParameterListBase
+	{
+		public SlowSongParameterList()
 		{
-			set { MajorKey = value(); }
-		}
-
-		public Func<Pitch> MinorKeyFunc
-		{
-			set { MinorKey = value(); }
-		}
-
-		public ParameterList()
-		{
-			// Defaults (can be set manually after constructor)
-			TempoMean = 120;
-			TempoStandardDeviation = 0;
-			MajorKeyFunc = () => Pitch.G0;
-			TimeSignatureFunc = () => TimeSignature.CommonTime;
-			FeelFunc = t => 4;
-			LowestPossibleNote = Pitch.E2;
-			ChordProgressionFilter = node => node;
+			TempoMean = 100;
+			TempoStandardDeviation = 5;
 		}
 	}
 }

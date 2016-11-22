@@ -10,8 +10,8 @@ namespace NewWave.Generator
 
 		public int Tempo;
 
-		private ParameterList _parameters;
-		public ParameterList Parameters
+		private ParameterListBase _parameters;
+		public ParameterListBase Parameters
 		{
 			get { return _parameters; }
 			set
@@ -28,10 +28,6 @@ namespace NewWave.Generator
 		{
 			TimeSignature = timeSignature;
 			Feel = feel;
-
-			// Defaults (can be set manually after constructor)
-			Tempo = 150;
-			Parameters = new ParameterList();
 		}
 	}
 }
