@@ -20,12 +20,9 @@ namespace NewWave.Generator
 			var param = (ParameterListBase)parameterList;
 			var time = param.TimeSignatureFunc();
 			var feel = param.FeelFunc(time);
-			_songInfo = new SongInfo(time, feel)
-			{
-				Parameters = param
-			};
+			_songInfo = new SongInfo(time, feel) { Parameters = param };
 
-			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
+			var sections = new SectionLayoutGenerator().GetSectionLayout(_songInfo).ToList();
 			var chordProgressions = GetDistinctChordProgressions(param, sections.Distinct().Count());
 			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
 			var sectionTypes = mappedChordProgressions.Distinct()
@@ -63,6 +60,7 @@ namespace NewWave.Generator
 			var sb = new StringBuilder();
 			sb.AppendLine("----------");
 			sb.AppendLine(string.Format("Measures: {0}", Sections.Sum(s => s.Measures)));
+			sb.AppendLine(string.Format("Attempted song length: {0:0}:{1:00}", songInfo.LengthInSeconds / 60, songInfo.LengthInSeconds % 60));
 			sb.AppendLine(string.Format("Song length: {0}:{1:00}", minutes, seconds));
 			sb.AppendLine(string.Format("Time signature: {0}", _songInfo.TimeSignature));
 			sb.AppendLine(string.Format("Tempo: {0}", _songInfo.Tempo));

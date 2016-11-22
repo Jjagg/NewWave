@@ -29,7 +29,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void SectionLayoutTest()
 		{
-			var structure = SectionLayoutGenerator.GetSectionLayout();
+			var structure = new SectionLayoutGenerator().GetSectionLayout(new SongInfo(TimeSignature.CommonTime, 4) { Tempo = 120, LengthInSeconds = 60 });
 			foreach (var sectionType in structure)
 			{
 				Console.WriteLine(sectionType);
