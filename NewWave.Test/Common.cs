@@ -9,9 +9,9 @@ namespace NewWave.Test
 	{
 		private static readonly string Dir = AppDomain.CurrentDomain.BaseDirectory;
 
-		internal static void RenderAndPlay(IParameters parameters, Song song, string fileName)
+		internal static void RenderAndPlay(IParameterList parameterList, Song song, string fileName)
 		{
-			Console.WriteLine(song.Generate(parameters));
+			Console.WriteLine(song.Generate(parameterList));
 			var score = song.Render();
 			var outputPath = Path.Combine(Dir, fileName);
 			score.ExportMidi(outputPath);

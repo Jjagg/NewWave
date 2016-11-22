@@ -1,4 +1,5 @@
 ﻿using NewWave.Core;
+using NewWave.Generator.Parameters;
 
 namespace NewWave.Generator
 {
@@ -9,8 +10,8 @@ namespace NewWave.Generator
 
 		public int Tempo;
 
-		private Parameters _parameters;
-		public Parameters Parameters
+		private ParameterList _parameters;
+		public ParameterList Parameters
 		{
 			get { return _parameters; }
 			set
@@ -30,7 +31,7 @@ namespace NewWave.Generator
 
 			// Defaults (can be set manually after constructor)
 			Tempo = 150;
-			Parameters = new Parameters();
+			Parameters = new ParameterList();
 		}
 	}
 }

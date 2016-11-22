@@ -3,9 +3,9 @@ using NewWave.Core;
 using NewWave.Library.Chords;
 using NewWave.Midi;
 
-namespace NewWave.Generator
+namespace NewWave.Generator.Parameters
 {
-	public class Parameters : IParameters
+	public class ParameterList : IParameterList
 	{
 		public double TempoMean;
 		public double TempoStandardDeviation;
@@ -31,7 +31,7 @@ namespace NewWave.Generator
 			set { MinorKey = value(); }
 		}
 
-		public Parameters()
+		public ParameterList()
 		{
 			// Defaults (can be set manually after constructor)
 			TempoMean = 120;

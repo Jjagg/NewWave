@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
+using NewWave.Generator.Parameters;
 using NewWave.Generator.Sections;
 using NewWave.Midi;
 
@@ -14,9 +15,9 @@ namespace NewWave.Generator
 		private SongInfo _songInfo;
 		internal List<SongSection> Sections;
 
-		public override string Generate(IParameters parameters)
+		public override string Generate(IParameterList parameterList)
 		{
-			var param = (Parameters)parameters;
+			var param = (ParameterList)parameterList;
 			var time = param.TimeSignatureFunc();
 			var feel = param.FeelFunc(time);
 			_songInfo = new SongInfo(time, feel)
@@ -70,7 +71,7 @@ namespace NewWave.Generator
 			return sb.ToString();
 		}
 
-		private static List<ChordProgression> GetDistinctChordProgressions(Parameters parameters, int amount)
+		private static List<ChordProgression> GetDistinctChordProgressions(ParameterList parameters, int amount)
 		{
 			var progressions = new List<ChordProgression>();
 			while (progressions.Count < amount)
