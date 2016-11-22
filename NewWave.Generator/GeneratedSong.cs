@@ -12,25 +12,26 @@ namespace NewWave.Generator
 {
 	public class GeneratedSong : Song
 	{
-		private int _tempo;
-		private TimeSignature _time;
-		private int _feel;
+		private SongInfo _songInfo;
 		internal List<SongSection> Sections;
 
 		public override string Generate()
 		{
-			_tempo = (int)Randomizer.NextNormalized(150, 20);
-			_time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
-			_feel = Randomizer.ProbabilityOfTrue(_time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
-			var songInfo = new SongInfo(_time, _feel) { MinorKey = Pitch.E2 };
+			var time = new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4);
+			var feel = Randomizer.ProbabilityOfTrue(time.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3;
+			_songInfo = new SongInfo(time, feel)
+			{
+				MinorKey = Pitch.E2,
+				Tempo = (int)Randomizer.NextNormalized(150, 20)
+			};
 
 			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();
 			var chordProgressions = GetDistinctChordProgressions(sections.Distinct().Count());
 			var mappedChordProgressions = sections.Distinct().Select((s, i) => new Tuple<int, SectionType>(i, s));
 			var sectionTypes = mappedChordProgressions.Distinct()
-				.ToDictionary(s => s.Item2, s => new SongSection(songInfo, s.Item2, RepeatsPerSection(s.Item2), chordProgressions[s.Item1]));
+				.ToDictionary(s => s.Item2, s => new SongSection(_songInfo, s.Item2, RepeatsPerSection(s.Item2), chordProgressions[s.Item1]));
 			Sections = sections.Select(s => sectionTypes[s]).ToList();
-			return WriteStats(songInfo);
+			return WriteStats(_songInfo);
 		}
 
 		public override Score Render()
@@ -46,8 +47,8 @@ namespace NewWave.Generator
 			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums));
 
 			return new Score(renderedSections.Sum(s => s),
-				new Dictionary<int, TimeSignature> { { 0, _time } },
-				new Dictionary<int, int> { { 0, _tempo } },
+				new Dictionary<int, TimeSignature> { { 0, _songInfo.TimeSignature } },
+				new Dictionary<int, int> { { 0, _songInfo.Tempo } },
 				new List<InstrumentTrack> { guitarL, guitarR, guitarC, guitarLc, guitarRc, bass },
 				drums);
 		}
@@ -55,7 +56,7 @@ namespace NewWave.Generator
 		private string WriteStats(SongInfo songInfo)
 		{
 			var totalBeatCount = Sections.Sum(s => s.Measures * songInfo.TimeSignature.BeatCount);
-			var totalMinutes = (double)totalBeatCount / _tempo;
+			var totalMinutes = (double)totalBeatCount / _songInfo.Tempo;
 			var minutes = (int)totalMinutes;
 			var seconds = (int)((totalMinutes - minutes) * 60);
 
@@ -63,9 +64,9 @@ namespace NewWave.Generator
 			sb.AppendLine("----------");
 			sb.AppendLine(string.Format("Measures: {0}", Sections.Sum(s => s.Measures)));
 			sb.AppendLine(string.Format("Song length: {0}:{1:00}", minutes, seconds));
-			sb.AppendLine(string.Format("Time signature: {0}", _time));
-			sb.AppendLine(string.Format("Tempo: {0}", _tempo));
-			sb.AppendLine(string.Format("Feel: 1/{0}", _feel));
+			sb.AppendLine(string.Format("Time signature: {0}", _songInfo.TimeSignature));
+			sb.AppendLine(string.Format("Tempo: {0}", _songInfo.Tempo));
+			sb.AppendLine(string.Format("Feel: 1/{0}", _songInfo.Feel));
 			return sb.ToString();
 		}
 

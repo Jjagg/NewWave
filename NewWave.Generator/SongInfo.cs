@@ -8,7 +8,8 @@ namespace NewWave.Generator
 		public readonly TimeSignature TimeSignature;
 		public readonly int Feel;
 
-		public Pitch MajorKey { get; set; }
+		public int Tempo;
+		public Pitch MajorKey;
 
 		public Pitch MinorKey
 		{
@@ -23,6 +24,7 @@ namespace NewWave.Generator
 
 			// Defaults (can be set manually after constructor)
 			MajorKey = Pitch.A0;
+			Tempo = 150;
 		}
 	}
 }
