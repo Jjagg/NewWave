@@ -15,13 +15,14 @@ namespace NewWave.Generator
 		private SongInfo _songInfo;
 		internal List<SongSection> Sections;
 
-		public override string Generate(Parameters parameters)
+		public override string Generate(IParameters parameters)
 		{
-			var time = parameters.TimeSignatureFunc();
-			var feel = parameters.FeelFunc(time);
+			var param = (Parameters)parameters;
+			var time = param.TimeSignatureFunc();
+			var feel = param.FeelFunc(time);
 			_songInfo = new SongInfo(time, feel)
 			{
-				Parameters = parameters
+				Parameters = param
 			};
 
 			var sections = SectionLayoutGenerator.GetSectionLayout().ToList();

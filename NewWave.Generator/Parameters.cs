@@ -1,9 +1,10 @@
 using System;
+using NewWave.Core;
 using NewWave.Midi;
 
-namespace NewWave.Core
+namespace NewWave.Generator
 {
-	public class Parameters
+	public class Parameters : IParameters
 	{
 		public double TempoMean;
 		public double TempoStandardDeviation;

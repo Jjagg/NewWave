@@ -11,5 +11,7 @@ namespace NewWave.Test
 		{
 			Common.RenderAndPlay(new Parameters(), new TestSong(), "output.mid");
 		}
+
+		private class Parameters : IParameters { }
 	}
 }
