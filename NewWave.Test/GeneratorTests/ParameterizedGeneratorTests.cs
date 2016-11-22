@@ -17,9 +17,9 @@ namespace NewWave.Test.GeneratorTests
 		}
 
 		[TestMethod]
-		public void FastSong()
+		public void MinorFastSong()
 		{
-			RenderAndPlay(new FastSongParameterList());
+			RenderAndPlay(new MinorFastSongParameterList());
 		}
 
 		[TestMethod]
