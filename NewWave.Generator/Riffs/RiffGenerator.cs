@@ -21,7 +21,7 @@ namespace NewWave.Generator.Riffs
 				var thisChord = chordProgression.Last(c => c.Item1 <= note).Item2;
 				var thisScale = GetScale(thisChord).ToList();
 				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5), -7, 7);
-				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count);
+				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count - 1);
 				var thisPitch = thisScale[thisIndex];
 				var thisLength = lengths[note];
 
