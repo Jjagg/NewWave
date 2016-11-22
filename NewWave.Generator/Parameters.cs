@@ -1,3 +1,5 @@
+using System;
+using NewWave.Core;
 using NewWave.Midi;
 
 namespace NewWave.Generator
@@ -7,6 +9,8 @@ namespace NewWave.Generator
 		public double TempoMean;
 		public double TempoStandardDeviation;
 		public Pitch MajorKey;
+		public Func<TimeSignature> TimeSignatureFunc;
+		public Func<TimeSignature, int> FeelFunc;
 
 		public Pitch MinorKey
 		{
@@ -18,6 +22,8 @@ namespace NewWave.Generator
 		{
 			// Defaults (can be set manually after constructor)
 			MajorKey = Pitch.A0;
+			TimeSignatureFunc = () => TimeSignature.CommonTime;
+			FeelFunc = t => 4;
 		}
 	}
 }
