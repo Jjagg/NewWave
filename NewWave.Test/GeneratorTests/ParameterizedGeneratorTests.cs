@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
@@ -25,7 +24,7 @@ namespace NewWave.Test.GeneratorTests
 				.Apply(new MinorKeyParameterList())
 				.Apply(new TempoParameter(200, 10))
 				.Apply(new SongLengthParameter(180, 30))
-				.Apply(new SectionLengthParameter(LongSections));
+				.Apply(new SectionLengthParameter(LongSections, FewRepeats));
 			RenderAndPlay(parameters);
 		}
 
@@ -37,6 +36,39 @@ namespace NewWave.Test.GeneratorTests
 		private static Func<SectionType, int> ShortSections
 		{
 			get { return type => type == SectionType.Verse ? 1 : 2; }
+		}
+
+		private static Func<SectionType, int, int> FewRepeats
+		{
+			get { return (type, length) => GetRepeats(length, type, 1); }
+		}
+
+		private static Func<SectionType, int, int> ManyRepeats
+		{
+			get { return (type, length) => GetRepeats(length, type, 4); }
+		}
+
+		private static int GetRepeats(int length, SectionType type, int baseLength)
+		{
+			var multiplier = length < 2 ? 2 : 1;
+			var returnVal = baseLength;
+			switch (type)
+			{
+				case SectionType.Verse:
+				case SectionType.Chorus:
+					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? baseLength * 2 : baseLength;
+					break;
+				case SectionType.Intro:
+				case SectionType.Outro:
+				case SectionType.Prechorus:
+					returnVal = baseLength / 2;
+					break;
+				case SectionType.Bridge:
+					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? baseLength : baseLength / 2;
+					break;
+			}
+
+			return multiplier * returnVal;
 		}
 
 		[TestMethod]

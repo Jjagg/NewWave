@@ -34,7 +34,7 @@ namespace NewWave.Generator.Sections
 			_groove = GetGroove();
 
 			_timeKeeper = GetTimeKeeper(type);
-			_repeats = RepeatsPerSection(type, _measures);
+			_repeats = songInfo.Parameters.RepeatsPerSection(type, _measures);
 			Riff = RiffGenerator.GetRiff(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
 		}
 
@@ -249,29 +249,6 @@ namespace NewWave.Generator.Sections
 				result.Transpose(-12);
 			}
 			return result;
-		}
-
-		private static int RepeatsPerSection(SectionType type, int measures)
-		{
-			var multiplier = measures < 2 ? 2 : 1;
-			var returnVal = 1;
-			switch (type)
-			{
-				case SectionType.Verse:
-				case SectionType.Chorus:
-					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? 4 : 2;
-					break;
-				case SectionType.Intro:
-				case SectionType.Outro:
-				case SectionType.Prechorus:
-					returnVal = 1;
-					break;
-				case SectionType.Bridge:
-					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? 2 : 1;
-					break;
-			}
-
-			return multiplier * returnVal;
 		}
 	}
 }
