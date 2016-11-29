@@ -5,7 +5,7 @@ using NewWave.Midi;
 
 namespace NewWave.Generator.Parameters
 {
-	public abstract class ParameterListBase : IParameterList
+	public class ParameterListBase : IParameterList
 	{
 		public double TempoMean;
 		public double TempoStandardDeviation;
@@ -33,7 +33,7 @@ namespace NewWave.Generator.Parameters
 			set { MinorKey = value(); }
 		}
 
-		protected ParameterListBase()
+		public ParameterListBase()
 		{
 			// Defaults (can be set manually in child constructors)
 			TempoMean = 120;
@@ -45,6 +45,12 @@ namespace NewWave.Generator.Parameters
 			FeelFunc = t => 4;
 			LowestPossibleNote = Pitch.E2;
 			ChordProgressionFilter = node => node;
+		}
+
+		internal ParameterListBase Apply(IParameter parameter)
+		{
+			parameter.Apply(this);
+			return this;
 		}
 	}
 }
