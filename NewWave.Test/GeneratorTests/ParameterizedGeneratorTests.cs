@@ -20,7 +20,7 @@ namespace NewWave.Test.GeneratorTests
 		public void MinorFastSong()
 		{
 			var parameters = new ParameterListBase()
-				.Apply(new MajorKeyParameterList())
+				.Apply(new MinorKeyParameterList())
 				.Apply(new FastSongParameterList());
 			RenderAndPlay(parameters);
 		}

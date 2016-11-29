@@ -51,6 +51,7 @@
     <Compile Include="MarkovChainNodeFunc.cs" />
     <Compile Include="Parameters\FastSongParameterList.cs" />
     <Compile Include="Parameters\IParameter.cs" />
+    <Compile Include="Parameters\MajorKeyParameterList.cs" />
     <Compile Include="Parameters\MinorKeyParameterList.cs" />
     <Compile Include="Parameters\SlowSongParameterList.cs" />
     <Compile Include="Parameters\ParameterListBase.cs" />
