@@ -15,7 +15,7 @@ namespace NewWave.Test.GeneratorTests
 	public class BasicGeneratorTests
 	{
 		private const Pitch LowestPitch = Pitch.E2;
-		private static readonly ParameterListBase Parameters = new SlowSongParameterList
+		private static readonly ParameterListBase Parameters = new DefaultParameterList
 		{
 			MinorKeyFunc = () => new List<Pitch> { LowestPitch, LowestPitch + 5, LowestPitch + 2 }[Randomizer.GetWeightedIndex(new List<double>
 			{

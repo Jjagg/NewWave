@@ -33,10 +33,10 @@ namespace NewWave.Generator.Parameters
 
 		protected ParameterListBase()
 		{
-			// Defaults (can be set manually after constructor)
+			// Defaults (can be set manually in child constructors)
 			TempoMean = 120;
 			TempoStandardDeviation = 0;
-			MajorKeyFunc = () => Pitch.G0;
+			MajorKeyFunc = () => Pitch.G3;
 			TimeSignatureFunc = () => TimeSignature.CommonTime;
 			FeelFunc = t => 4;
 			LowestPossibleNote = Pitch.E2;
