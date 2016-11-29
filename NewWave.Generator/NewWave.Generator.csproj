@@ -49,8 +49,9 @@
     <Compile Include="MarkovChainNode.cs" />
     <Compile Include="GeneratedSong.cs" />
     <Compile Include="MarkovChainNodeFunc.cs" />
-    <Compile Include="Parameters\DefaultParameterList.cs" />
     <Compile Include="Parameters\FastSongParameterList.cs" />
+    <Compile Include="Parameters\IParameter.cs" />
+    <Compile Include="Parameters\MinorKeyParameterList.cs" />
     <Compile Include="Parameters\SlowSongParameterList.cs" />
     <Compile Include="Parameters\ParameterListBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,11 +1,11 @@
 namespace NewWave.Generator.Parameters
 {
-	public class SlowSongParameterList : ParameterListBase
+	public class SlowSongParameterList : IParameter
 	{
-		public SlowSongParameterList()
+		public void Apply(ParameterListBase parameterListBase)
 		{
-			TempoMean = 100;
-			TempoStandardDeviation = 5;
+			parameterListBase.TempoMean = 100;
+			parameterListBase.TempoStandardDeviation = 5;
 		}
 	}
 }
