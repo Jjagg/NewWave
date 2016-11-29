@@ -13,19 +13,23 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void Default()
 		{
-			RenderAndPlay(new DefaultParameterList());
+			RenderAndPlay(new ParameterListBase());
 		}
 
 		[TestMethod]
 		public void MinorFastSong()
 		{
-			RenderAndPlay(new MinorFastSongParameterList());
+			var parameters = new ParameterListBase()
+				.Apply(new MinorKeyParameterList())
+				.Apply(new FastSongParameterList());
+			RenderAndPlay(parameters);
 		}
 
 		[TestMethod]
 		public void SlowSong()
 		{
-			RenderAndPlay(new SlowSongParameterList());
+			RenderAndPlay(new ParameterListBase()
+				.Apply(new SlowSongParameterList()));
 		}
 
 		private static void RenderAndPlay(IParameterList parameterList)
