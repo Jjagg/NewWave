@@ -16,7 +16,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void RiffTest()
 		{
-			var section = new SongSection(new SongInfo(TimeSignature.CommonTime, 4), SectionType.None, 1, ChordProgressionGenerator.ChordProgression(n => n));
+			var section = new SongSection(new SongInfo(TimeSignature.CommonTime, 4), SectionType.None, ChordProgressionGenerator.ChordProgression(n => n));
 			var riff = section.Riff;
 			foreach (var note in riff)
 			{

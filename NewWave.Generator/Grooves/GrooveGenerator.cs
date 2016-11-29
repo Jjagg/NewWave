@@ -71,7 +71,8 @@ namespace NewWave.Generator.Grooves
 			new List<double> { 0.5, 1.5 },
 			new List<double> { 1.5, 1.5, 1 },
 			new List<double> { 0.5, 0.5, 0.5, 0.5 },
-			new List<double> { 0.5, 0.5, 1 }
+			new List<double> { 0.5, 0.5, 1 },
+			new List<double> { 1, 0.5, 1, 0.5, 1 }
 		};
 
 		private static List<List<double>> LengthSegments3 => new List<List<double>>

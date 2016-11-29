@@ -1,6 +1,6 @@
 ﻿namespace NewWave.Generator.Sections
 {
-	internal enum SectionType
+	public enum SectionType
 	{
 		None,
 		Intro,

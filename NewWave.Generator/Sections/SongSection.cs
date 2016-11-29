@@ -24,17 +24,17 @@ namespace NewWave.Generator.Sections
 		private readonly Percussion _timeKeeper;
 		private readonly int _repeats;
 
-		internal SongSection(SongInfo songInfo, SectionType type, int repeats, ChordProgression chordProgression)
+		internal SongSection(SongInfo songInfo, SectionType type, ChordProgression chordProgression)
 		{
 			Type = type;
 			_songInfo = songInfo;
 
-			_measures = new List<int> { 8, 4 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
+			_measures = songInfo.Parameters.MeasuresPerSection(type);
 			Chords = GetChordProgression(songInfo.Parameters.LowestPossibleNote, chordProgression);
 			_groove = GetGroove();
 
 			_timeKeeper = GetTimeKeeper(type);
-			_repeats = repeats;
+			_repeats = RepeatsPerSection(type, _measures);
 			Riff = RiffGenerator.GetRiff(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
 		}
 
@@ -55,9 +55,10 @@ namespace NewWave.Generator.Sections
 
 				for (var measure = 0; measure < _measures; measure++)
 				{
+					var addCrash = repeat % 2 == 0 && measure == 0;
 					var grooveNotes = repeat == _repeats - 1
-						? AddFill(measure, _groove.Notes(_timeKeeper, measure == 0, _songInfo.TimeSignature))
-						: _groove.Notes(_timeKeeper, measure == 0, _songInfo.TimeSignature);
+						? AddFill(measure, _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature))
+						: _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature);
 					var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
 					var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
 					if (!gNotes.Any())
@@ -241,6 +242,29 @@ namespace NewWave.Generator.Sections
 				result.Transpose(-12);
 			}
 			return result;
+		}
+
+		private static int RepeatsPerSection(SectionType type, int measures)
+		{
+			var multiplier = measures < 2 ? 2 : 1;
+			var returnVal = 1;
+			switch (type)
+			{
+				case SectionType.Verse:
+				case SectionType.Chorus:
+					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? 4 : 2;
+					break;
+				case SectionType.Intro:
+				case SectionType.Outro:
+				case SectionType.Prechorus:
+					returnVal = 1;
+					break;
+				case SectionType.Bridge:
+					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? 2 : 1;
+					break;
+			}
+
+			return multiplier * returnVal;
 		}
 	}
 }
