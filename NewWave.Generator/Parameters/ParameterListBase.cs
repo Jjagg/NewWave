@@ -9,6 +9,8 @@ namespace NewWave.Generator.Parameters
 	{
 		public double TempoMean;
 		public double TempoStandardDeviation;
+		public double LengthInSecondsMean;
+		public double LengthInSecondsStandardDeviation;
 		public Pitch MajorKey;
 		public Func<TimeSignature> TimeSignatureFunc;
 		public Func<TimeSignature, int> FeelFunc;
@@ -36,6 +38,8 @@ namespace NewWave.Generator.Parameters
 			// Defaults (can be set manually in child constructors)
 			TempoMean = 120;
 			TempoStandardDeviation = 0;
+			LengthInSecondsMean = 180;
+			LengthInSecondsStandardDeviation = 0;
 			MajorKeyFunc = () => Pitch.G3;
 			TimeSignatureFunc = () => TimeSignature.CommonTime;
 			FeelFunc = t => 4;

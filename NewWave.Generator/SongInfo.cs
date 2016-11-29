@@ -9,6 +9,7 @@ namespace NewWave.Generator
 		public readonly int Feel;
 
 		public int Tempo;
+		public double LengthInSeconds;
 
 		private ParameterListBase _parameters;
 		public ParameterListBase Parameters
@@ -20,6 +21,7 @@ namespace NewWave.Generator
 				if (_parameters != null)
 				{
 					Tempo = (int)Randomizer.NextNormalized(value.TempoMean, value.TempoStandardDeviation);
+					LengthInSeconds = Randomizer.NextNormalized(value.LengthInSecondsMean, value.LengthInSecondsStandardDeviation);
 				}
 			}
 		}
