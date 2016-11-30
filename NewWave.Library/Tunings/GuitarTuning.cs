@@ -2,26 +2,30 @@
 
 namespace NewWave.Library.Tunings
 {
-    public class GuitarTuning
-    {
-        public readonly Pitch[] Pitches;
+	public class GuitarTuning
+	{
+		public readonly Pitch[] Pitches;
+		public bool IsDropTuning { get; private set; }
 
-        public GuitarTuning(params Pitch[] pitches)
-        {
-            Pitches = pitches;
-        }
+		public GuitarTuning(params Pitch[] pitches)
+		{
+			Pitches = pitches;
+		}
 
-        public void Retune(int stepsUp)
-        {
-            for (var i = 0; i < Pitches.Length; i++)
-            {
-                Pitches[i] += stepsUp;
-            }
-        }
+		public GuitarTuning Retune(int stepsUp)
+		{
+			for (var i = 0; i < Pitches.Length; i++)
+			{
+				Pitches[i] += stepsUp;
+			}
+			return this;
+		}
 
-        public void Drop()
-        {
-            Pitches[0] -= 2;
-        }
-    }
+		public GuitarTuning Drop()
+		{
+			Pitches[0] -= 2;
+			IsDropTuning = true;
+			return this;
+		}
+	}
 }
