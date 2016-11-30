@@ -5,14 +5,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FA86D790-DE62-46D9-A3B6-0FD84ACCB75D}</ProjectGuid>
+    <ProjectGuid>{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NewWave.Core</RootNamespace>
-    <AssemblyName>NewWave.Core</AssemblyName>
+    <RootNamespace>NewWave.Generator</RootNamespace>
+    <AssemblyName>NewWave.Generator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>a7fb5bfd</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>a84c0c22</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Sanford.Multimedia.Midi">
-      <HintPath>..\Dependencies\Sanford.Multimedia.Midi.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,24 +41,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InstrumentTrack.cs" />
-    <Compile Include="Note.cs" />
-    <Compile Include="PercussionNote.cs" />
-    <Compile Include="PercussionTrack.cs" />
+    <Compile Include="ChordProgressions\ChordProgression.cs" />
+    <Compile Include="ChordProgressions\ChordProgressionGenerator.cs" />
+    <Compile Include="ChordProgressions\ChordProgressionLibrary.cs" />
+    <Compile Include="Grooves\FillGenerator.cs" />
+    <Compile Include="Grooves\GrooveGenerator.cs" />
+    <Compile Include="MarkovChainNode.cs" />
+    <Compile Include="GeneratedSong.cs" />
+    <Compile Include="MarkovChainNodeFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Score.cs" />
-    <Compile Include="Song.cs" />
-    <Compile Include="TimeSignature.cs" />
+    <Compile Include="Randomizer.cs" />
+    <Compile Include="Riffs\RiffGenerator.cs" />
+    <Compile Include="Sections\SectionLayoutGenerator.cs" />
+    <Compile Include="Sections\SectionType.cs" />
+    <Compile Include="Sections\SongSection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NewWave.Core\NewWave.Core.csproj">
+      <Project>{FA86D790-DE62-46D9-A3B6-0FD84ACCB75D}</Project>
+      <Name>NewWave.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NewWave.Library\NewWave.Library.csproj">
+      <Project>{F826AE15-ED89-4CF3-92E4-BF3B8DC5A53C}</Project>
+      <Name>NewWave.Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NewWave.Midi\NewWave.Midi.csproj">
-      <Project>{0ecaf30f-55ba-4dc0-8e99-f85307c9ab8d}</Project>
+      <Project>{0ECAF30F-55BA-4DC0-8E99-F85307C9AB8D}</Project>
       <Name>NewWave.Midi</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

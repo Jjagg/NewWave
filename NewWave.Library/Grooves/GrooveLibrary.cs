@@ -3,26 +3,29 @@ using NewWave.Core;
 
 namespace NewWave.Library.Grooves
 {
-	public static class GrooveLibrary
-	{
-		private static readonly List<Groove> Grooves = new List<Groove>
+    public static class GrooveLibrary
+    {
+        private static readonly List<Groove> Grooves = new List<Groove>
 		{
-			new Groove("simple rock", TimeSignature.CommonTime, 4, 2, new List<int> { 4, 12 }, new List<int> { 0, 8 }),
-			new Groove("fast rock", TimeSignature.CommonTime, 4, 2, new List<int> { 2, 6, 10, 14 }, new List<int> { 0, 4, 8, 12 }),
-			new Groove("simple punk", TimeSignature.CommonTime, 4, 2, new List<int> { 4, 12 }, new List<int> { 0, 6, 10 }),
-			new Groove("funky", TimeSignature.CommonTime, 4, 2, new List<int> { 4, 12 }, new List<int> { 0, 2, 7, 9, 11 }),
-			new Groove("backward rock", TimeSignature.CommonTime, 4, 2, new List<int> { 0, 4, 8, 12 }, new List<int> { 2, 6, 10, 14 }),
-			new Groove("fake triplet", TimeSignature.CommonTime, 4, 2, new List<int> { 8, 14, 15 }, new List<int> { 0, 3, 6 }),
+			new Groove("simple rock", TimeSignature.CommonTime, 4, 2, new List<double> { 0, 2 }, new List<double> { 1, 3 }),
+			new Groove("fast rock", TimeSignature.CommonTime, 4, 2, new List<double> { 0, 1, 2, 3 }, new List<double> { 0.5, 1.5, 2.5, 3.5 }),
+			new Groove("simple punk", TimeSignature.CommonTime, 4, 2, new List<double> { 0, 1.5, 2.5 }, new List<double> { 1, 3 }),
+			new Groove("funky", TimeSignature.CommonTime, 4, 2, new List<double> { 0, 0.5, 1.75, 2.25, 2.75 }, new List<double> { 1, 3 }),
+			new Groove("backward rock", TimeSignature.CommonTime, 4, 2, new List<double> { 0.5, 1.5, 2.5, 3.5 }, new List<double> { 0, 1, 2, 3 }),
+			new Groove("fake triplet", TimeSignature.CommonTime, 4, 4, new List<double> { 0, 0.75, 1.5 }, new List<double> { 2, 3.5, 3.75 }),
+			new Groove("blastbeat", TimeSignature.CommonTime, 4, 2, new List<double> { 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5 }, new List<double> { 0.25, 0.75, 1.25, 1.75, 2.25, 2.75, 3.25, 3.75 }),
+			new Groove("double kick", TimeSignature.CommonTime, 4, 4, new List<double> { 0, 0.5, 1, 1.5, 2.5, 3, 3.5 }, new List<double> { 2 }),
+			new Groove("quadruple kick", TimeSignature.CommonTime, 4, 4, new List<double> { 0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75 }, new List<double> { 2 }),
 		};
 
-		public static Groove GetGroove()
-		{
-			return Grooves[0];
-		}
+        public static Groove GetGroove()
+        {
+            return Grooves[0];
+        }
 
-		public static IEnumerable<Groove> AllGrooves
-		{
-			get { return Grooves; }
-		}
-	}
+        public static List<Groove> AllGrooves
+        {
+            get { return Grooves; }
+        }
+    }
 }

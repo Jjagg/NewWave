@@ -6,9 +6,9 @@ namespace NewWave.Core
 	public class PercussionNote
 	{
 		/// <summary>
-		/// The starting position of the note, in ticks.
+		/// The starting position of the note, in fractions of a beat.
 		/// </summary>
-		public readonly int Start;
+		public readonly double Start;
 
 		/// <summary>
 		/// The percussion voice played.
@@ -26,7 +26,7 @@ namespace NewWave.Core
 		/// <param name="start">The starting position of the note, in ticks, with 0 as the beginning of the measure.</param>
 		/// <param name="percussion">The percussion voice played.</param>
 		/// <param name="velocity">The Velocity of the note, 0-127.</param>
-		public PercussionNote(int start, Percussion percussion, Velocity velocity)
+		public PercussionNote(double start, Percussion percussion, Velocity velocity)
 		{
 			Start = start;
 			Percussion = percussion;
@@ -36,6 +36,11 @@ namespace NewWave.Core
 			{
 				throw new Exception("Velocity must be between 0 and 127 inclusive.");
 			}
+		}
+
+		public int StartInTicks(int ticksPerBeat)
+		{
+			return (int)Math.Round(Start * ticksPerBeat);
 		}
 	}
 }

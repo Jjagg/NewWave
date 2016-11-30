@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NewWave.Core;
 using NewWave.Library.Grooves;
+using NewWave.Midi;
 
 namespace NewWave.Test.LibraryTests
 {
@@ -11,11 +13,11 @@ namespace NewWave.Test.LibraryTests
 		public void RockGroove()
 		{
 			var groove = GrooveLibrary.GetGroove();
-			var notes = groove.Notes();
+			var notes = groove.Notes(Percussion.ClosedHiHat, false, TimeSignature.CommonTime);
 
 			Assert.AreEqual(12, notes.Count);
 
-			Console.WriteLine(groove.AsTab());
+			Console.WriteLine(TabWriter.AsTab(4, notes, 4));
 		}
 
 		[TestMethod]
@@ -24,7 +26,7 @@ namespace NewWave.Test.LibraryTests
 			foreach (var groove in GrooveLibrary.AllGrooves)
 			{
 				Console.WriteLine(groove);
-				Console.WriteLine(groove.AsTab());
+				Console.WriteLine(TabWriter.AsTab(4, groove.Notes(Percussion.ClosedHiHat, false, TimeSignature.CommonTime), 4));
 			}
 		}
 	}

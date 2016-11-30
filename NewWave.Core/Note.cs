@@ -6,14 +6,14 @@ namespace NewWave.Core
 	public class Note
 	{
 		/// <summary>
-		/// The starting position of the note, in ticks.
+		/// The starting position of the note, in beats.
 		/// </summary>
-		public readonly int Start;
+		public readonly double Start;
 
 		/// <summary>
-		/// The length of the note, in ticks.
+		/// The length of the note, as a fraction of the beat (usually quarter note).
 		/// </summary>
-		public readonly int Length;
+		public readonly double Length;
 
 		/// <summary>
 		/// The pitch of the note.
@@ -32,7 +32,7 @@ namespace NewWave.Core
 		/// <param name="length">The length of the note, in ticks.</param>
 		/// <param name="pitch">The pitch of the note.</param>
 		/// <param name="velocity">The Velocity of the note, 0-127.</param>
-		public Note(int start, int length, Pitch pitch, Velocity velocity)
+		public Note(double start, double length, Pitch pitch, Velocity velocity)
 		{
 			Start = start;
 			Length = length;
@@ -43,6 +43,16 @@ namespace NewWave.Core
 			{
 				throw new Exception("Velocity must be between 0 and 127 inclusive.");
 			}
+		}
+
+		public int StartInTicks(int ticksPerBeat)
+		{
+			return (int)Math.Round(Start * ticksPerBeat);
+		}
+
+		public int LengthInTicks(int ticksPerBeat)
+		{
+			return (int)Math.Round(Length * ticksPerBeat);
 		}
 
 		public override string ToString()

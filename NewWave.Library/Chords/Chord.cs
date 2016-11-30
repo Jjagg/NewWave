@@ -3,39 +3,53 @@ using NewWave.Midi;
 
 namespace NewWave.Library.Chords
 {
-	public class Chord
+	public struct Chord
 	{
-		private readonly Pitch _basePitch;
-		private readonly ChordQuality _quality;
-		private readonly ChordAdded _added;
+		public Pitch BasePitch;
+	    public readonly ChordQuality Quality;
+		public readonly bool IsInverted;
+		public Pitch Inversion;
 
-		public Chord(Pitch basePitch, ChordQuality quality, ChordAdded added)
+		private readonly ChordAdded _added;
+		
+		public Chord(Pitch basePitch, ChordQuality quality = ChordQuality.NotSpecified, ChordAdded added = ChordAdded.None)
 		{
-			_basePitch = basePitch;
-			_quality = quality;
+			BasePitch = basePitch;
+			Quality = quality;
 			_added = added;
+			IsInverted = false;
+			Inversion = Pitch.ANeg1;
 		}
 
-		public IEnumerable<Pitch> Pitches()
+		public Chord(Pitch basePitch, ChordQuality quality, ChordAdded added, Pitch inversion)
 		{
-			var pitches = new List<Pitch> { _basePitch };
+			BasePitch = basePitch;
+			Quality = quality;
+			_added = added;
+			Inversion = inversion;
+			IsInverted = true;
+		}
+
+		public List<Pitch> Pitches()
+		{
+			var pitches = new List<Pitch> { IsInverted ? Inversion : BasePitch };
 
 			// Second note
-			if (_quality == ChordQuality.Minor || _quality == ChordQuality.Diminished)
+			if (Quality == ChordQuality.Minor || Quality == ChordQuality.Diminished)
 			{
-				pitches.Add(_basePitch + 3);
+				pitches.Add(BasePitch + 3);
 			}
-			else if (_quality == ChordQuality.Suspended)
+			else if (Quality == ChordQuality.Suspended)
 			{
-				pitches.Add(_basePitch + 5);
+				pitches.Add(BasePitch + 5);
 			}
 			else
 			{
-				pitches.Add(_basePitch + 4);
+				pitches.Add(BasePitch + 4);
 			}
 
 			// Third note
-			pitches.Add(_basePitch + 7);
+			pitches.Add(BasePitch + 7);
 
 			// Additional notes
 			if (_added != ChordAdded.None)
@@ -43,19 +57,19 @@ namespace NewWave.Library.Chords
 				switch (_added)
 				{
 					case ChordAdded.Six:
-						pitches.Add(_basePitch + 9);
+						pitches.Add(BasePitch + 9);
 						break;
 					case ChordAdded.Seven:
-						pitches.Add(_basePitch + (_quality == ChordQuality.Major ? 11 : 10));
+						pitches.Add(BasePitch + (Quality == ChordQuality.Major ? 11 : 10));
 						break;
 					case ChordAdded.Nine:
-						pitches.Add(_basePitch + (_quality == ChordQuality.Major ? 11 : 10));
-						pitches.Add(_basePitch + (_quality == ChordQuality.Minor ? 13 : 14));
+						pitches.Add(BasePitch + (Quality == ChordQuality.Major ? 11 : 10));
+						pitches.Add(BasePitch + (Quality == ChordQuality.Minor ? 13 : 14));
 						break;
 					case ChordAdded.Eleven:
-						pitches.Add(_basePitch + (_quality == ChordQuality.Major ? 11 : 10));
-						pitches.Add(_basePitch + (_quality == ChordQuality.Minor ? 13 : 14));
-						pitches.Add(_basePitch + (_quality == ChordQuality.Diminished ? 16 : 17));
+						pitches.Add(BasePitch + (Quality == ChordQuality.Major ? 11 : 10));
+						pitches.Add(BasePitch + (Quality == ChordQuality.Minor ? 13 : 14));
+						pitches.Add(BasePitch + (Quality == ChordQuality.Diminished ? 16 : 17));
 						break;
 				}
 			}
@@ -63,10 +77,29 @@ namespace NewWave.Library.Chords
 			return pitches;
 		}
 
+		public void Transpose(int halfsteps)
+		{
+			BasePitch += halfsteps;
+			Inversion += halfsteps;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (!(obj is Chord)) return false;
+
+			var other = (Chord)obj;
+			return
+				BasePitch == other.BasePitch &&
+				_added == other._added &&
+				IsInverted == other.IsInverted &&
+				(!IsInverted || Inversion == other.Inversion) &&
+				Quality == other.Quality;
+		}
+
 		public override string ToString()
 		{
 			var quality = string.Empty;
-			switch (_quality)
+			switch (Quality)
 			{
 				case ChordQuality.Major:
 					quality = "maj";
@@ -86,20 +119,22 @@ namespace NewWave.Library.Chords
 			switch (_added)
 			{
 				case ChordAdded.Six:
-					quality = "6";
+					added = "6";
 					break;
 				case ChordAdded.Seven:
-					quality = "7";
+					added = "7";
 					break;
 				case ChordAdded.Nine:
-					quality = "9";
+					added = "9";
 					break;
 				case ChordAdded.Eleven:
-					quality = "11";
+					added = "11";
 					break;
 			}
 
-			return string.Format("{0}{1}{2}", _basePitch.NoteName(), quality, added);
+			var inverted = IsInverted ? string.Format("/{0}", Inversion.NoteName()) : string.Empty;
+
+			return string.Format("{0}{1}{2}{3}", BasePitch.NoteName(), quality, added, inverted);
 		}
 	}
 }

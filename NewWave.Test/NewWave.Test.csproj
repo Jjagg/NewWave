@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -16,6 +17,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>7abc78dc</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,8 +52,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Common.cs" />
+    <Compile Include="GeneratorTests\GrooveTests.cs" />
+    <Compile Include="GeneratorTests\FillTests.cs" />
+    <Compile Include="GeneratorTests\RiffTests.cs" />
+    <Compile Include="GeneratorTests\SectionTests.cs" />
     <Compile Include="LibraryTests\ChordTests.cs" />
     <Compile Include="LibraryTests\GrooveTests.cs" />
+    <Compile Include="GeneratorTests\GeneratorTests.cs" />
     <Compile Include="SimpleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSong.cs" />
@@ -61,6 +69,10 @@
       <Project>{fa86d790-de62-46d9-a3b6-0fd84accb75d}</Project>
       <Name>NewWave.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NewWave.Generator\NewWave.Generator.csproj">
+      <Project>{B48F521E-0AA9-4EAB-9EC1-ECBC726981DD}</Project>
+      <Name>NewWave.Generator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NewWave.Library\NewWave.Library.csproj">
       <Project>{F826AE15-ED89-4CF3-92E4-BF3B8DC5A53C}</Project>
       <Name>NewWave.Library</Name>
@@ -69,6 +81,9 @@
       <Project>{0ECAF30F-55BA-4DC0-8E99-F85307C9AB8D}</Project>
       <Name>NewWave.Midi</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
@@ -90,6 +105,12 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -7,7 +7,7 @@ using Sanford.Multimedia.Midi;
 namespace NewWave.Core
 {
 	/// <summary>
-	/// The "rendered" version of a song, with explicit instructions for time signatures / feel /
+	/// The "rendered" version of a song, with explicit instructions for time signatures /
 	/// instruments / measures / etc. An "unrolled" version. Kind of like a raster image file.
 	/// </summary>
 	public class Score
@@ -16,7 +16,6 @@ namespace NewWave.Core
 		private readonly int _measureCount;
 		private readonly Dictionary<int, TimeSignature> _timeSignatures;
 		private readonly Dictionary<int, int> _tempoChanges;
-		private readonly Dictionary<int, int> _feelChanges;
 
 		// Data about instrument tracks
 		private readonly IEnumerable<InstrumentTrack> _instrumentTracks;
@@ -24,21 +23,19 @@ namespace NewWave.Core
 
 		// Misc MIDI stuff
 		private const int StandardMidiTicksPerBeat = 24;
-		private int _midiTicksPerScoreTick;
+		// Shifts all MIDI events forward one tick so it plays better
 		private const int TickBuffer = 1;
 
 		public Score(int measureCount, Dictionary<int, TimeSignature> timeSignatures, Dictionary<int, int> tempoChanges,
-			Dictionary<int, int> feelChanges, IReadOnlyCollection<InstrumentTrack> instrumentTracks, PercussionTrack percussionTrack)
+			IReadOnlyCollection<InstrumentTrack> instrumentTracks, PercussionTrack percussionTrack)
 		{
 			_measureCount = measureCount;
 
 			_timeSignatures = timeSignatures;
 			_tempoChanges = tempoChanges;
-			_feelChanges = feelChanges;
 
 			ValidateInitial(_timeSignatures, "time signature");
 			ValidateInitial(_tempoChanges, "tempo");
-			ValidateInitial(_feelChanges, "feel");
 
 			if (instrumentTracks.Count > 15)
 			{
@@ -74,13 +71,13 @@ namespace NewWave.Core
 			// (we don't need to unroll percussion because it
 			// doesn't have any issue with overlapping notes)
 			var channel = Channel.Channel1;
-			var unrolledInstruments = new List<UnrolledInstrument>();
+			var renderedInstruments = new List<RenderedInstrument>();
 			foreach (var instrumentTrack in _instrumentTracks)
 			{
-				unrolledInstruments.Add(new UnrolledInstrument
+				renderedInstruments.Add(new RenderedInstrument
 				{
 					Channel = channel,
-					Notes = Unroll(instrumentTrack.Notes).ToList()
+					Notes = Unroll(instrumentTrack.Notes).Select(n => new MidiNote(TickBuffer + n.StartInTicks(StandardMidiTicksPerBeat), n.LengthInTicks(StandardMidiTicksPerBeat), n.Pitch, n.Velocity)).ToList()
 				});
 
 				t.Insert(0, new ChannelMessage(ChannelCommand.ProgramChange, (int)channel, (int)instrumentTrack.Instrument));
@@ -95,37 +92,42 @@ namespace NewWave.Core
 				// Create tempo change (if one exists)
 				if (_tempoChanges.ContainsKey(measure))
 				{
-					var feel = FeelAtMeasure(measure);
-					_midiTicksPerScoreTick = StandardMidiTicksPerBeat / feel;
-					t.Insert(_midiTicksPerScoreTick * tickAtStartOfMeasure, new MetaMessage(MetaType.Tempo, GetTempoBytes(_tempoChanges[measure])));
+					t.Insert(tickAtStartOfMeasure, new MetaMessage(MetaType.Tempo, GetTempoBytes(_tempoChanges[measure])));
 				}
 
 				// Create events for percussion
 				foreach (var note in _percussionTrack.Notes[measure])
 				{
-					t.Insert(_midiTicksPerScoreTick * (tickAtStartOfMeasure + note.Start), new ChannelMessage(ChannelCommand.NoteOn, (int)Channel.Channel10, (int)note.Percussion, (int)note.Velocity));
+					t.Insert(tickAtStartOfMeasure + note.StartInTicks(StandardMidiTicksPerBeat), new ChannelMessage(ChannelCommand.NoteOn, (int)Channel.Channel10, (int)note.Percussion, (int)note.Velocity));
 				}
 
 				tickAtStartOfMeasure += MeasureLengthInTicks(measure);
 			}
 
 			// Create events for unrolled instrument tracks
-			foreach (var unrolledInstrument in unrolledInstruments)
+			foreach (var renderedInstrument in renderedInstruments)
 			{
-				foreach (var note in unrolledInstrument.Notes)
+				foreach (var note in renderedInstrument.Notes)
 				{
-					t.Insert(_midiTicksPerScoreTick * (TickBuffer + note.Start), new ChannelMessage(ChannelCommand.NoteOn, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					t.Insert(note.Start, new ChannelMessage(ChannelCommand.NoteOn, (int)renderedInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
 
-					// NOTE: You cannot have NoteOff and NoteOn events for the same pitch
-					// on the same tick. NoteOff gets priority and the second note will not
-					// be played. So move the end of the last note back by a tick.
-					// We could check each note individually, but that takes extra time that's
-					// not really worth saving.
-					t.Insert(_midiTicksPerScoreTick * (TickBuffer + note.Start + note.Length) - 1, new ChannelMessage(ChannelCommand.NoteOff, (int)unrolledInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					if (!renderedInstrument.Notes.Any(e => e.Pitch == note.Pitch && e.Start == note.End))
+					{
+						// NOTE: You cannot have NoteOff and NoteOn events for the same pitch
+						// on the same tick. NoteOff gets priority and the second note will not
+						// be played. So if two notes collide, don't write the NoteOff command
+						// for the first one.
+						t.Insert(note.End, new ChannelMessage(ChannelCommand.NoteOff, (int)renderedInstrument.Channel, (int)note.Pitch, (int)note.Velocity));
+					}
 				}
 			}
 
-			t.Insert(_midiTicksPerScoreTick * tickAtStartOfMeasure, new MetaMessage(MetaType.EndOfTrack, new byte[0]));
+			// Add an empty note one measure after the actual end of the song, just for some extra buffer
+			var endingBuffer = TimeSignatureAtMeasure(_measureCount - 1).BeatCount * StandardMidiTicksPerBeat;
+			t.Insert(tickAtStartOfMeasure + endingBuffer, new ChannelMessage(ChannelCommand.NoteOff, (int)Channel.Channel10, 0));
+
+			// End meta message
+			t.Insert(tickAtStartOfMeasure + endingBuffer, new MetaMessage(MetaType.EndOfTrack, new byte[0]));
 
 			s.Add(t);
 			s.Save(filename);
@@ -142,8 +144,8 @@ namespace NewWave.Core
 			var retVal = new List<Note>();
 			for (var m = 0; m < notes.Count; m++)
 			{
-				var tickAtMeasureStart = m * MeasureLengthInTicks(m);
-				retVal.AddRange(notes[m].Select(note => new Note(tickAtMeasureStart + note.Start, note.Length, note.Pitch, note.Velocity)));
+				var beatAtMeasureStart = m * TimeSignatureAtMeasure(m).BeatCount;
+				retVal.AddRange(notes[m].Select(note => new Note(beatAtMeasureStart + note.Start, note.Length, note.Pitch, note.Velocity)));
 			}
 			return retVal;
 		}
@@ -196,19 +198,13 @@ namespace NewWave.Core
 			return _timeSignatures.Last(t => t.Key <= measure).Value;
 		}
 
-		private int FeelAtMeasure(int measure)
-		{
-			return _feelChanges.Last(f => f.Key <= measure).Value;
-		}
-
 		private int MeasureLengthInTicks(int measure)
 		{
-			// For the sake of our calculations, one "beat" always equals one quarter note.
-			return (int)(TimeSignatureAtMeasure(measure).TotalBeatsPerMeasure * FeelAtMeasure(measure));
+			return TimeSignatureAtMeasure(measure).BeatCount * StandardMidiTicksPerBeat;
 		}
 
 		/// <summary>
-		/// Returns the MIDI byte indicator for tempo, given a particular tempo and feel.
+		/// Returns the MIDI byte indicator for tempo, given a particular tempo.
 		/// </summary>
 		/// <param name="tempo">The tempo in BPM.</param>
 		/// <returns></returns>
@@ -230,10 +226,26 @@ namespace NewWave.Core
 
 		#region Private classes
 
-		private struct UnrolledInstrument
+		private struct RenderedInstrument
 		{
 			public Channel Channel;
-			public List<Note> Notes;
+			public List<MidiNote> Notes;
+		}
+
+		private struct MidiNote
+		{
+			public readonly int Start;
+			public readonly int End;
+			public readonly Pitch Pitch;
+			public readonly Velocity Velocity;
+
+			public MidiNote(int start, int length, Pitch pitch, Velocity velocity)
+			{
+				Start = start;
+				End = start + length;
+				Velocity = velocity;
+				Pitch = pitch;
+			}
 		}
 
 		#endregion
