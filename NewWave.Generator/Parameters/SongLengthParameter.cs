@@ -1,3 +1,7 @@
+using System;
+using NewWave.Generator.Sections;
+using NewWave.Generator.Sections.GuitarStrummers;
+
 namespace NewWave.Generator.Parameters
 {
 	public class SongLengthParameter : IParameter
@@ -15,6 +19,21 @@ namespace NewWave.Generator.Parameters
 		{
 			parameterListBase.LengthInSecondsMean = _mean;
 			parameterListBase.LengthInSecondsStandardDeviation = _standardDeviation;
+		}
+	}
+
+	public class GuitarStrummerParameter : IParameter
+	{
+		private readonly Func<SectionType, IGuitarStrummer> _func;
+
+		public GuitarStrummerParameter(Func<SectionType, IGuitarStrummer> func)
+		{
+			_func = func;
+		}
+
+		public void Apply(ParameterListBase parameterListBase)
+		{
+			parameterListBase.GuitarStrummer = _func;
 		}
 	}
 }

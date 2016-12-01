@@ -5,6 +5,7 @@ using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Generator.Grooves;
 using NewWave.Generator.Riffs;
+using NewWave.Generator.Sections.GuitarStrummers;
 using NewWave.Library.Chords;
 using NewWave.Library.Grooves;
 using NewWave.Midi;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NewWave.Core;
 using NewWave.Library.Chords;
 
-namespace NewWave.Generator.Sections
+namespace NewWave.Generator.Sections.GuitarStrummers
 {
 	public interface IGuitarStrummer
 	{

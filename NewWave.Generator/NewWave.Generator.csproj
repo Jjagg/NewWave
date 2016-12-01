@@ -59,7 +59,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
     <Compile Include="Riffs\RiffGenerator.cs" />
-    <Compile Include="Sections\GuitarStrummer.cs" />
+    <Compile Include="Sections\GuitarStrummers\ChugStrummer.cs" />
+    <Compile Include="Sections\GuitarStrummers\FollowTheDrumStrummer.cs" />
+    <Compile Include="Sections\GuitarStrummers\IGuitarStrummer.cs" />
     <Compile Include="SongInfo.cs" />
     <Compile Include="Sections\SectionLayoutGenerator.cs" />
     <Compile Include="Sections\SectionType.cs" />

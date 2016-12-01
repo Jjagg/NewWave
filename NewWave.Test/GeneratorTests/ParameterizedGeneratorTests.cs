@@ -5,6 +5,7 @@ using NewWave.Core;
 using NewWave.Generator;
 using NewWave.Generator.Parameters;
 using NewWave.Generator.Sections;
+using NewWave.Generator.Sections.GuitarStrummers;
 
 namespace NewWave.Test.GeneratorTests
 {
@@ -24,7 +25,18 @@ namespace NewWave.Test.GeneratorTests
 				.Apply(new MinorKeyParameterList())
 				.Apply(new TempoParameter(180, 10))
 				.Apply(new SongLengthParameter(180, 30))
-				.Apply(new SectionLengthParameter(LongSections, FewRepeats));
+				.Apply(new SectionLengthParameter(LongSections, FewRepeats))
+				.Apply(new GuitarStrummerParameter(t =>
+				{
+					switch (t)
+					{
+						case SectionType.Verse:
+						case SectionType.Outro:
+							return new ChugStrummer();
+					}
+					
+					return new FollowTheDrumStrummer();
+				}));
 			RenderAndPlay(parameters);
 		}
 
