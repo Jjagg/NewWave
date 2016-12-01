@@ -15,7 +15,7 @@ namespace NewWave.Test.GeneratorTests
 		public void SectionTest()
 		{
 			var time = TimeSignature.CommonTime;
-			var section = new SongSection(new SongInfo(time, 4),  SectionType.None, 1, ChordProgressionGenerator.ChordProgression(n => n));
+			var section = new SongSection(new SongInfo(time, 4),  SectionType.None, ChordProgressionGenerator.ChordProgression(n => n));
 
 			var totalBeats = section.Measures * time.BeatCount;
 			Console.WriteLine("Total beats: {0}", totalBeats);
@@ -29,7 +29,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void SectionLayoutTest()
 		{
-			var structure = SectionLayoutGenerator.GetSectionLayout();
+			var structure = new SectionLayoutGenerator().GetSectionLayout(new SongInfo(TimeSignature.CommonTime, 4) { Tempo = 120, LengthInSeconds = 60 });
 			foreach (var sectionType in structure)
 			{
 				Console.WriteLine(sectionType);

@@ -24,17 +24,17 @@ namespace NewWave.Generator.Sections
 		private readonly Percussion _timeKeeper;
 		private readonly int _repeats;
 
-		internal SongSection(SongInfo songInfo, SectionType type, int repeats, ChordProgression chordProgression)
+		internal SongSection(SongInfo songInfo, SectionType type, ChordProgression chordProgression)
 		{
 			Type = type;
 			_songInfo = songInfo;
 
-			_measures = new List<int> { 8, 4 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
+			_measures = songInfo.Parameters.MeasuresPerSection(type);
 			Chords = GetChordProgression(songInfo.Parameters.LowestPossibleNote, chordProgression);
 			_groove = GetGroove();
 
 			_timeKeeper = GetTimeKeeper(type);
-			_repeats = repeats;
+			_repeats = songInfo.Parameters.RepeatsPerSection(type, _measures);
 			Riff = RiffGenerator.GetRiff(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
 		}
 
@@ -55,9 +55,8 @@ namespace NewWave.Generator.Sections
 
 				for (var measure = 0; measure < _measures; measure++)
 				{
-					var grooveNotes = repeat == _repeats - 1
-						? AddFill(measure, _groove.Notes(_timeKeeper, measure == 0, _songInfo.TimeSignature))
-						: _groove.Notes(_timeKeeper, measure == 0, _songInfo.TimeSignature);
+					var addCrash = (repeat % 2 == 0 && measure == 0) || (_measures > 4 && measure % 4 == 0);
+					var grooveNotes = AddFill(repeat, measure, _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature));
 					var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
 					var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
 					if (!gNotes.Any())
@@ -148,12 +147,21 @@ namespace NewWave.Generator.Sections
 			return timeKeepers[Randomizer.Next(timeKeepers.Count)];
 		}
 
-		private List<PercussionNote> AddFill(int measure, List<PercussionNote> grooveNotes)
+		private List<PercussionNote> AddFill(int repeat, int measure, List<PercussionNote> grooveNotes)
 		{
-			if (measure == _measures - 1)
+			var isLastMeasureInRepeatedSection = measure == _measures - 1 && repeat == _repeats - 1;
+			var isLastMeasureInSingleMediumSection = _measures > 2 && measure == _measures - 1;
+			var isMiddleMeasureInSingleLongSection = _measures > 4 && (measure + 1) % 8 == 0;
+
+			if (isLastMeasureInRepeatedSection || isLastMeasureInSingleMediumSection || isMiddleMeasureInSingleLongSection)
 			{
-				// Add fill
-				var fillLength = new List<double> { 2.0, 4.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
+				var fillLength = new List<double> { 1.0, 2.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
+
+				if (isLastMeasureInRepeatedSection)
+				{
+					fillLength *= 2;
+				}
+
 				var fill = FillGenerator.GetFill(_songInfo.TimeSignature.BeatCount - fillLength, fillLength, _songInfo.Feel);
 				grooveNotes = grooveNotes.Where(n => n.Start < _songInfo.TimeSignature.BeatCount - fillLength).Union(fill).ToList();
 			}
