@@ -12,7 +12,7 @@ namespace NewWave.Library.Grooves
 		{
 			var sb = new StringBuilder();
 
-			var voices = notes.Select(n => n.Percussion).Distinct().OrderBy(p => SortValue(p));
+			var voices = notes.Select(n => n.Percussion).Distinct().OrderBy(SortValue);
 			var spacesPerBeat = feel;
 			var tabLength = lengthInBeats * spacesPerBeat;
 

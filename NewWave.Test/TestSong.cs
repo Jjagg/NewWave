@@ -40,9 +40,6 @@ namespace NewWave.Test
 				drums);
 		}
 
-		public override string DisplayName
-		{
-			get { return "Test Song"; }
-		}
+		public override string DisplayName => "Test Song";
 	}
 }

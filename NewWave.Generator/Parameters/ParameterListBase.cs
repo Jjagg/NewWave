@@ -18,7 +18,7 @@ namespace NewWave.Generator.Parameters
 		public Pitch MinorKey
 		{
 			get { return MajorKey - 3; }
-			set { MajorKey = value + 3; }
+			private set { MajorKey = value + 3; }
 		}
 
 		public Func<Pitch> MajorKeyFunc
