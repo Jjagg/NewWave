@@ -2,6 +2,7 @@ using System;
 using NewWave.Core;
 using NewWave.Generator.Sections;
 using NewWave.Library.Chords;
+using NewWave.Library.Tunings;
 using NewWave.Midi;
 
 namespace NewWave.Generator.Parameters
@@ -15,10 +16,11 @@ namespace NewWave.Generator.Parameters
 		public Pitch MajorKey;
 		public Func<TimeSignature> TimeSignatureFunc;
 		public Func<TimeSignature, int> FeelFunc;
-		public Pitch LowestPossibleNote;
 		public Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> ChordProgressionFilter;
 		public Func<SectionType, int> MeasuresPerSection;
 		public Func<SectionType, int, int> RepeatsPerSection;
+		public GuitarTuning GuitarTuning;
+		public GuitarTuning BassTuning;
 
 		public Pitch MinorKey
 		{
@@ -46,10 +48,11 @@ namespace NewWave.Generator.Parameters
 			MajorKeyFunc = () => Pitch.G3;
 			TimeSignatureFunc = () => TimeSignature.CommonTime;
 			FeelFunc = t => 4;
-			LowestPossibleNote = Pitch.E2;
 			ChordProgressionFilter = node => node;
 			MeasuresPerSection = type => 4;
 			RepeatsPerSection = RepeatsPerSectionFunc;
+			GuitarTuning = GuitarTuningLibrary.StandardGuitarTuning;
+			BassTuning = GuitarTuningLibrary.StandardBassTuning;
 		}
 
 		private static int RepeatsPerSectionFunc(SectionType type, int measures)

@@ -30,7 +30,7 @@ namespace NewWave.Generator.Sections
 			_songInfo = songInfo;
 
 			_measures = songInfo.Parameters.MeasuresPerSection(type);
-			Chords = GetChordProgression(songInfo.Parameters.LowestPossibleNote, chordProgression);
+			Chords = GetChordProgression(songInfo.Parameters.GuitarTuning.Pitches[0], chordProgression);
 			_groove = GetGroove();
 
 			_timeKeeper = GetTimeKeeper(type);
@@ -244,9 +244,10 @@ namespace NewWave.Generator.Sections
 		{
 			var currentLowest = result.Pitches().Min();
 			var minPitchToTranspose = lowestPossibleNote.AddOctave(1);
-			if (currentLowest >= minPitchToTranspose)
+			while (currentLowest >= minPitchToTranspose)
 			{
 				result.Transpose(-12);
+				currentLowest = result.Pitches().Min();
 			}
 			return result;
 		}

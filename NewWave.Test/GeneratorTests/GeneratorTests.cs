@@ -23,7 +23,6 @@ namespace NewWave.Test.GeneratorTests
 			})],
 			TimeSignatureFunc = () => new TimeSignature(Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3, 4),
 			FeelFunc = t => Randomizer.ProbabilityOfTrue(t.BeatCount == 4 ? 0.65 : 0.8) ? 4 : 3,
-			LowestPossibleNote = LowestPitch,
 			ChordProgressionFilter = MinorOrDiminshedFilter
 		};
 
