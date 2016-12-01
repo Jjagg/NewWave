@@ -21,6 +21,7 @@ namespace NewWave.Generator.Parameters
 		public Func<SectionType, int, int> RepeatsPerSection;
 		public GuitarTuning GuitarTuning;
 		public GuitarTuning BassTuning;
+		public IGuitarStrummer GuitarStrummer;
 
 		public Pitch MinorKey
 		{
@@ -53,6 +54,7 @@ namespace NewWave.Generator.Parameters
 			RepeatsPerSection = RepeatsPerSectionFunc;
 			GuitarTuning = GuitarTuningLibrary.StandardGuitarTuning;
 			BassTuning = GuitarTuningLibrary.StandardBassTuning;
+			GuitarStrummer = new FollowTheDrumStrummer();
 		}
 
 		private static int RepeatsPerSectionFunc(SectionType type, int measures)

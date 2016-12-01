@@ -40,17 +40,17 @@ namespace NewWave.Generator.Sections
 
 		internal int Measures => _measures * _repeats;
 
-		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums)
+		internal int Render(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums)
 		{
 			for (var repeat = 0; repeat < _repeats; repeat++)
 			{
-				RenderRepeat(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat);
+				RenderRepeat(strummer, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat);
 			}
 
 			return Measures;
 		}
 
-		private void RenderRepeat(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
+		private void RenderRepeat(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
 		{
 			if (Type == SectionType.Verse || Type == SectionType.Chorus)
 			{
@@ -63,11 +63,11 @@ namespace NewWave.Generator.Sections
 
 			for (var measure = 0; measure < _measures; measure++)
 			{
-				RenderMeasure(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure);
+				RenderMeasure(strummer, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure);
 			}
 		}
 
-		private void RenderMeasure(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
+		private void RenderMeasure(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
 		{
 			var addCrash = (repeat % 2 == 0 && measure == 0) || (_measures > 4 && measure % 4 == 0);
 			var grooveNotes = _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature);
@@ -80,20 +80,20 @@ namespace NewWave.Generator.Sections
 
 			if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
 			{
-				GuitarStrummer.AddNotes(gNotes, guitarLc, Chords, measure, _songInfo);
-				GuitarStrummer.AddNotes(gNotes, guitarRc, Chords, measure, _songInfo);
+				strummer.AddGuitarNotes(guitarLc, gNotes, Chords, measure, _songInfo);
+				strummer.AddGuitarNotes(guitarRc, gNotes, Chords, measure, _songInfo);
 				guitarL.Notes.Add(new List<Note>());
 				guitarR.Notes.Add(new List<Note>());
 			}
 			else
 			{
-				GuitarStrummer.AddNotes(gNotes, guitarL, Chords, measure, _songInfo);
-				GuitarStrummer.AddNotes(gNotes, guitarR, Chords, measure, _songInfo);
+				strummer.AddGuitarNotes(guitarL, gNotes, Chords, measure, _songInfo);
+				strummer.AddGuitarNotes(guitarR, gNotes, Chords, measure, _songInfo);
 				guitarLc.Notes.Add(new List<Note>());
 				guitarRc.Notes.Add(new List<Note>());
 			}
 			
-			GuitarStrummer.AddNotes(gNotes, bass, Chords, measure, _songInfo);
+			strummer.AddBassNotes(bass, gNotes, Chords, measure, _songInfo);
 			drums.Notes.Add(AddFill(repeat, measure, grooveNotes));
 
 			if (measure != 0)

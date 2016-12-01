@@ -22,7 +22,7 @@ namespace NewWave.Test.GeneratorTests
 		{
 			var parameters = new ParameterListBase()
 				.Apply(new MinorKeyParameterList())
-				.Apply(new TempoParameter(200, 10))
+				.Apply(new TempoParameter(180, 10))
 				.Apply(new SongLengthParameter(180, 30))
 				.Apply(new SectionLengthParameter(LongSections, FewRepeats));
 			RenderAndPlay(parameters);
