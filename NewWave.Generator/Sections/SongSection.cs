@@ -44,78 +44,63 @@ namespace NewWave.Generator.Sections
 		{
 			for (var repeat = 0; repeat < _repeats; repeat++)
 			{
-				if (Type == SectionType.Verse || Type == SectionType.Chorus)
-				{
-					guitarC.Notes.Add(Riff.ToList());
-				}
-				else
-				{
-					guitarC.Notes.Add(new List<Note>());
-				}
-
-				for (var measure = 0; measure < _measures; measure++)
-				{
-					var addCrash = (repeat % 2 == 0 && measure == 0) || (_measures > 4 && measure % 4 == 0);
-					var grooveNotes = AddFill(repeat, measure, _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature));
-					var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
-					var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
-					if (!gNotes.Any())
-					{
-						gNotes.Add(new Tuple<double, double>(0, _songInfo.TimeSignature.BeatCount));
-					}
-
-					var guitarRnotes = new List<Note>();
-					var guitarLnotes = new List<Note>();
-					var bassNotes = new List<Note>();
-
-					foreach (var tuple in gNotes)
-					{
-						var start = tuple.Item1;
-						var noteLength = tuple.Item2;
-
-						var pitches = Chords.Last(c => c.Item1 <= measure * _songInfo.TimeSignature.BeatCount + start).Item2.Pitches();
-
-						var pitchCount = 100;
-						if (gNotes.Count >= 6)
-						{
-							pitchCount = 1;
-						}
-						else if (gNotes.Count >= 4)
-						{
-							pitchCount = 2;
-						}
-
-						guitarRnotes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, Velocity.F)));
-						guitarLnotes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, Velocity.F)));
-						bassNotes.Add(new Note(start, noteLength, pitches[0].AddOctave(-1), Velocity.F));
-					}
-
-					if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
-					{
-						guitarLc.Notes.Add(guitarLnotes);
-						guitarRc.Notes.Add(guitarRnotes);
-						guitarL.Notes.Add(new List<Note>());
-						guitarR.Notes.Add(new List<Note>());
-					}
-					else
-					{
-						guitarL.Notes.Add(guitarLnotes);
-						guitarR.Notes.Add(guitarRnotes);
-						guitarLc.Notes.Add(new List<Note>());
-						guitarRc.Notes.Add(new List<Note>());
-					}
-					bass.Notes.Add(bassNotes);
-					drums.Notes.Add(grooveNotes);
-
-					if (measure != 0)
-					{
-						// All the riff notes are actually in the first measure, so add empty ones after it
-						guitarC.Notes.Add(new List<Note>());
-					}
-				}
+				RenderRepeat(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat);
 			}
 
 			return Measures;
+		}
+
+		private void RenderRepeat(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
+		{
+			if (Type == SectionType.Verse || Type == SectionType.Chorus)
+			{
+				guitarC.Notes.Add(Riff.ToList());
+			}
+			else
+			{
+				guitarC.Notes.Add(new List<Note>());
+			}
+
+			for (var measure = 0; measure < _measures; measure++)
+			{
+				RenderMeasure(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure);
+			}
+		}
+
+		private void RenderMeasure(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
+		{
+			var addCrash = (repeat % 2 == 0 && measure == 0) || (_measures > 4 && measure % 4 == 0);
+			var grooveNotes = AddFill(repeat, measure, _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature));
+			var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
+			var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
+			if (!gNotes.Any())
+			{
+				gNotes.Add(new Tuple<double, double>(0, _songInfo.TimeSignature.BeatCount));
+			}
+
+			if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
+			{
+				GuitarStrummer.AddNotes(gNotes, guitarLc, Chords, measure, _songInfo);
+				GuitarStrummer.AddNotes(gNotes, guitarRc, Chords, measure, _songInfo);
+				guitarL.Notes.Add(new List<Note>());
+				guitarR.Notes.Add(new List<Note>());
+			}
+			else
+			{
+				GuitarStrummer.AddNotes(gNotes, guitarL, Chords, measure, _songInfo);
+				GuitarStrummer.AddNotes(gNotes, guitarR, Chords, measure, _songInfo);
+				guitarLc.Notes.Add(new List<Note>());
+				guitarRc.Notes.Add(new List<Note>());
+			}
+			
+			GuitarStrummer.AddNotes(gNotes, bass, Chords, measure, _songInfo);
+			drums.Notes.Add(grooveNotes);
+
+			if (measure != 0)
+			{
+				// All the riff notes are actually in the first measure, so add empty ones after it
+				guitarC.Notes.Add(new List<Note>());
+			}
 		}
 
 		private static Percussion GetTimeKeeper(SectionType type)
