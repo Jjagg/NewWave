@@ -70,7 +70,7 @@ namespace NewWave.Generator.Sections
 		private void RenderMeasure(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
 		{
 			var addCrash = (repeat % 2 == 0 && measure == 0) || (_measures > 4 && measure % 4 == 0);
-			var grooveNotes = AddFill(repeat, measure, _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature));
+			var grooveNotes = _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature);
 			var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
 			var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
 			if (!gNotes.Any())
@@ -94,7 +94,7 @@ namespace NewWave.Generator.Sections
 			}
 			
 			GuitarStrummer.AddNotes(gNotes, bass, Chords, measure, _songInfo);
-			drums.Notes.Add(grooveNotes);
+			drums.Notes.Add(AddFill(repeat, measure, grooveNotes));
 
 			if (measure != 0)
 			{
