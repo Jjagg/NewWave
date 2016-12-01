@@ -52,6 +52,8 @@
     <Compile Include="Grooves\GrooveLibrary.cs" />
     <Compile Include="Grooves\TabWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tunings\GuitarTuning.cs" />
+    <Compile Include="Tunings\GuitarTuningLibrary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NewWave.Core\NewWave.Core.csproj">
