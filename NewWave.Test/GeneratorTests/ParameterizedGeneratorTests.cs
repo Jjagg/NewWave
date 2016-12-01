@@ -68,7 +68,7 @@ namespace NewWave.Test.GeneratorTests
 					break;
 			}
 
-			return multiplier * returnVal;
+			return Math.Max(1, multiplier * returnVal);
 		}
 
 		[TestMethod]
