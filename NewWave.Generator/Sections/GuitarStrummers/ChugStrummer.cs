@@ -11,18 +11,18 @@ namespace NewWave.Generator.Sections.GuitarStrummers
 	{
 		public void AddGuitarNotes(InstrumentTrack track, List<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
 		{
-			AddNotes(track, gNotes, chords, measure, songInfo);
+			AddNotes(track, chords, measure, songInfo);
 		}
 
 		public void AddBassNotes(InstrumentTrack track, List<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
 		{
-			AddNotes(track, gNotes, chords, measure, songInfo, true);
+			AddNotes(track, chords, measure, songInfo, true);
 		}
 
-		private static void AddNotes(InstrumentTrack track, IReadOnlyCollection<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, bool isBass = false)
+		private static void AddNotes(InstrumentTrack track, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, bool isBass = false)
 		{
 			var notes = new List<Note>();
-			var beats = Enumerable.Range(0, songInfo.TimeSignature.BeatCount).Select(b => new Tuple<double, double>(b, 1));
+			var beats = Enumerable.Range(0, songInfo.TimeSignature.BeatCount).Select(b => new Tuple<double, double>(b, 0.5));
 			foreach (var tuple in beats)
 			{
 				var start = tuple.Item1;
@@ -40,7 +40,7 @@ namespace NewWave.Generator.Sections.GuitarStrummers
 			track.Notes.Add(notes);
 		}
 
-		private static Pitch[] PowerChord(Pitch root)
+		private static IEnumerable<Pitch> PowerChord(Pitch root)
 		{
 			return new[] { root, root + 7, root + 12 };
 		} 
