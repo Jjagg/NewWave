@@ -23,6 +23,7 @@ namespace NewWave.Generator.Sections
 		private readonly int _measures;
 		private readonly Groove _groove;
 		private readonly int _repeats;
+		private readonly DrumStyle _drumstyle;
 
 		internal SongSection(SongInfo songInfo, SectionType type, ChordProgression chordProgression)
 		{
@@ -34,21 +35,22 @@ namespace NewWave.Generator.Sections
 			_groove = GetGroove();
 			_repeats = songInfo.Parameters.RepeatsPerSection(type, _measures);
 			Riff = RiffGenerator.GetRiff(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
+			_drumstyle = songInfo.Parameters.DrumStyle(Type);
 		}
 
 		internal int Measures => _measures * _repeats;
 
-		internal int Render(IGuitarStrummer strummer, DrumStyle drumStyle, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums)
+		internal int Render(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums)
 		{
 			for (var repeat = 0; repeat < _repeats; repeat++)
 			{
-				RenderRepeat(strummer, drumStyle, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat);
+				RenderRepeat(strummer, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat);
 			}
 
 			return Measures;
 		}
 
-		private void RenderRepeat(IGuitarStrummer strummer, DrumStyle drumStyle, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
+		private void RenderRepeat(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
 		{
 			if (Type == SectionType.Verse || Type == SectionType.Chorus)
 			{
@@ -61,13 +63,13 @@ namespace NewWave.Generator.Sections
 
 			for (var measure = 0; measure < _measures; measure++)
 			{
-				RenderMeasure(strummer, drumStyle, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure);
+				RenderMeasure(strummer, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure);
 			}
 		}
 
-		private void RenderMeasure(IGuitarStrummer strummer, DrumStyle drumStyle, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
+		private void RenderMeasure(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
 		{
-			var grooveNotes = drumStyle.Notes(_groove);
+			var grooveNotes = _drumstyle.Notes(_groove);
 			var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
 			var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
 			if (!gNotes.Any())

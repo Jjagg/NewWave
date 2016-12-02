@@ -6,7 +6,6 @@ using NewWave.Generator;
 using NewWave.Generator.Grooves;
 using NewWave.Generator.Sections;
 using NewWave.Library.Grooves;
-using NewWave.Midi;
 
 namespace NewWave.Test.GeneratorTests
 {
@@ -28,7 +27,7 @@ namespace NewWave.Test.GeneratorTests
 			const int measures = 4;
 			var totalLength = measures * time.BeatCount;
 			var groove = GrooveGenerator.GenerateGroove(new SongInfo(time, feel));
-			var drumStyle = new DrumStyle();
+			var drumStyle = new DrumStyle(SectionType.None);
 			var grooveNotes = Enumerable.Range(0, measures).SelectMany(i => drumStyle.Notes(groove).Select(n => new PercussionNote(n.Start + i * time.BeatCount, n.Percussion, n.Velocity)));
 			var fillLength = Randomizer.ProbabilityOfTrue(0.5) ? 2 : 4;
 			var fill = FillGenerator.GetFill(totalLength - fillLength, fillLength, feel);
