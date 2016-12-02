@@ -12,9 +12,12 @@ namespace NewWave.Generator.Sections
 		private readonly bool _blast;
 		private readonly bool _doubleKick;
 
+		public List<PercussionNote> Notes { get; }
+
 		public DrumStyle(SectionType type, double probabilityOfBlastbeats = 0)
 		{
 			_timeKeeper = GetTimeKeeper(type);
+			Notes = new List<PercussionNote>();
 
 			if (Randomizer.ProbabilityOfTrue(probabilityOfBlastbeats) && (type == SectionType.Chorus || type == SectionType.Verse))
 			{
@@ -26,9 +29,9 @@ namespace NewWave.Generator.Sections
 			}
 		}
 
-		public List<PercussionNote> Notes(Groove groove)
+		public void Generate(Groove groove)
 		{
-			var notes = new List<PercussionNote>();
+			Notes.Clear();
 			IEnumerable<double> kicks;
 			IEnumerable<double> hihats;
 			IEnumerable<double> snares;
@@ -46,11 +49,9 @@ namespace NewWave.Generator.Sections
 				GenerateBasicGroove(groove, out kicks, out hihats, out snares);
 			}
 
-			notes.AddRange(hihats.Select(h => new PercussionNote(h, _timeKeeper, Velocity.Fff)));
-			notes.AddRange(kicks.Select(k => new PercussionNote(k, Percussion.BassDrum1, Velocity.Fff)));
-			notes.AddRange(snares.Select(s => new PercussionNote(s, Percussion.SnareDrum1, Velocity.Fff)));
-
-			return notes;
+			Notes.AddRange(hihats.Select(h => new PercussionNote(h, _timeKeeper, Velocity.Fff)));
+			Notes.AddRange(kicks.Select(k => new PercussionNote(k, Percussion.BassDrum1, Velocity.Fff)));
+			Notes.AddRange(snares.Select(s => new PercussionNote(s, Percussion.SnareDrum1, Velocity.Fff)));
 		}
 
 		private static void GenerateBasicGroove(Groove groove, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)
@@ -76,7 +77,13 @@ namespace NewWave.Generator.Sections
 				}
 				else if (groove.Feel == 4)
 				{
-					snareList = new List<double> { 0.75, 2 };
+					snareList =
+						new[]
+						{
+							new List<double> { 1, 2.5 },
+							new List<double> { 1, 2.25 },
+							new List<double> { 0.75, 2 }
+						}[Randomizer.Next(3)];
 				}
 			}
 			else if (groove.TimeSignature.BeatCount == 4)

@@ -21,7 +21,6 @@ namespace NewWave.Generator.Sections
 		internal readonly IEnumerable<Note> Riff;
 
 		private readonly int _measures;
-		private readonly Groove _groove;
 		private readonly int _repeats;
 		private readonly DrumStyle _drumstyle;
 
@@ -32,10 +31,10 @@ namespace NewWave.Generator.Sections
 
 			_measures = songInfo.Parameters.MeasuresPerSection(type);
 			Chords = GetChordProgression(songInfo.Parameters.GuitarTuning.Pitches[0], chordProgression);
-			_groove = GetGroove();
 			_repeats = songInfo.Parameters.RepeatsPerSection(type, _measures);
 			Riff = RiffGenerator.GetRiff(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
 			_drumstyle = songInfo.Parameters.DrumStyle(Type);
+			_drumstyle.Generate(GetGroove());
 		}
 
 		internal int Measures => _measures * _repeats;
@@ -69,7 +68,7 @@ namespace NewWave.Generator.Sections
 
 		private void RenderMeasure(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
 		{
-			var grooveNotes = _drumstyle.Notes(_groove);
+			var grooveNotes = _drumstyle.Notes;
 			var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
 			var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
 			if (!gNotes.Any())

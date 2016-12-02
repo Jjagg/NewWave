@@ -21,15 +21,18 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void MinorFastSong()
 		{
-			var parameters = new ParameterList()
-				.Apply(plb => plb.ChordProgressionFilter = ParameterLibrary.MinorFilter)
-				.Apply(plb => plb.TempoMean = 130)
-				.Apply(plb => plb.TempoStandardDeviation = 10)
-				.Apply(plb => plb.LengthInSecondsMean = 130)
-				.Apply(plb => plb.LengthInSecondsStandardDeviation = 30)
-				.Apply(plb => plb.GuitarStrummer = t => t == SectionType.Verse || t == SectionType.Outro
+			var parameters = new ParameterList
+			{
+				ChordProgressionFilter = ParameterLibrary.MinorFilter,
+				TimeSignatureFunc = () => new TimeSignature(3, 4),
+				TempoMean = 70,
+				TempoStandardDeviation = 10,
+				LengthInSecondsMean = 180,
+				LengthInSecondsStandardDeviation = 30,
+				GuitarStrummer = t => t == SectionType.Verse || t == SectionType.Outro
 					? (IGuitarStrummer)new ChugStrummer()
-					: new FollowTheDrumStrummer());
+					: new FollowTheDrumStrummer()
+			};
 			RenderAndPlay(parameters);
 		}
 
@@ -79,9 +82,11 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void SlowSong()
 		{
-			RenderAndPlay(new ParameterList()
-				.Apply(plb => plb.TempoMean = 100)
-				.Apply(plb => plb.TempoStandardDeviation = 5));
+			RenderAndPlay(new ParameterList
+			{
+				TempoMean = 100,
+				TempoStandardDeviation = 5
+			});
 		}
 
 		private static void RenderAndPlay(IParameterList parameterList)
