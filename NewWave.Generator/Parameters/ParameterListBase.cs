@@ -57,7 +57,7 @@ namespace NewWave.Generator.Parameters
 			GuitarTuning = GuitarTuningLibrary.StandardGuitarTuning;
 			BassTuning = GuitarTuningLibrary.StandardBassTuning;
 			GuitarStrummer = t => new ChugStrummer();
-			DrumStyle = t => new DrumStyle(t);
+			DrumStyle = t => new DrumStyle(t, 0.5);
 		}
 
 		private static int RepeatsPerSectionFunc(SectionType type, int measures)

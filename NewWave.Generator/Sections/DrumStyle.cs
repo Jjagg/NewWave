@@ -8,74 +8,110 @@ namespace NewWave.Generator.Sections
 {
 	public class DrumStyle
 	{
-		private Percussion _timeKeeper;
+		private readonly Percussion _timeKeeper;
+		private readonly bool _blast;
+		private readonly bool _doubleKick;
 
-		public DrumStyle(SectionType type)
+		public DrumStyle(SectionType type, double probabilityOfBlastbeats = 0)
 		{
 			_timeKeeper = GetTimeKeeper(type);
+
+			if (Randomizer.ProbabilityOfTrue(probabilityOfBlastbeats) && (type == SectionType.Chorus || type == SectionType.Verse))
+			{
+				_blast = true;
+			}
+			else if (Randomizer.ProbabilityOfTrue(probabilityOfBlastbeats))
+			{
+				_doubleKick = true;
+			}
 		}
 
 		public List<PercussionNote> Notes(Groove groove)
 		{
+			var notes = new List<PercussionNote>();
+			IEnumerable<double> kicks;
+			IEnumerable<double> hihats;
+			IEnumerable<double> snares;
+
+			if (_blast)
+			{
+				GenerateBlast(groove.TimeSignature, groove.Feel, out kicks, out hihats, out snares);
+			}
+			else if (_doubleKick)
+			{
+				GenerateDoubleKick(groove.TimeSignature, groove.Feel, out kicks, out hihats, out snares);
+			}
+			else
+			{
+				GenerateBasicGroove(groove, out kicks, out hihats, out snares);
+			}
+
+			notes.AddRange(hihats.Select(h => new PercussionNote(h, _timeKeeper, Velocity.Fff)));
+			notes.AddRange(kicks.Select(k => new PercussionNote(k, Percussion.BassDrum1, Velocity.Fff)));
+			notes.AddRange(snares.Select(s => new PercussionNote(s, Percussion.SnareDrum1, Velocity.Fff)));
+
+			return notes;
+		}
+
+		private static void GenerateBasicGroove(Groove groove, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)
+		{
+			hihats = new List<double>();
+			var snareList = new List<double>();
+
 			switch (groove.Feel)
 			{
 				case 3:
-					return ThreeGroove(groove);
+					hihats = Enumerable.Range(0, groove.TimeSignature.BeatCount * 3).Select(b => b / 3.0);
+					break;
 				case 4:
-					return FourGroove(groove);
+					hihats = Enumerable.Range(0, groove.TimeSignature.BeatCount * 2).Select(b => b / 2.0);
+					break;
 			}
 
-			return new List<PercussionNote>();
+			if (groove.TimeSignature.BeatCount == 3)
+			{
+				if (groove.Feel == 3)
+				{
+					snareList = new List<double> { 1, 2 };
+				}
+				else if (groove.Feel == 4)
+				{
+					snareList = new List<double> { 0.75, 2 };
+				}
+			}
+			else if (groove.TimeSignature.BeatCount == 4)
+			{
+				snareList = new List<double> { 1, 3 };
+			}
+
+			kicks = groove.Beats.Where(b => !snareList.Contains(b));
+			snares = snareList;
 		}
 
-		private List<PercussionNote> FourGroove(Groove groove)
+		private static void GenerateBlast(TimeSignature timeSignature, int feel, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)
 		{
-			var notes = new List<PercussionNote>();
-
-			var hihats = Enumerable.Range(0, groove.TimeSignature.BeatCount * 2).Select(b => b / 2.0);
-			var kicks = groove.Beats;
-			var snares = new List<double>();
-
-			switch (groove.TimeSignature.BeatCount)
+			if (feel % 2 == 0)
 			{
-				case 3:
-					snares = new List<double> { 0.75, 2.5 };
-					break;
-				case 4:
-					snares = new List<double> { 1, 3 };
-					break;
+				kicks = EveryNthOfBeat(timeSignature.BeatCount, 0.5);
+				snares = EveryNthOfBeat(timeSignature.BeatCount, 0.5, 0.25);
+				hihats = kicks;
 			}
-
-			notes.AddRange(hihats.Select(h => new PercussionNote(h, _timeKeeper, Velocity.Fff)));
-			notes.AddRange(kicks.Select(k => new PercussionNote(k, Percussion.BassDrum1, Velocity.Fff)));
-			notes.AddRange(snares.Select(s => new PercussionNote(s, Percussion.SnareDrum1, Velocity.Fff)));
-
-			return notes;
+			else
+			{
+				GenerateDoubleKick(timeSignature, feel, out kicks, out hihats, out snares);
+			}
 		}
 
-		private List<PercussionNote> ThreeGroove(Groove groove)
+		private static void GenerateDoubleKick(TimeSignature timeSignature, int feel, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)
 		{
-			var notes = new List<PercussionNote>();
+			kicks = EveryNthOfBeat(timeSignature.BeatCount, 1.0 / feel);
+			snares = EveryNthOfBeat(timeSignature.BeatCount, 2, 1);
+			hihats = EveryNthOfBeat(timeSignature.BeatCount, 2.0 / feel);
+		}
 
-			var hihats = Enumerable.Range(0, groove.TimeSignature.BeatCount * 3).Select(b => b / 3.0);
-			var kicks = groove.Beats;
-			var snares = new List<double>();
-
-			switch (groove.TimeSignature.BeatCount)
-			{
-				case 3:
-					snares = new List<double> { 1, 2 };
-					break;
-				case 4:
-					snares = new List<double> { 1, 3 };
-					break;
-			}
-
-			notes.AddRange(hihats.Select(h => new PercussionNote(h, _timeKeeper, Velocity.Fff)));
-			notes.AddRange(kicks.Select(k => new PercussionNote(k, Percussion.BassDrum1, Velocity.Fff)));
-			notes.AddRange(snares.Select(s => new PercussionNote(s, Percussion.SnareDrum1, Velocity.Fff)));
-
-			return notes;
+		private static IEnumerable<double> EveryNthOfBeat(int numberOfBeats, double fractionOfBeat, double offset = 0)
+		{
+			return Enumerable.Range(0, (int)(numberOfBeats * 1 / fractionOfBeat)).Select(b => b * fractionOfBeat + offset);
 		}
 
 		private static Percussion GetTimeKeeper(SectionType type)

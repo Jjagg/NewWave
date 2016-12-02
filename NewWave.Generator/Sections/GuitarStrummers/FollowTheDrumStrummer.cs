@@ -25,7 +25,7 @@ namespace NewWave.Generator.Sections.GuitarStrummers
 			foreach (var tuple in gNotes)
 			{
 				var start = tuple.Item1;
-				var noteLength = tuple.Item2;
+				var noteLength = Math.Min(tuple.Item2, songInfo.TimeSignature.BeatCount - start);
 
 				var pitches = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2.Pitches();
 
