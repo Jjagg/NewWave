@@ -69,26 +69,25 @@ namespace NewWave.Generator.Sections
 					break;
 			}
 
-			if (groove.TimeSignature.BeatCount == 3)
+			if (groove.TimeSignature.BeatCount % 4 == 0)
 			{
-				if (groove.Feel == 3)
-				{
-					snareList = new List<double> { 1, 2 };
-				}
-				else if (groove.Feel == 4)
-				{
-					snareList =
-						new[]
-						{
-							new List<double> { 1, 2.5 },
-							new List<double> { 1, 2.25 },
-							new List<double> { 0.75, 2 }
-						}[Randomizer.Next(3)];
-				}
+				snareList = EveryNthOfBeat(groove.TimeSignature.BeatCount, groove.Feel / 2.0, 1).ToList();
 			}
-			else if (groove.TimeSignature.BeatCount == 4)
+			else if (groove.TimeSignature.BeatCount % 3 == 0)
 			{
-				snareList = new List<double> { 1, 3 };
+				if (groove.TimeSignature.BeatCount == 3 && Randomizer.ProbabilityOfTrue(0.5) && groove.Feel == 4)
+				{
+					snareList = new[]
+					{
+						new List<double> { 1, 2.5 },
+						new List<double> { 1, 2.25 },
+						new List<double> { 0.75, 2 }
+					}[Randomizer.Next(3)];
+				}
+				else
+				{
+					snareList = EveryNthOfBeat(groove.TimeSignature.BeatCount, 1.5, 1).ToList();
+				}
 			}
 
 			kicks = groove.Beats.Where(b => !snareList.Contains(b));
