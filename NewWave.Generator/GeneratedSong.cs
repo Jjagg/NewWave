@@ -58,6 +58,7 @@ namespace NewWave.Generator
 			var seconds = (int)((totalMinutes - minutes) * 60);
 
 			var sb = new StringBuilder();
+			sb.AppendLine(DisplayName);
 			sb.AppendLine("----------");
 			sb.AppendLine(string.Format("Measures: {0}", Sections.Sum(s => s.Measures)));
 			sb.AppendLine(string.Format("Attempted song length: {0:0}:{1:00}", songInfo.LengthInSeconds / 60, songInfo.LengthInSeconds % 60));

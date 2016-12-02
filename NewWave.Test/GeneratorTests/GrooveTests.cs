@@ -17,7 +17,7 @@ namespace NewWave.Test.GeneratorTests
 			for (var i = 0; i < 20; i++)
 			{
 				var timeSignature = new TimeSignature(Randomizer.ProbabilityOfTrue(0.7) ? 4 : 3, 4);
-				var feel = Randomizer.ProbabilityOfTrue(0.6) ? 4 : 2;
+				var feel = Randomizer.ProbabilityOfTrue(0.75) ? 4 : 3;
 				var groove = GrooveGenerator.GenerateGroove(new SongInfo(timeSignature, feel));
 				var drumStyle = new DrumStyle(SectionType.Verse);
 				drumStyle.Generate(groove);

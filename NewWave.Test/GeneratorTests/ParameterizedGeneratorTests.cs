@@ -6,6 +6,7 @@ using NewWave.Generator;
 using NewWave.Generator.Parameters;
 using NewWave.Generator.Sections;
 using NewWave.Generator.Sections.GuitarStrummers;
+using NewWave.Library.Tunings;
 
 namespace NewWave.Test.GeneratorTests
 {
@@ -23,15 +24,15 @@ namespace NewWave.Test.GeneratorTests
 		{
 			var parameters = new ParameterList
 			{
+				GuitarTuning = GuitarTuningLibrary.DropDGuitarTuning,
+				MinorKeyFunc = () => ParameterLibrary.GetKey(GuitarTuningLibrary.DropDGuitarTuning),
 				ChordProgressionFilter = ParameterLibrary.MinorFilter,
-				TimeSignatureFunc = () => new TimeSignature(3, 4),
-				TempoMean = 70,
+				TimeSignatureFunc = () => new TimeSignature(Randomizer.ProbabilityOfTrue(0.5) ? 3 : 4, 4),
+				TempoMean = 100,
 				TempoStandardDeviation = 10,
 				LengthInSecondsMean = 180,
 				LengthInSecondsStandardDeviation = 30,
-				GuitarStrummer = t => t == SectionType.Verse || t == SectionType.Outro
-					? (IGuitarStrummer)new ChugStrummer()
-					: new FollowTheDrumStrummer()
+				GuitarStrummer = t => new FollowTheDrumStrummer()
 			};
 			RenderAndPlay(parameters);
 		}

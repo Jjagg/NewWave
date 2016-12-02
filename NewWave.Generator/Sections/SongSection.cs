@@ -126,7 +126,7 @@ namespace NewWave.Generator.Sections
 		{
 			var chordList = progression
 				.Chords
-				.Take(Randomizer.Clamp(Randomizer.NextNormalized(4, 1), 3, 6))
+				.Take(Randomizer.Clamp(Randomizer.NextNormalized(3, 1), 2, 3))
 				.Select(c => TransposeForLowestNote(lowestPossibleNote, TransposeForKey(_songInfo.Parameters.MajorKey, c)))
 				.ToList();
 
