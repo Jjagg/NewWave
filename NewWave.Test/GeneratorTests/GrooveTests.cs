@@ -3,8 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
 using NewWave.Generator;
 using NewWave.Generator.Grooves;
+using NewWave.Generator.Sections;
 using NewWave.Library.Grooves;
-using NewWave.Midi;
 
 namespace NewWave.Test.GeneratorTests
 {
@@ -14,12 +14,13 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void GenerateGroove()
 		{
+			var drumStyle = new DrumStyle();
 			for (var i = 0; i < 20; i++)
 			{
 				var timeSignature = new TimeSignature(Randomizer.ProbabilityOfTrue(0.7) ? 4 : 3, 4);
 				var feel = Randomizer.ProbabilityOfTrue(0.6) ? 4 : 3;
 				var groove = GrooveGenerator.GenerateGroove(new SongInfo(timeSignature, feel));
-				Console.WriteLine(TabWriter.AsTab(groove.Feel, groove.Notes(Percussion.RideCymbal1, false, timeSignature), timeSignature.BeatCount));
+				Console.WriteLine(TabWriter.AsTab(groove.Feel, drumStyle.Notes(groove), timeSignature.BeatCount));
 			}
 		}
 	}

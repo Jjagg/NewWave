@@ -21,7 +21,7 @@ namespace NewWave.Library.Grooves
 				var theseNotes = notes.Where(n => n.Percussion == percussion);
 				var thisCode = PercussionCode(percussion);
 
-				sb.AppendLine(string.Format("{0}|{1}",
+				sb.AppendLine(string.Format("{0}|{1}|",
 					thisCode.PadRight(2, ' '),
 					string.Join("",
 					Enumerable.Range(0, tabLength).Select(i => theseNotes.Any(n => n.Start * spacesPerBeat == i) ? PercussionSymbol(percussion) : "-"))));

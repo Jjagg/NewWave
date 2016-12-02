@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
 using NewWave.Generator;
 using NewWave.Generator.Grooves;
+using NewWave.Generator.Sections;
 using NewWave.Library.Grooves;
 using NewWave.Midi;
 
@@ -27,7 +28,8 @@ namespace NewWave.Test.GeneratorTests
 			const int measures = 4;
 			var totalLength = measures * time.BeatCount;
 			var groove = GrooveGenerator.GenerateGroove(new SongInfo(time, feel));
-			var grooveNotes = Enumerable.Range(0, measures).SelectMany(i => groove.Notes(Percussion.OpenHiHat, i == 0, time).Select(n => new PercussionNote(n.Start + i * time.BeatCount, n.Percussion, n.Velocity)));
+			var drumStyle = new DrumStyle();
+			var grooveNotes = Enumerable.Range(0, measures).SelectMany(i => drumStyle.Notes(groove).Select(n => new PercussionNote(n.Start + i * time.BeatCount, n.Percussion, n.Velocity)));
 			var fillLength = Randomizer.ProbabilityOfTrue(0.5) ? 2 : 4;
 			var fill = FillGenerator.GetFill(totalLength - fillLength, fillLength, feel);
 			grooveNotes = grooveNotes.Where(n => n.Start < totalLength - fillLength).Union(fill);

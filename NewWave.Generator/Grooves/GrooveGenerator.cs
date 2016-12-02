@@ -22,19 +22,7 @@ namespace NewWave.Generator.Grooves
 				beats = beats.Union(beats.Select(b => maxBeat + b)).ToList();
 			}
 
-			var isFastKick = beats.Count >= songInfo.TimeSignature.BeatCount * songInfo.Feel / 2;
-			var snares = songInfo.Feel == 4 && isFastKick && Randomizer.ProbabilityOfTrue(0.5)
-				? Enumerable.Range(0, songInfo.TimeSignature.BeatCount * songInfo.Feel / 2).Select(n => 0.25 + n / (double)songInfo.Feel * 2).ToList() // Blastbeat
-				: Randomizer.ProbabilityOfTrue(0.5)
-					? new List<double> { 1, 3 }
-					: new List<double> { 2 };
-			var kicks = isFastKick
-				? beats
-				: beats.Where(b => !snares.Contains(b)).ToList();
-
-			var timeKeeperFreq = beats.Count > songInfo.TimeSignature.BeatCount || Randomizer.ProbabilityOfTrue(0.33) ? songInfo.Feel / 2 : songInfo.Feel;
-
-			return new Groove("Generated groove", songInfo.TimeSignature, songInfo.Feel, timeKeeperFreq, kicks, snares);
+			return new Groove(songInfo.TimeSignature, songInfo.Feel, beats);
 		}
 
 		private static List<double> GetBeatPoints(double maxBeat, int feel)

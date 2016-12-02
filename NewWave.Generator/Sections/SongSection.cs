@@ -22,7 +22,6 @@ namespace NewWave.Generator.Sections
 
 		private readonly int _measures;
 		private readonly Groove _groove;
-		private readonly Percussion _timeKeeper;
 		private readonly int _repeats;
 
 		internal SongSection(SongInfo songInfo, SectionType type, ChordProgression chordProgression)
@@ -33,25 +32,23 @@ namespace NewWave.Generator.Sections
 			_measures = songInfo.Parameters.MeasuresPerSection(type);
 			Chords = GetChordProgression(songInfo.Parameters.GuitarTuning.Pitches[0], chordProgression);
 			_groove = GetGroove();
-
-			_timeKeeper = GetTimeKeeper(type);
 			_repeats = songInfo.Parameters.RepeatsPerSection(type, _measures);
 			Riff = RiffGenerator.GetRiff(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
 		}
 
 		internal int Measures => _measures * _repeats;
 
-		internal int Render(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums)
+		internal int Render(IGuitarStrummer strummer, DrumStyle drumStyle, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums)
 		{
 			for (var repeat = 0; repeat < _repeats; repeat++)
 			{
-				RenderRepeat(strummer, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat);
+				RenderRepeat(strummer, drumStyle, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat);
 			}
 
 			return Measures;
 		}
 
-		private void RenderRepeat(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
+		private void RenderRepeat(IGuitarStrummer strummer, DrumStyle drumStyle, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
 		{
 			if (Type == SectionType.Verse || Type == SectionType.Chorus)
 			{
@@ -64,14 +61,13 @@ namespace NewWave.Generator.Sections
 
 			for (var measure = 0; measure < _measures; measure++)
 			{
-				RenderMeasure(strummer, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure);
+				RenderMeasure(strummer, drumStyle, guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure);
 			}
 		}
 
-		private void RenderMeasure(IGuitarStrummer strummer, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
+		private void RenderMeasure(IGuitarStrummer strummer, DrumStyle drumStyle, InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
 		{
-			var addCrash = (repeat % 2 == 0 && measure == 0) || (_measures > 4 && measure % 4 == 0);
-			var grooveNotes = _groove.Notes(_timeKeeper, addCrash, _songInfo.TimeSignature);
+			var grooveNotes = drumStyle.Notes(_groove);
 			var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
 			var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
 			if (!gNotes.Any())
@@ -102,35 +98,6 @@ namespace NewWave.Generator.Sections
 				// All the riff notes are actually in the first measure, so add empty ones after it
 				guitarC.Notes.Add(new List<Note>());
 			}
-		}
-
-		private static Percussion GetTimeKeeper(SectionType type)
-		{
-			List<Percussion> timeKeepers;
-			switch (type)
-			{
-				case SectionType.Intro:
-				case SectionType.Outro:
-					timeKeepers = new List<Percussion> { Percussion.RideBell, Percussion.RideCymbal1, Percussion.LowTom1 };
-					break;
-				case SectionType.Chorus:
-					timeKeepers = new List<Percussion> { Percussion.OpenHiHat, Percussion.CrashCymbal2 };
-					break;
-				case SectionType.Prechorus:
-					timeKeepers = new List<Percussion> { Percussion.CrashCymbal2, Percussion.RideCymbal1, Percussion.HighTom1, Percussion.RideBell };
-					break;
-				case SectionType.Verse:
-					timeKeepers = new List<Percussion> { Percussion.ClosedHiHat, Percussion.OpenHiHat };
-					break;
-				case SectionType.Bridge:
-					timeKeepers = new List<Percussion> { Percussion.LowTom1, Percussion.RideCymbal1, Percussion.RideCymbal2 };
-					break;
-				default:
-					timeKeepers = new List<Percussion> { Percussion.ClosedHiHat };
-					break;
-			}
-
-			return timeKeepers[Randomizer.Next(timeKeepers.Count)];
 		}
 
 		private List<PercussionNote> AddFill(int repeat, int measure, List<PercussionNote> grooveNotes)
