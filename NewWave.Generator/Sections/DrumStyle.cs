@@ -112,7 +112,7 @@ namespace NewWave.Generator.Sections
 		private static void GenerateDoubleKick(TimeSignature timeSignature, int feel, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)
 		{
 			kicks = EveryNthOfBeat(timeSignature.BeatCount, 1.0 / feel);
-			snares = EveryNthOfBeat(timeSignature.BeatCount, 2, 1);
+			snares = EveryNthOfBeat(timeSignature.BeatCount, feel / 2.0, 1);
 			hihats = EveryNthOfBeat(timeSignature.BeatCount, 2.0 / feel);
 		}
 
