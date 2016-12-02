@@ -17,7 +17,7 @@ namespace NewWave.Generator
 
 		public override string Generate(IParameterList parameterList)
 		{
-			var param = (ParameterListBase)parameterList;
+			var param = (ParameterList)parameterList;
 			var time = param.TimeSignatureFunc();
 			var feel = param.FeelFunc(time);
 			_songInfo = new SongInfo(time, feel) { Parameters = param };
@@ -69,7 +69,7 @@ namespace NewWave.Generator
 			return sb.ToString();
 		}
 
-		private static List<ChordProgression> GetDistinctChordProgressions(ParameterListBase parameters, int amount)
+		private static List<ChordProgression> GetDistinctChordProgressions(ParameterList parameters, int amount)
 		{
 			var progressions = new List<ChordProgression>();
 			while (progressions.Count < amount)

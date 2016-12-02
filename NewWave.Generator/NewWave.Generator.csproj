@@ -49,13 +49,8 @@
     <Compile Include="MarkovChainNode.cs" />
     <Compile Include="GeneratedSong.cs" />
     <Compile Include="MarkovChainNodeFunc.cs" />
-    <Compile Include="Parameters\SectionLengthParameter.cs" />
-    <Compile Include="Parameters\SongLengthParameter.cs" />
-    <Compile Include="Parameters\TempoParameter.cs" />
-    <Compile Include="Parameters\IParameter.cs" />
-    <Compile Include="Parameters\MajorKeyParameterList.cs" />
-    <Compile Include="Parameters\MinorKeyParameterList.cs" />
-    <Compile Include="Parameters\ParameterListBase.cs" />
+    <Compile Include="Parameters\ParameterLibrary.cs" />
+    <Compile Include="Parameters\ParameterList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
     <Compile Include="Riffs\RiffGenerator.cs" />

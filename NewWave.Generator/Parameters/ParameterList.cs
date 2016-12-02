@@ -8,7 +8,7 @@ using NewWave.Midi;
 
 namespace NewWave.Generator.Parameters
 {
-	public class ParameterListBase : IParameterList
+	public class ParameterList : IParameterList
 	{
 		public double TempoMean;
 		public double TempoStandardDeviation;
@@ -41,7 +41,7 @@ namespace NewWave.Generator.Parameters
 			set { MinorKey = value(); }
 		}
 
-		public ParameterListBase()
+		public ParameterList()
 		{
 			// Defaults (can be set manually in child constructors)
 			TempoMean = 120;
@@ -83,9 +83,9 @@ namespace NewWave.Generator.Parameters
 			return multiplier * returnVal;
 		}
 
-		internal ParameterListBase Apply(IParameter parameter)
+		internal ParameterList Apply(Action<ParameterList> action)
 		{
-			parameter.Apply(this);
+			action(this);
 			return this;
 		}
 	}
