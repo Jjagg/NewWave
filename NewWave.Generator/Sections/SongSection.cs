@@ -37,7 +37,7 @@ namespace NewWave.Generator.Sections
 			_drumstyle = songInfo.Parameters.DrumStyle(Type);
 			var groove = GetGroove();
 			_drumstyle.Generate(groove);
-			var riff = RiffGenerator.Rhythm(songInfo.TimeSignature, groove.Beats.ToList(), songInfo.Parameters.RiffResolutionFunc(), songInfo.Feel).ToList();
+			var riff = RiffGenerator.Rhythm(songInfo.TimeSignature, groove.Beats.ToList(), songInfo.Parameters.RiffResolutionFunc(type), songInfo.Feel).ToList();
 			_strummer = new RiffStrummer(riff);
 		}
 

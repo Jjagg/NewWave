@@ -22,7 +22,7 @@ namespace NewWave.Generator.Parameters
 		public GuitarTuning GuitarTuning;
 		public GuitarTuning BassTuning;
 		public Func<SectionType, DrumStyle> DrumStyle;
-		public Func<double> RiffResolutionFunc;
+		public Func<SectionType, double> RiffResolutionFunc;
 
 		public Pitch MinorKey
 		{
@@ -56,7 +56,7 @@ namespace NewWave.Generator.Parameters
 			GuitarTuning = GuitarTuningLibrary.StandardGuitarTuning;
 			BassTuning = GuitarTuningLibrary.StandardBassTuning;
 			DrumStyle = t => new DrumStyle(t);
-			RiffResolutionFunc = () => 1.0;
+			RiffResolutionFunc = t => 1.0;
 		}
 
 		private static int RepeatsPerSectionFunc(SectionType type, int measures)

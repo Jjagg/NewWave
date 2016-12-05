@@ -27,19 +27,21 @@ namespace NewWave.Test.GeneratorTests
 				MinorKeyFunc = () => ParameterLibrary.GetKey(GuitarTuningLibrary.DropDGuitarTuning),
 				ChordProgressionFilter = ParameterLibrary.MinorFilter,
 				TimeSignatureFunc = () => new TimeSignature((Randomizer.ProbabilityOfTrue(0.5) ? 1 : 2) * (Randomizer.ProbabilityOfTrue(0.5) ? 3 : 4), 4),
-				TempoMean = 150,
+				TempoMean = 130,
 				TempoStandardDeviation = 10,
-				LengthInSecondsMean = 180,
-				LengthInSecondsStandardDeviation = 30,
+				LengthInSecondsMean = 240,
+				LengthInSecondsStandardDeviation = 45,
 				DrumStyle = t => new DrumStyle(t),
-				RiffResolutionFunc = () => 4.0 / Randomizer.NextNormalized(5.0, 1.0)
+				MeasuresPerSection = LongSections,
+				RepeatsPerSection = FewRepeats,
+				RiffResolutionFunc = RiffResolutionFunc
 			};
 			RenderAndPlay(parameters);
 		}
 
 		private static Func<SectionType, int> LongSections
 		{
-			get { return type => type == SectionType.Verse || type == SectionType.Chorus ? 16 : 8; }
+			get { return type => type == SectionType.Verse || type == SectionType.Chorus ? 8 : 4; }
 		}
 
 		private static Func<SectionType, int> ShortSections
@@ -78,6 +80,28 @@ namespace NewWave.Test.GeneratorTests
 			}
 
 			return Math.Max(1, multiplier * returnVal);
+		}
+
+		private static Func<SectionType, double> RiffResolutionFunc
+		{
+			get
+			{
+				return t =>
+				{
+					switch (t)
+					{
+						case SectionType.Verse:
+						case SectionType.Chorus:
+							return 4.0 / Randomizer.NextNormalized(5.0, 1.0);
+						case SectionType.Intro:
+						case SectionType.Outro:
+						case SectionType.Bridge:
+							return 0;
+					}
+
+					return 1.0;
+				};
+			}
 		}
 
 		[TestMethod]
