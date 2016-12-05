@@ -5,7 +5,6 @@ using NewWave.Core;
 using NewWave.Generator;
 using NewWave.Generator.Parameters;
 using NewWave.Generator.Sections;
-using NewWave.Generator.Sections.GuitarStrummers;
 using NewWave.Library.Tunings;
 
 namespace NewWave.Test.GeneratorTests
@@ -33,7 +32,7 @@ namespace NewWave.Test.GeneratorTests
 				LengthInSecondsMean = 180,
 				LengthInSecondsStandardDeviation = 30,
 				DrumStyle = t => new DrumStyle(t),
-				GuitarStrummer = t => new RiffStrummer()
+				RiffResolutionFunc = () => 4.0 / Randomizer.NextNormalized(5.0, 1.0)
 			};
 			RenderAndPlay(parameters);
 		}

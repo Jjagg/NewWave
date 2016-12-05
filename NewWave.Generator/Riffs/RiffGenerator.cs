@@ -4,50 +4,41 @@ using NewWave.Core;
 
 namespace NewWave.Generator.Riffs
 {
-	public class RiffGenerator
+	public static class RiffGenerator
 	{
-		private readonly TimeSignature _timeSignature;
-		private readonly List<double> _hits;
-
-		public RiffGenerator(TimeSignature timeSignature, IEnumerable<double> hits)
+		public static IEnumerable<double> Rhythm(TimeSignature timeSignature, List<double> hits, double resolution, int feel)
 		{
-			_timeSignature = timeSignature;
-			_hits = hits.ToList();
-		}
-
-		public IEnumerable<double> Rhythm(double resolution, int feel)
-		{
-			var targetBeatCount = resolution * _hits.Count;
+			var targetBeatCount = resolution * hits.Count;
 			return resolution < 1.0
-				? ReduceRhythm(targetBeatCount)
-				: IncreaseRhythm(targetBeatCount, feel);
+				? ReduceRhythm(hits, targetBeatCount)
+				: IncreaseRhythm(timeSignature, targetBeatCount, hits, feel);
 		}
 
-		private IEnumerable<double> IncreaseRhythm(double targetBeatCount, int feel)
+		private static IEnumerable<double> IncreaseRhythm(TimeSignature timeSignature, double targetBeatCount, List<double> hits, int feel)
 		{
 			var tryCount = 0;
-			while (_hits.Count < targetBeatCount && tryCount < 20)
+			while (hits.Count < targetBeatCount && tryCount < 20)
 			{
-				tryCount = TryAddHit(tryCount, feel);
+				tryCount = TryAddHit(timeSignature, tryCount, hits, feel);
 			}
-			return _hits;
+			return hits;
 		}
 
-		private int TryAddHit(int tryCount, int feel)
+		private static int TryAddHit(TimeSignature timeSignature, int tryCount, List<double> hits, int feel)
 		{
-			var beatsWithNoHit = Enumerable.Range(0, _timeSignature.BeatCount).Where(b => !_hits.Contains(b)).ToList();
+			var beatsWithNoHit = Enumerable.Range(0, timeSignature.BeatCount).Where(b => !hits.Contains(b)).ToList();
 			if (beatsWithNoHit.Any())
 			{
 				var next = beatsWithNoHit[Randomizer.Next(beatsWithNoHit.Count)];
-				_hits.Add(next);
+				hits.Add(next);
 			}
 			else if (feel == 4)
 			{
-				var halfBeatsWithNoHit = Enumerable.Range(0, _timeSignature.BeatCount * 2).Where(b => !_hits.Contains(b / 2.0)).ToList();
+				var halfBeatsWithNoHit = Enumerable.Range(0, timeSignature.BeatCount * 2).Where(b => !hits.Contains(b / 2.0)).ToList();
 				if (halfBeatsWithNoHit.Any())
 				{
 					var next = halfBeatsWithNoHit[Randomizer.Next(halfBeatsWithNoHit.Count)];
-					_hits.Add(next / 2.0);
+					hits.Add(next / 2.0);
 				}
 				else
 				{
@@ -57,16 +48,16 @@ namespace NewWave.Generator.Riffs
 			return tryCount;
 		}
 
-		private IEnumerable<double> ReduceRhythm(double targetBeatCount)
+		private static IEnumerable<double> ReduceRhythm(List<double> hits, double targetBeatCount)
 		{
 			var tryCount = 0;
-			while (_hits.Count > targetBeatCount && tryCount < 20)
+			while (hits.Count > targetBeatCount && tryCount < 20)
 			{
-				var options = _hits.Where(h => h > 0).ToList();
-				_hits.Remove(options[Randomizer.Next(options.Count)]);
+				var options = hits.Where(h => h > 0).ToList();
+				hits.Remove(options[Randomizer.Next(options.Count)]);
 				tryCount ++;
 			}
-			return _hits;
+			return hits;
 		}
 	}
 }

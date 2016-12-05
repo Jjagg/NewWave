@@ -24,7 +24,7 @@ namespace NewWave.Test.GeneratorTests
 			for (var i = 1; i <= 10; i ++)
 			{
 				var res = 4.0 / i;
-				var riffBeats = new RiffGenerator(timeSignature, groove.Beats).Rhythm(res, feel);
+				var riffBeats = RiffGenerator.Rhythm(timeSignature, groove.Beats.ToList(), res, feel);
 				WriteRhythm(string.Format("{0:0}% resolution", res * 100), riffBeats, timeSignature.BeatCount, feel);
 			}
 		}
