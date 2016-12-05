@@ -9,17 +9,17 @@ namespace NewWave.Generator.Sections.GuitarStrummers
 {
 	internal class FollowTheDrumStrummer : IGuitarStrummer
 	{
-		public void AddGuitarNotes(InstrumentTrack track, List<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
+		public void AddGuitarNotes(InstrumentTrack[] tracks, List<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
 		{
-			AddNotes(track, gNotes, chords, measure, songInfo);
+			AddNotes(tracks, gNotes, chords, measure, songInfo);
 		}
 
 		public void AddBassNotes(InstrumentTrack track, List<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
 		{
-			AddNotes(track, gNotes, chords, measure, songInfo, true);
+			AddNotes(new[] { track }, gNotes, chords, measure, songInfo, true);
 		}
 
-		private static void AddNotes(InstrumentTrack track, IReadOnlyCollection<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, bool isBass = false)
+		private static void AddNotes(IEnumerable<InstrumentTrack> tracks, IReadOnlyCollection<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, bool isBass = false)
 		{
 			var notes = new List<Note>();
 			var notesPerBeat = gNotes.Count / (double)songInfo.TimeSignature.BeatCount;
@@ -42,7 +42,11 @@ namespace NewWave.Generator.Sections.GuitarStrummers
 
 				notes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, isBass ? p.AddOctave(-1) : p, Velocity.F)));
 			}
-			track.Notes.Add(notes);
+
+			foreach (var track in tracks)
+			{
+				track.Notes.Add(notes);
+			}
 		}
 	}
 }

@@ -7,7 +7,7 @@ namespace NewWave.Generator.Sections.GuitarStrummers
 {
 	public interface IGuitarStrummer
 	{
-		void AddGuitarNotes(InstrumentTrack track, List<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo);
+		void AddGuitarNotes(InstrumentTrack[] tracks, List<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo);
 		void AddBassNotes(InstrumentTrack track, List<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo);
 	}
 }

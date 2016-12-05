@@ -78,15 +78,13 @@ namespace NewWave.Generator.Sections
 
 			if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
 			{
-				strummer.AddGuitarNotes(guitarLc, gNotes, Chords, measure, _songInfo);
-				strummer.AddGuitarNotes(guitarRc, gNotes, Chords, measure, _songInfo);
+				strummer.AddGuitarNotes(new[] { guitarLc, guitarRc }, gNotes, Chords, measure, _songInfo);
 				guitarL.Notes.Add(new List<Note>());
 				guitarR.Notes.Add(new List<Note>());
 			}
 			else
 			{
-				strummer.AddGuitarNotes(guitarL, gNotes, Chords, measure, _songInfo);
-				strummer.AddGuitarNotes(guitarR, gNotes, Chords, measure, _songInfo);
+				strummer.AddGuitarNotes(new[] { guitarL, guitarR }, gNotes, Chords, measure, _songInfo);
 				guitarLc.Notes.Add(new List<Note>());
 				guitarRc.Notes.Add(new List<Note>());
 			}
