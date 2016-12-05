@@ -30,6 +30,7 @@ namespace NewWave.Generator
 		{
 			TimeSignature = timeSignature;
 			Feel = feel;
+			Parameters = new ParameterList();
 		}
 	}
 }

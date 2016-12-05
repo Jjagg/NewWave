@@ -3,22 +3,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
 using NewWave.Generator;
 using NewWave.Generator.ChordProgressions;
-using NewWave.Generator.Riffs;
 using NewWave.Generator.Sections;
+using NewWave.Generator.SoloLead;
 using NewWave.Library.Chords;
 using NewWave.Midi;
 
 namespace NewWave.Test.GeneratorTests
 {
 	[TestClass]
-	public class RiffTests
+	public class SoloLeadTests
 	{
 		[TestMethod]
-		public void RiffTest()
+		public void SoloLeadTest()
 		{
 			var section = new SongSection(new SongInfo(TimeSignature.CommonTime, 4), SectionType.None, ChordProgressionGenerator.ChordProgression(n => n));
-			var riff = section.Riff;
-			foreach (var note in riff)
+			var lead = section.Lead;
+			foreach (var note in lead)
 			{
 				Console.WriteLine(note);
 			}
@@ -27,7 +27,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void MajorScaleTest()
 		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.C0, ChordQuality.Major));
+			var scale = SoloLeadGenerator.GetScale(new Chord(Pitch.C0, ChordQuality.Major));
 			Assert.AreEqual(7, scale.Count);
 			Assert.AreEqual(Pitch.C0, scale[0]);
 			Assert.AreEqual(Pitch.D0, scale[1]);
@@ -41,7 +41,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void MinorScaleTest()
 		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.A0, ChordQuality.Minor));
+			var scale = SoloLeadGenerator.GetScale(new Chord(Pitch.A0, ChordQuality.Minor));
 			Assert.AreEqual(7, scale.Count);
 			Assert.AreEqual(Pitch.A0, scale[0]);
 			Assert.AreEqual(Pitch.B0, scale[1]);
@@ -55,7 +55,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void MajorPentatonicScaleTest()
 		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.C0));
+			var scale = SoloLeadGenerator.GetScale(new Chord(Pitch.C0));
 			Assert.AreEqual(5, scale.Count);
 			Assert.AreEqual(Pitch.C0, scale[0]);
 			Assert.AreEqual(Pitch.D0, scale[1]);
@@ -67,7 +67,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void MinorPentatonicScaleTest()
 		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.C0));
+			var scale = SoloLeadGenerator.GetScale(new Chord(Pitch.C0));
 			Assert.AreEqual(5, scale.Count);
 			Assert.AreEqual(Pitch.C0, scale[0]);
 			Assert.AreEqual(Pitch.DSharp0, scale[1]);

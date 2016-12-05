@@ -5,11 +5,11 @@ using NewWave.Core;
 using NewWave.Library.Chords;
 using NewWave.Midi;
 
-namespace NewWave.Generator.Riffs
+namespace NewWave.Generator.SoloLead
 {
-	internal static class RiffGenerator
+	internal static class SoloLeadGenerator
 	{
-		internal static IEnumerable<Note> GetRiff(SongInfo songInfo, int length, List<Tuple<int, Chord>> chordProgression)
+		internal static IEnumerable<Note> GetSoloLead(SongInfo songInfo, int length, List<Tuple<int, Chord>> chordProgression)
 		{
 			var notes = new List<Note>();
 			var lastIndex = -1;

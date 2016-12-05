@@ -4,8 +4,8 @@ using System.Linq;
 using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Generator.Grooves;
-using NewWave.Generator.Riffs;
 using NewWave.Generator.Sections.GuitarStrummers;
+using NewWave.Generator.SoloLead;
 using NewWave.Library.Chords;
 using NewWave.Library.Grooves;
 using NewWave.Midi;
@@ -18,7 +18,7 @@ namespace NewWave.Generator.Sections
 		private readonly SongInfo _songInfo;
 
 		internal readonly List<Tuple<int, Chord>> Chords;
-		internal readonly IEnumerable<Note> Riff;
+		internal readonly IEnumerable<Note> Lead;
 
 		private readonly int _measures;
 		private readonly int _repeats;
@@ -32,7 +32,7 @@ namespace NewWave.Generator.Sections
 			_measures = songInfo.Parameters.MeasuresPerSection(type);
 			Chords = GetChordProgression(songInfo.Parameters.GuitarTuning.Pitches[0], chordProgression);
 			_repeats = songInfo.Parameters.RepeatsPerSection(type, _measures);
-			Riff = RiffGenerator.GetRiff(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
+			Lead = SoloLeadGenerator.GetSoloLead(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
 			_drumstyle = songInfo.Parameters.DrumStyle(Type);
 			_drumstyle.Generate(GetGroove());
 		}
@@ -53,7 +53,7 @@ namespace NewWave.Generator.Sections
 		{
 			if (Type == SectionType.Verse || Type == SectionType.Chorus)
 			{
-				guitarC.Notes.Add(Riff.ToList());
+				guitarC.Notes.Add(Lead.ToList());
 			}
 			else
 			{
@@ -88,13 +88,13 @@ namespace NewWave.Generator.Sections
 				guitarLc.Notes.Add(new List<Note>());
 				guitarRc.Notes.Add(new List<Note>());
 			}
-			
+
 			strummer.AddBassNotes(bass, gNotes, Chords, measure, _songInfo);
 			drums.Notes.Add(AddFill(repeat, measure, grooveNotes));
 
 			if (measure != 0)
 			{
-				// All the riff notes are actually in the first measure, so add empty ones after it
+				// All the solo lead notes are actually in the first measure, so add empty ones after it
 				guitarC.Notes.Add(new List<Note>());
 			}
 		}
