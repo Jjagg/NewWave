@@ -33,7 +33,7 @@ namespace NewWave.Test.GeneratorTests
 				LengthInSecondsMean = 180,
 				LengthInSecondsStandardDeviation = 30,
 				DrumStyle = t => new DrumStyle(t),
-				GuitarStrummer = t => new FollowTheDrumStrummer()
+				GuitarStrummer = t => new RiffStrummer()
 			};
 			RenderAndPlay(parameters);
 		}
