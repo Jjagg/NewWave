@@ -1,7 +1,6 @@
 using System;
 using NewWave.Core;
 using NewWave.Generator.Sections;
-using NewWave.Generator.Sections.GuitarStrummers;
 using NewWave.Library.Chords;
 using NewWave.Library.Tunings;
 using NewWave.Midi;
@@ -22,8 +21,8 @@ namespace NewWave.Generator.Parameters
 		public Func<SectionType, int, int> RepeatsPerSection;
 		public GuitarTuning GuitarTuning;
 		public GuitarTuning BassTuning;
-		public Func<SectionType, IGuitarStrummer> GuitarStrummer;
 		public Func<SectionType, DrumStyle> DrumStyle;
+		public Func<SectionType, double> RiffResolutionFunc;
 
 		public Pitch MinorKey
 		{
@@ -56,8 +55,8 @@ namespace NewWave.Generator.Parameters
 			RepeatsPerSection = RepeatsPerSectionFunc;
 			GuitarTuning = GuitarTuningLibrary.StandardGuitarTuning;
 			BassTuning = GuitarTuningLibrary.StandardBassTuning;
-			GuitarStrummer = t => new ChugStrummer();
 			DrumStyle = t => new DrumStyle(t);
+			RiffResolutionFunc = t => 1.0;
 		}
 
 		private static int RepeatsPerSectionFunc(SectionType type, int measures)
