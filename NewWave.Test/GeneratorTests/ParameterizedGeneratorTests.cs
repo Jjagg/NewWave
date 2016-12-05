@@ -5,6 +5,8 @@ using NewWave.Core;
 using NewWave.Generator;
 using NewWave.Generator.Parameters;
 using NewWave.Generator.Sections;
+using NewWave.Generator.Sections.GuitarStrummers;
+using NewWave.Library.Tunings;
 
 namespace NewWave.Test.GeneratorTests
 {
@@ -14,17 +16,25 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void Default()
 		{
-			RenderAndPlay(new ParameterListBase());
+			RenderAndPlay(new ParameterList());
 		}
 
 		[TestMethod]
 		public void MinorFastSong()
 		{
-			var parameters = new ParameterListBase()
-				.Apply(new MinorKeyParameterList())
-				.Apply(new TempoParameter(200, 10))
-				.Apply(new SongLengthParameter(180, 30))
-				.Apply(new SectionLengthParameter(LongSections, FewRepeats));
+			var parameters = new ParameterList
+			{
+				GuitarTuning = GuitarTuningLibrary.DropDGuitarTuning,
+				MinorKeyFunc = () => ParameterLibrary.GetKey(GuitarTuningLibrary.DropDGuitarTuning),
+				ChordProgressionFilter = ParameterLibrary.MinorFilter,
+				TimeSignatureFunc = () => new TimeSignature((Randomizer.ProbabilityOfTrue(0.5) ? 1 : 2) * (Randomizer.ProbabilityOfTrue(0.5) ? 3 : 4), 4),
+				TempoMean = 150,
+				TempoStandardDeviation = 10,
+				LengthInSecondsMean = 180,
+				LengthInSecondsStandardDeviation = 30,
+				DrumStyle = t => new DrumStyle(t),
+				GuitarStrummer = t => new FollowTheDrumStrummer()
+			};
 			RenderAndPlay(parameters);
 		}
 
@@ -74,8 +84,11 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void SlowSong()
 		{
-			RenderAndPlay(new ParameterListBase()
-				.Apply(new TempoParameter(100, 5)));
+			RenderAndPlay(new ParameterList
+			{
+				TempoMean = 100,
+				TempoStandardDeviation = 5
+			});
 		}
 
 		private static void RenderAndPlay(IParameterList parameterList)

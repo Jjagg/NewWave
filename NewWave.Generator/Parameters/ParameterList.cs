@@ -1,12 +1,14 @@
 using System;
 using NewWave.Core;
 using NewWave.Generator.Sections;
+using NewWave.Generator.Sections.GuitarStrummers;
 using NewWave.Library.Chords;
+using NewWave.Library.Tunings;
 using NewWave.Midi;
 
 namespace NewWave.Generator.Parameters
 {
-	public class ParameterListBase : IParameterList
+	public class ParameterList : IParameterList
 	{
 		public double TempoMean;
 		public double TempoStandardDeviation;
@@ -15,10 +17,13 @@ namespace NewWave.Generator.Parameters
 		public Pitch MajorKey;
 		public Func<TimeSignature> TimeSignatureFunc;
 		public Func<TimeSignature, int> FeelFunc;
-		public Pitch LowestPossibleNote;
 		public Func<MarkovChainNode<Chord>, MarkovChainNode<Chord>> ChordProgressionFilter;
 		public Func<SectionType, int> MeasuresPerSection;
 		public Func<SectionType, int, int> RepeatsPerSection;
+		public GuitarTuning GuitarTuning;
+		public GuitarTuning BassTuning;
+		public Func<SectionType, IGuitarStrummer> GuitarStrummer;
+		public Func<SectionType, DrumStyle> DrumStyle;
 
 		public Pitch MinorKey
 		{
@@ -36,7 +41,7 @@ namespace NewWave.Generator.Parameters
 			set { MinorKey = value(); }
 		}
 
-		public ParameterListBase()
+		public ParameterList()
 		{
 			// Defaults (can be set manually in child constructors)
 			TempoMean = 120;
@@ -46,10 +51,13 @@ namespace NewWave.Generator.Parameters
 			MajorKeyFunc = () => Pitch.G3;
 			TimeSignatureFunc = () => TimeSignature.CommonTime;
 			FeelFunc = t => 4;
-			LowestPossibleNote = Pitch.E2;
 			ChordProgressionFilter = node => node;
 			MeasuresPerSection = type => 4;
 			RepeatsPerSection = RepeatsPerSectionFunc;
+			GuitarTuning = GuitarTuningLibrary.StandardGuitarTuning;
+			BassTuning = GuitarTuningLibrary.StandardBassTuning;
+			GuitarStrummer = t => new ChugStrummer();
+			DrumStyle = t => new DrumStyle(t);
 		}
 
 		private static int RepeatsPerSectionFunc(SectionType type, int measures)
@@ -73,12 +81,6 @@ namespace NewWave.Generator.Parameters
 			}
 
 			return multiplier * returnVal;
-		}
-
-		internal ParameterListBase Apply(IParameter parameter)
-		{
-			parameter.Apply(this);
-			return this;
 		}
 	}
 }

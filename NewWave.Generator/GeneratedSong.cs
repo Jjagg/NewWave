@@ -17,7 +17,7 @@ namespace NewWave.Generator
 
 		public override string Generate(IParameterList parameterList)
 		{
-			var param = (ParameterListBase)parameterList;
+			var param = (ParameterList)parameterList;
 			var time = param.TimeSignatureFunc();
 			var feel = param.FeelFunc(time);
 			_songInfo = new SongInfo(time, feel) { Parameters = param };
@@ -41,7 +41,7 @@ namespace NewWave.Generator
 			var bass = new InstrumentTrack(Instrument.ElectricBassPick, Pan.Center, new List<List<Note>>());
 			var drums = new PercussionTrack(new List<List<PercussionNote>>());
 
-			var renderedSections = Sections.Select(s => s.Render(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums));
+			var renderedSections = Sections.Select(s => s.Render(_songInfo.Parameters.GuitarStrummer(s.Type), guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums));
 
 			return new Score(renderedSections.Sum(s => s),
 				new Dictionary<int, TimeSignature> { { 0, _songInfo.TimeSignature } },
@@ -58,6 +58,7 @@ namespace NewWave.Generator
 			var seconds = (int)((totalMinutes - minutes) * 60);
 
 			var sb = new StringBuilder();
+			sb.AppendLine(DisplayName);
 			sb.AppendLine("----------");
 			sb.AppendLine(string.Format("Measures: {0}", Sections.Sum(s => s.Measures)));
 			sb.AppendLine(string.Format("Attempted song length: {0:0}:{1:00}", songInfo.LengthInSeconds / 60, songInfo.LengthInSeconds % 60));
@@ -69,7 +70,7 @@ namespace NewWave.Generator
 			return sb.ToString();
 		}
 
-		private static List<ChordProgression> GetDistinctChordProgressions(ParameterListBase parameters, int amount)
+		private static List<ChordProgression> GetDistinctChordProgressions(ParameterList parameters, int amount)
 		{
 			var progressions = new List<ChordProgression>();
 			while (progressions.Count < amount)

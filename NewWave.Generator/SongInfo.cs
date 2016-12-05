@@ -11,8 +11,8 @@ namespace NewWave.Generator
 		public int Tempo;
 		public double LengthInSeconds;
 
-		private ParameterListBase _parameters;
-		public ParameterListBase Parameters
+		private ParameterList _parameters;
+		public ParameterList Parameters
 		{
 			get { return _parameters; }
 			set
