@@ -22,6 +22,7 @@ namespace NewWave.Generator.Sections.GuitarStrummers
 		private static void AddNotes(InstrumentTrack track, IReadOnlyCollection<Tuple<double, double>> gNotes, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, bool isBass = false)
 		{
 			var notes = new List<Note>();
+			var notesPerBeat = gNotes.Count / (double)songInfo.TimeSignature.BeatCount;
 			foreach (var tuple in gNotes)
 			{
 				var start = tuple.Item1;
@@ -34,7 +35,7 @@ namespace NewWave.Generator.Sections.GuitarStrummers
 				{
 					pitchCount = 1;
 				}
-				else if (gNotes.Count >= 4)
+				else if (notesPerBeat >= 2)
 				{
 					pitchCount = 2;
 				}

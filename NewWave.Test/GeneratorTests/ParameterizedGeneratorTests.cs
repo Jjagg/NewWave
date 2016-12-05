@@ -28,7 +28,7 @@ namespace NewWave.Test.GeneratorTests
 				MinorKeyFunc = () => ParameterLibrary.GetKey(GuitarTuningLibrary.DropDGuitarTuning),
 				ChordProgressionFilter = ParameterLibrary.MinorFilter,
 				TimeSignatureFunc = () => new TimeSignature((Randomizer.ProbabilityOfTrue(0.5) ? 1 : 2) * (Randomizer.ProbabilityOfTrue(0.5) ? 3 : 4), 4),
-				TempoMean = 100,
+				TempoMean = 150,
 				TempoStandardDeviation = 10,
 				LengthInSecondsMean = 180,
 				LengthInSecondsStandardDeviation = 30,
