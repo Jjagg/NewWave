@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NewWave.Library.Pitches;
 using NewWave.Midi;
 
 namespace NewWave.Library.Chords
@@ -18,7 +19,7 @@ namespace NewWave.Library.Chords
 			Quality = quality;
 			_added = added;
 			IsInverted = false;
-			Inversion = Pitch.ANeg1;
+			Inversion = Pitch.A;
 		}
 
 		public Chord(Pitch basePitch, ChordQuality quality, ChordAdded added, Pitch inversion)
@@ -30,26 +31,27 @@ namespace NewWave.Library.Chords
 			IsInverted = true;
 		}
 
-		public List<Pitch> Pitches()
+		public IEnumerable<MidiPitch> Pitches(int rootOctave)
 		{
-			var pitches = new List<Pitch> { IsInverted ? Inversion : BasePitch };
+			var basePitch = PitchExtensions.ToMidiPitch(BasePitch, rootOctave);
+			var pitches = new List<MidiPitch> { PitchExtensions.ToMidiPitch(IsInverted ? Inversion : BasePitch, rootOctave) };
 
 			// Second note
 			if (Quality == ChordQuality.Minor || Quality == ChordQuality.Diminished)
 			{
-				pitches.Add(BasePitch + 3);
+				pitches.Add(basePitch + 3);
 			}
 			else if (Quality == ChordQuality.Suspended)
 			{
-				pitches.Add(BasePitch + 5);
+				pitches.Add(basePitch + 5);
 			}
 			else
 			{
-				pitches.Add(BasePitch + 4);
+				pitches.Add(basePitch + 4);
 			}
 
 			// Third note
-			pitches.Add(BasePitch + 7);
+			pitches.Add(basePitch + 7);
 
 			// Additional notes
 			if (_added != ChordAdded.None)
@@ -57,19 +59,19 @@ namespace NewWave.Library.Chords
 				switch (_added)
 				{
 					case ChordAdded.Six:
-						pitches.Add(BasePitch + 9);
+						pitches.Add(basePitch + 9);
 						break;
 					case ChordAdded.Seven:
-						pitches.Add(BasePitch + (Quality == ChordQuality.Major ? 11 : 10));
+						pitches.Add(basePitch + (Quality == ChordQuality.Major ? 11 : 10));
 						break;
 					case ChordAdded.Nine:
-						pitches.Add(BasePitch + (Quality == ChordQuality.Major ? 11 : 10));
-						pitches.Add(BasePitch + (Quality == ChordQuality.Minor ? 13 : 14));
+						pitches.Add(basePitch + (Quality == ChordQuality.Major ? 11 : 10));
+						pitches.Add(basePitch + (Quality == ChordQuality.Minor ? 13 : 14));
 						break;
 					case ChordAdded.Eleven:
-						pitches.Add(BasePitch + (Quality == ChordQuality.Major ? 11 : 10));
-						pitches.Add(BasePitch + (Quality == ChordQuality.Minor ? 13 : 14));
-						pitches.Add(BasePitch + (Quality == ChordQuality.Diminished ? 16 : 17));
+						pitches.Add(basePitch + (Quality == ChordQuality.Major ? 11 : 10));
+						pitches.Add(basePitch + (Quality == ChordQuality.Minor ? 13 : 14));
+						pitches.Add(basePitch + (Quality == ChordQuality.Diminished ? 16 : 17));
 						break;
 				}
 			}
@@ -79,8 +81,8 @@ namespace NewWave.Library.Chords
 
 		public void Transpose(int halfsteps)
 		{
-			BasePitch += halfsteps;
-			Inversion += halfsteps;
+			BasePitch = (Pitch)(((int)BasePitch + halfsteps) % 12);
+			Inversion = (Pitch)(((int)Inversion + halfsteps) % 12);
 		}
 
 		public override bool Equals(object obj)

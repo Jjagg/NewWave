@@ -18,7 +18,7 @@ namespace NewWave.Core
 		/// <summary>
 		/// The pitch of the note.
 		/// </summary>
-		public readonly Pitch Pitch;
+		public readonly MidiPitch Pitch;
 
 		/// <summary>
 		/// The Velocity of the note, 0-127.
@@ -32,7 +32,7 @@ namespace NewWave.Core
 		/// <param name="length">The length of the note, in ticks.</param>
 		/// <param name="pitch">The pitch of the note.</param>
 		/// <param name="velocity">The Velocity of the note, 0-127.</param>
-		public Note(double start, double length, Pitch pitch, Velocity velocity)
+		public Note(double start, double length, MidiPitch pitch, Velocity velocity)
 		{
 			Start = start;
 			Length = length;

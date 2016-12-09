@@ -50,6 +50,8 @@
     <Compile Include="Chords\ChordQuality.cs" />
     <Compile Include="Grooves\Groove.cs" />
     <Compile Include="Grooves\TabWriter.cs" />
+    <Compile Include="Pitches\Pitch.cs" />
+    <Compile Include="Pitches\PitchExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tunings\GuitarTuning.cs" />
     <Compile Include="Tunings\GuitarTuningLibrary.cs" />
