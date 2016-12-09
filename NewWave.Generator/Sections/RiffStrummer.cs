@@ -37,10 +37,7 @@ namespace NewWave.Generator.Sections
 				var noteLength = i < _riff.Count - 1
 					? _riff[i + 1] - start
 					: songInfo.TimeSignature.BeatCount - start;
-				var chord = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2;
-				var pitches = isBass
-					? new[] { chord.Pitches()[0] }
-					: PlayableNotes(chord, songInfo.Parameters.GuitarTuning);
+				var pitches = NotesToPlayAt(songInfo, chords, measure, start, isBass);
 
 				var pitchCount = 100;
 				if (isBass)
@@ -48,7 +45,7 @@ namespace NewWave.Generator.Sections
 					pitchCount = 1;
 				}
 
-				notes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, isBass ? p.AddOctave(-1) : p, Velocity.F)));
+				notes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, isBass ? Velocity.Fff : Velocity.F)));
 			}
 
 			foreach (var track in tracks)
@@ -57,11 +54,20 @@ namespace NewWave.Generator.Sections
 			}
 		}
 
-		private static IEnumerable<Pitch> PlayableNotes(Chord chord, GuitarTuning tuning)
+		private static IEnumerable<Pitch> NotesToPlayAt(SongInfo songInfo, List<Tuple<int, Chord>> chords, int measure, double start, bool isBass)
+		{
+			var chord = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2;
+			var augment = measure > 2 && start > 2;
+			return isBass
+					? new[] { chord.Pitches()[0] - 12 }
+					: PlayableNotes(chord, songInfo.Parameters.GuitarTuning, augment);
+		}
+
+		private static IEnumerable<Pitch> PlayableNotes(Chord chord, GuitarTuning tuning, bool augment)
 		{
 			var chordPitches = chord.Pitches();
 			chordPitches.Add(chordPitches[0] + 7);
-			chordPitches.Add(chordPitches[0] + 12);
+			chordPitches.Add(chordPitches[0] + (augment ? (Randomizer.ProbabilityOfTrue(0.5) ? 14 : (chord.Quality == ChordQuality.Minor ? 15 : 16)) : 12));
 			var root = chordPitches[0];
 			var pitches = new List<Pitch> { root };
 
