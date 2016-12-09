@@ -12,12 +12,12 @@ namespace NewWave.Test.LibraryTests
 		{
 			var tuning = GuitarTuningLibrary.StandardGuitarTuning;
 			Assert.AreEqual(6, tuning.Pitches.Length);
-			Assert.AreEqual(Pitch.E2, tuning.Pitches[0]);
-			Assert.AreEqual(Pitch.A2, tuning.Pitches[1]);
-			Assert.AreEqual(Pitch.D3, tuning.Pitches[2]);
-			Assert.AreEqual(Pitch.G3, tuning.Pitches[3]);
-			Assert.AreEqual(Pitch.B3, tuning.Pitches[4]);
-			Assert.AreEqual(Pitch.E4, tuning.Pitches[5]);
+			Assert.AreEqual(MidiPitch.E2, tuning.Pitches[0]);
+			Assert.AreEqual(MidiPitch.A2, tuning.Pitches[1]);
+			Assert.AreEqual(MidiPitch.D3, tuning.Pitches[2]);
+			Assert.AreEqual(MidiPitch.G3, tuning.Pitches[3]);
+			Assert.AreEqual(MidiPitch.B3, tuning.Pitches[4]);
+			Assert.AreEqual(MidiPitch.E4, tuning.Pitches[5]);
 			Assert.IsFalse(tuning.IsDropTuning);
 		}
 
@@ -26,12 +26,12 @@ namespace NewWave.Test.LibraryTests
 		{
 			var tuning = GuitarTuningLibrary.DropDGuitarTuning;
 			Assert.AreEqual(6, tuning.Pitches.Length);
-			Assert.AreEqual(Pitch.D2, tuning.Pitches[0]);
-			Assert.AreEqual(Pitch.A2, tuning.Pitches[1]);
-			Assert.AreEqual(Pitch.D3, tuning.Pitches[2]);
-			Assert.AreEqual(Pitch.G3, tuning.Pitches[3]);
-			Assert.AreEqual(Pitch.B3, tuning.Pitches[4]);
-			Assert.AreEqual(Pitch.E4, tuning.Pitches[5]);
+			Assert.AreEqual(MidiPitch.D2, tuning.Pitches[0]);
+			Assert.AreEqual(MidiPitch.A2, tuning.Pitches[1]);
+			Assert.AreEqual(MidiPitch.D3, tuning.Pitches[2]);
+			Assert.AreEqual(MidiPitch.G3, tuning.Pitches[3]);
+			Assert.AreEqual(MidiPitch.B3, tuning.Pitches[4]);
+			Assert.AreEqual(MidiPitch.E4, tuning.Pitches[5]);
 			Assert.IsTrue(tuning.IsDropTuning);
 		}
 
@@ -40,12 +40,12 @@ namespace NewWave.Test.LibraryTests
 		{
 			var tuning = GuitarTuningLibrary.DropDGuitarTuning.Retune(-5);
 			Assert.AreEqual(6, tuning.Pitches.Length);
-			Assert.AreEqual(Pitch.A1, tuning.Pitches[0]);
-			Assert.AreEqual(Pitch.E2, tuning.Pitches[1]);
-			Assert.AreEqual(Pitch.A2, tuning.Pitches[2]);
-			Assert.AreEqual(Pitch.D3, tuning.Pitches[3]);
-			Assert.AreEqual(Pitch.FSharp3, tuning.Pitches[4]);
-			Assert.AreEqual(Pitch.B3, tuning.Pitches[5]);
+			Assert.AreEqual(MidiPitch.A1, tuning.Pitches[0]);
+			Assert.AreEqual(MidiPitch.E2, tuning.Pitches[1]);
+			Assert.AreEqual(MidiPitch.A2, tuning.Pitches[2]);
+			Assert.AreEqual(MidiPitch.D3, tuning.Pitches[3]);
+			Assert.AreEqual(MidiPitch.FSharp3, tuning.Pitches[4]);
+			Assert.AreEqual(MidiPitch.B3, tuning.Pitches[5]);
 			Assert.IsTrue(tuning.IsDropTuning);
 		}
 
@@ -54,10 +54,10 @@ namespace NewWave.Test.LibraryTests
 		{
 			var tuning = GuitarTuningLibrary.StandardBassTuning;
 			Assert.AreEqual(4, tuning.Pitches.Length);
-			Assert.AreEqual(Pitch.E1, tuning.Pitches[0]);
-			Assert.AreEqual(Pitch.A1, tuning.Pitches[1]);
-			Assert.AreEqual(Pitch.D2, tuning.Pitches[2]);
-			Assert.AreEqual(Pitch.G2, tuning.Pitches[3]);
+			Assert.AreEqual(MidiPitch.E1, tuning.Pitches[0]);
+			Assert.AreEqual(MidiPitch.A1, tuning.Pitches[1]);
+			Assert.AreEqual(MidiPitch.D2, tuning.Pitches[2]);
+			Assert.AreEqual(MidiPitch.G2, tuning.Pitches[3]);
 			Assert.IsFalse(tuning.IsDropTuning);
 		}
 
@@ -66,11 +66,11 @@ namespace NewWave.Test.LibraryTests
 		{
 			var tuning = GuitarTuningLibrary.StandardFiveStringBassTuning;
 			Assert.AreEqual(5, tuning.Pitches.Length);
-			Assert.AreEqual(Pitch.B0, tuning.Pitches[0]);
-			Assert.AreEqual(Pitch.E1, tuning.Pitches[1]);
-			Assert.AreEqual(Pitch.A1, tuning.Pitches[2]);
-			Assert.AreEqual(Pitch.D2, tuning.Pitches[3]);
-			Assert.AreEqual(Pitch.G2, tuning.Pitches[4]);
+			Assert.AreEqual(MidiPitch.B0, tuning.Pitches[0]);
+			Assert.AreEqual(MidiPitch.E1, tuning.Pitches[1]);
+			Assert.AreEqual(MidiPitch.A1, tuning.Pitches[2]);
+			Assert.AreEqual(MidiPitch.D2, tuning.Pitches[3]);
+			Assert.AreEqual(MidiPitch.G2, tuning.Pitches[4]);
 			Assert.IsFalse(tuning.IsDropTuning);
 		}
 
@@ -80,12 +80,12 @@ namespace NewWave.Test.LibraryTests
 			var tuning = GuitarTuningLibrary.StandardGuitarTuning;
 			tuning.Retune(-3);
 			Assert.AreEqual(6, tuning.Pitches.Length);
-			Assert.AreEqual(Pitch.CSharp2, tuning.Pitches[0]);
-			Assert.AreEqual(Pitch.FSharp2, tuning.Pitches[1]);
-			Assert.AreEqual(Pitch.B2, tuning.Pitches[2]);
-			Assert.AreEqual(Pitch.E3, tuning.Pitches[3]);
-			Assert.AreEqual(Pitch.GSharp3, tuning.Pitches[4]);
-			Assert.AreEqual(Pitch.CSharp4, tuning.Pitches[5]);
+			Assert.AreEqual(MidiPitch.CSharp2, tuning.Pitches[0]);
+			Assert.AreEqual(MidiPitch.FSharp2, tuning.Pitches[1]);
+			Assert.AreEqual(MidiPitch.B2, tuning.Pitches[2]);
+			Assert.AreEqual(MidiPitch.E3, tuning.Pitches[3]);
+			Assert.AreEqual(MidiPitch.GSharp3, tuning.Pitches[4]);
+			Assert.AreEqual(MidiPitch.CSharp4, tuning.Pitches[5]);
 			Assert.IsFalse(tuning.IsDropTuning);
 		}
 	}

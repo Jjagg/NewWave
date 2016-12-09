@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Library.Chords;
+using NewWave.Library.Pitches;
 using NewWave.Midi;
 
 namespace NewWave.Generator.Sections

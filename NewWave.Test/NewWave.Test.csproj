@@ -61,6 +61,7 @@
     <Compile Include="GeneratorTests\SectionTests.cs" />
     <Compile Include="LibraryTests\ChordTests.cs" />
     <Compile Include="GeneratorTests\GeneratorTests.cs" />
+    <Compile Include="LibraryTests\PitchTests.cs" />
     <Compile Include="LibraryTests\TuningTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

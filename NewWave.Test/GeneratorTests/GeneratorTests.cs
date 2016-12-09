@@ -14,10 +14,10 @@ namespace NewWave.Test.GeneratorTests
 	[TestClass]
 	public class BasicGeneratorTests
 	{
-		private const Pitch LowestPitch = Pitch.E2;
+		private const MidiPitch LowestPitch = MidiPitch.E2;
 		private static readonly ParameterList Parameters = new ParameterList
 		{
-			MinorKeyFunc = () => new List<Pitch> { LowestPitch, LowestPitch + 5, LowestPitch + 2 }[Randomizer.GetWeightedIndex(new List<double>
+			MinorKeyFunc = () => new List<MidiPitch> { LowestPitch, LowestPitch + 5, LowestPitch + 2 }[Randomizer.GetWeightedIndex(new List<double>
 			{
 				0.5, 0.3, 0.2
 			})],

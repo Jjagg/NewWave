@@ -87,9 +87,9 @@ namespace NewWave.Generator.SoloLead
 			new List<double> { 0.67, 0.67, 0.67 }
 		};
 
-		internal static List<Pitch> GetScale(Chord chord)
+		internal static List<MidiPitch> GetScale(Chord chord)
 		{
-			List<Pitch> notes;
+			List<MidiPitch> notes;
 			var pitch = !chord.IsInverted ? chord.BasePitch : chord.Inversion;
 
 			switch (chord.Quality)
@@ -103,7 +103,7 @@ namespace NewWave.Generator.SoloLead
 					notes = MajorPentatonicScale.Select(n => pitch + n).ToList();
 					break;
 				default:
-					notes = new List<Pitch>();
+					notes = new List<MidiPitch>();
 					break;
 			}
 

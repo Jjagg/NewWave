@@ -1,27 +1,28 @@
 ﻿using System.Collections.Generic;
+using NewWave.Library.Pitches;
 using NewWave.Midi;
 
 namespace NewWave.Library.Chords
 {
 	public struct Chord
 	{
-		public Pitch BasePitch;
+		public MidiPitch BasePitch;
 	    public readonly ChordQuality Quality;
 		public readonly bool IsInverted;
-		public Pitch Inversion;
+		public MidiPitch Inversion;
 
 		private readonly ChordAdded _added;
 		
-		public Chord(Pitch basePitch, ChordQuality quality = ChordQuality.NotSpecified, ChordAdded added = ChordAdded.None)
+		public Chord(MidiPitch basePitch, ChordQuality quality = ChordQuality.NotSpecified, ChordAdded added = ChordAdded.None)
 		{
 			BasePitch = basePitch;
 			Quality = quality;
 			_added = added;
 			IsInverted = false;
-			Inversion = Pitch.ANeg1;
+			Inversion = MidiPitch.ANeg1;
 		}
 
-		public Chord(Pitch basePitch, ChordQuality quality, ChordAdded added, Pitch inversion)
+		public Chord(MidiPitch basePitch, ChordQuality quality, ChordAdded added, MidiPitch inversion)
 		{
 			BasePitch = basePitch;
 			Quality = quality;
@@ -30,9 +31,9 @@ namespace NewWave.Library.Chords
 			IsInverted = true;
 		}
 
-		public List<Pitch> Pitches()
+		public List<MidiPitch> Pitches()
 		{
-			var pitches = new List<Pitch> { IsInverted ? Inversion : BasePitch };
+			var pitches = new List<MidiPitch> { IsInverted ? Inversion : BasePitch };
 
 			// Second note
 			if (Quality == ChordQuality.Minor || Quality == ChordQuality.Diminished)
