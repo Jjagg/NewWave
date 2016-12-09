@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Library.Chords;
+using NewWave.Library.Pitches;
 using NewWave.Midi;
 
 namespace NewWave.Generator.SoloLead
@@ -35,7 +36,7 @@ namespace NewWave.Generator.SoloLead
 					break;
 				}
 
-				notes.Add(new Note(thisStart, thisLength, thisPitch + 12, Velocity.Ff));
+				notes.Add(new Note(thisStart, thisLength, PitchExtensions.ToMidiPitch(thisPitch, 4), Velocity.Ff));
 				lastIndex = thisIndex;
 				thisStart += thisLength;
 			}
@@ -107,10 +108,7 @@ namespace NewWave.Generator.SoloLead
 					break;
 			}
 
-			return notes
-				.Union(notes.Select(n => n + 12))
-				.Union(notes.Select(n => n + 24))
-				.OrderBy(n => n).ToList();
+			return notes.ToList();
 		}
 
 		private static IEnumerable<int> MajorPentatonicScale => new[] { 0, 2, 4, 7, 9 };
