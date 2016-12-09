@@ -55,15 +55,14 @@
     <Compile Include="Common.cs" />
     <Compile Include="GeneratorTests\GrooveTests.cs" />
     <Compile Include="GeneratorTests\FillTests.cs" />
+    <Compile Include="GeneratorTests\ParameterizedGeneratorTests.cs" />
     <Compile Include="GeneratorTests\RiffTests.cs" />
+    <Compile Include="GeneratorTests\SoloLeadTests.cs" />
     <Compile Include="GeneratorTests\SectionTests.cs" />
     <Compile Include="LibraryTests\ChordTests.cs" />
-    <Compile Include="LibraryTests\GrooveTests.cs" />
     <Compile Include="GeneratorTests\GeneratorTests.cs" />
     <Compile Include="LibraryTests\TuningTests.cs" />
-    <Compile Include="SimpleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestSong.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NewWave.Core\NewWave.Core.csproj">

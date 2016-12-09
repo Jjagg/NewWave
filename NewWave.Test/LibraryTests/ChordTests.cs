@@ -11,7 +11,7 @@ namespace NewWave.Test.LibraryTests
 		[TestMethod]
 		public void CChordTest()
 		{
-			var chord = new Chord(Pitch.C3, ChordQuality.NotSpecified, ChordAdded.None);
+			var chord = new Chord(Pitch.C3);
 			var pitches = chord.Pitches().ToList();
 			Assert.AreEqual(3, pitches.Count);
 
@@ -23,7 +23,7 @@ namespace NewWave.Test.LibraryTests
 		[TestMethod]
 		public void CminChordTest()
 		{
-			var chord = new Chord(Pitch.C3, ChordQuality.Minor, ChordAdded.None);
+			var chord = new Chord(Pitch.C3, ChordQuality.Minor);
 			var pitches = chord.Pitches().ToList();
 			Assert.AreEqual(3, pitches.Count);
 

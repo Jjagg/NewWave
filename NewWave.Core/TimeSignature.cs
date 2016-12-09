@@ -4,14 +4,8 @@ namespace NewWave.Core
 {
 	public class TimeSignature
 	{
-		public int BeatCount { get; private set; }
-		public int BeatUnit { get; private set; }
-
-		public TimeSignature()
-		{
-			BeatCount = 4;
-			BeatUnit = 4;
-		}
+		public int BeatCount { get; }
+		public int BeatUnit { get; }
 
 		public TimeSignature(int beatCount, int beatUnit)
 		{
@@ -29,10 +23,7 @@ namespace NewWave.Core
 			BeatUnit = beatUnit;
 		}
 
-		public static TimeSignature CommonTime
-		{
-			get { return new TimeSignature(4, 4); }
-		}
+		public static TimeSignature CommonTime => new TimeSignature(4, 4);
 
 		public override string ToString()
 		{
