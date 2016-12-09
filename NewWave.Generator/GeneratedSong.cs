@@ -6,6 +6,7 @@ using NewWave.Core;
 using NewWave.Generator.ChordProgressions;
 using NewWave.Generator.Parameters;
 using NewWave.Generator.Sections;
+using NewWave.Library.Pitches;
 using NewWave.Midi;
 
 namespace NewWave.Generator

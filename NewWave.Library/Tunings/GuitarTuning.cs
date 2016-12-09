@@ -4,10 +4,10 @@ namespace NewWave.Library.Tunings
 {
 	public class GuitarTuning
 	{
-		public readonly Pitch[] Pitches;
+		public readonly MidiPitch[] Pitches;
 		public bool IsDropTuning { get; private set; }
 
-		public GuitarTuning(params Pitch[] pitches)
+		public GuitarTuning(params MidiPitch[] pitches)
 		{
 			Pitches = pitches;
 		}

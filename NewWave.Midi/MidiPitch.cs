@@ -1,6 +1,6 @@
 namespace NewWave.Midi
 {
-	public enum Pitch
+	public enum MidiPitch
 	{
 		CNeg1 = 0,
 		CSharpNeg1 = 1,

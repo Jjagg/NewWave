@@ -8,6 +8,7 @@ using NewWave.Generator.Riffs;
 using NewWave.Generator.SoloLead;
 using NewWave.Library.Chords;
 using NewWave.Library.Grooves;
+using NewWave.Library.Pitches;
 using NewWave.Midi;
 
 namespace NewWave.Generator.Sections
@@ -124,7 +125,7 @@ namespace NewWave.Generator.Sections
 			return grooveNotes;
 		}
 
-		private List<Tuple<int, Chord>> GetChordProgression(Pitch lowestPossibleNote, ChordProgression progression)
+		private List<Tuple<int, Chord>> GetChordProgression(MidiPitch lowestPossibleNote, ChordProgression progression)
 		{
 			var chordList = progression
 				.Chords
@@ -189,21 +190,22 @@ namespace NewWave.Generator.Sections
 			return GrooveGenerator.GenerateGroove(_songInfo);
 		}
 
-		private static Chord TransposeForKey(Pitch key, Chord result)
+		private static Chord TransposeForKey(MidiPitch key, Chord result)
 		{
-			var transposeDiff = key - Pitch.C0;
+			var transposeDiff = key - MidiPitch.C0;
 			result.Transpose(transposeDiff);
 			return result;
 		}
 
-		private static Chord TransposeForLowestNote(Pitch lowestPossibleNote, Chord result)
+		private static Chord TransposeForLowestNote(MidiPitch lowestPossibleNote, Chord result)
 		{
-			var currentLowest = result.Pitches().Min();
+			var rootOctave = PitchExtensions.OctaveOf(lowestPossibleNote);
+			var currentLowest = result.Pitches(rootOctave).Min();
 			var minPitchToTranspose = lowestPossibleNote.AddOctave(1);
 			while (currentLowest >= minPitchToTranspose)
 			{
 				result.Transpose(-12);
-				currentLowest = result.Pitches().Min();
+				currentLowest = result.Pitches(rootOctave).Min();
 			}
 			return result;
 		}
