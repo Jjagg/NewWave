@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
-using NewWave.Generator.ChordProgressions;
+using NewWave.Generator;
+using NewWave.Generator.Grooves;
 using NewWave.Generator.Riffs;
-using NewWave.Generator.Sections;
-using NewWave.Library.Chords;
-using NewWave.Midi;
 
 namespace NewWave.Test.GeneratorTests
 {
@@ -13,66 +13,30 @@ namespace NewWave.Test.GeneratorTests
 	public class RiffTests
 	{
 		[TestMethod]
-		public void RiffTest()
+		public void RiffResolutionTest()
 		{
-			var section = new SongSection(SectionType.None, 1, TimeSignature.CommonTime, 4, ChordProgressionGenerator.ChordProgression(n => n));
-			var riff = section.Riff;
-			foreach (var note in riff)
+			const int feel = 4;
+			var timeSignature = new TimeSignature(8, 4);
+			var songInfo = new SongInfo(timeSignature, feel);
+			var groove = GrooveGenerator.GenerateGroove(songInfo);
+			WriteRhythm("Original groove", groove.Beats, timeSignature.BeatCount, feel);
+
+			for (var i = 1; i <= 10; i ++)
 			{
-				Console.WriteLine(note);
+				var res = 4.0 / i;
+				var riffBeats = RiffGenerator.Rhythm(timeSignature, groove.Beats.ToList(), res, feel);
+				WriteRhythm(string.Format("{0:0}% resolution", res * 100), riffBeats, timeSignature.BeatCount, feel);
 			}
 		}
 
-		[TestMethod]
-		public void MajorScaleTest()
+		private void WriteRhythm(string label, IEnumerable<double> lengths, int lengthInBeats, int feel)
 		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.C0, ChordQuality.Major));
-			Assert.AreEqual(7, scale.Count);
-			Assert.AreEqual(Pitch.C0, scale[0]);
-			Assert.AreEqual(Pitch.D0, scale[1]);
-			Assert.AreEqual(Pitch.E0, scale[2]);
-			Assert.AreEqual(Pitch.F0, scale[3]);
-			Assert.AreEqual(Pitch.G0, scale[4]);
-			Assert.AreEqual(Pitch.A0, scale[5]);
-			Assert.AreEqual(Pitch.B0, scale[6]);
-		}
-
-		[TestMethod]
-		public void MinorScaleTest()
-		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.A0, ChordQuality.Minor));
-			Assert.AreEqual(7, scale.Count);
-			Assert.AreEqual(Pitch.A0, scale[0]);
-			Assert.AreEqual(Pitch.B0, scale[1]);
-			Assert.AreEqual(Pitch.C1, scale[2]);
-			Assert.AreEqual(Pitch.D1, scale[3]);
-			Assert.AreEqual(Pitch.E1, scale[4]);
-			Assert.AreEqual(Pitch.F1, scale[5]);
-			Assert.AreEqual(Pitch.G1, scale[6]);
-		}
-
-		[TestMethod]
-		public void MajorPentatonicScaleTest()
-		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.C0));
-			Assert.AreEqual(5, scale.Count);
-			Assert.AreEqual(Pitch.C0, scale[0]);
-			Assert.AreEqual(Pitch.D0, scale[1]);
-			Assert.AreEqual(Pitch.E0, scale[2]);
-			Assert.AreEqual(Pitch.G0, scale[3]);
-			Assert.AreEqual(Pitch.A0, scale[4]);
-		}
-
-		[TestMethod]
-		public void MinorPentatonicScaleTest()
-		{
-			var scale = RiffGenerator.GetScale(new Chord(Pitch.C0));
-			Assert.AreEqual(5, scale.Count);
-			Assert.AreEqual(Pitch.C0, scale[0]);
-			Assert.AreEqual(Pitch.DSharp0, scale[1]);
-			Assert.AreEqual(Pitch.F0, scale[2]);
-			Assert.AreEqual(Pitch.G0, scale[3]);
-			Assert.AreEqual(Pitch.ASharp0, scale[4]);
+			var spacesPerBeat = feel;
+			var tabLength = lengthInBeats * spacesPerBeat;
+			Console.WriteLine(label);
+			Console.WriteLine(string.Join("", Enumerable.Range(0, lengthInBeats).Select(i => string.Format("{0}{1}", i + 1, new string('.', feel - 1)))));
+			Console.WriteLine(string.Join("", Enumerable.Range(0, tabLength).Select(i => lengths.Any(n => n * spacesPerBeat == i) ? "o" : "-")));
+			Console.WriteLine();
 		}
 	}
 }
