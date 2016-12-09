@@ -199,12 +199,13 @@ namespace NewWave.Generator.Sections
 
 		private static Chord TransposeForLowestNote(MidiPitch lowestPossibleNote, Chord result)
 		{
-			var currentLowest = result.Pitches().Min();
+			var rootOctave = PitchExtensions.OctaveOf(lowestPossibleNote);
+			var currentLowest = result.Pitches(rootOctave).Min();
 			var minPitchToTranspose = lowestPossibleNote.AddOctave(1);
 			while (currentLowest >= minPitchToTranspose)
 			{
 				result.Transpose(-12);
-				currentLowest = result.Pitches().Min();
+				currentLowest = result.Pitches(rootOctave).Min();
 			}
 			return result;
 		}

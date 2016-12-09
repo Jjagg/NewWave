@@ -36,5 +36,23 @@ namespace NewWave.Test.LibraryTests
 		{
 			Assert.AreEqual(MidiPitch.F3, PitchExtensions.ToMidiPitch(Pitch.F, 3));
 		}
+
+		[TestMethod]
+		public void OctaveOfTestA0()
+		{
+			Assert.AreEqual(0, PitchExtensions.OctaveOf(MidiPitch.A0));
+		}
+
+		[TestMethod]
+		public void OctaveOfTestC3()
+		{
+			Assert.AreEqual(3, PitchExtensions.OctaveOf(MidiPitch.C3));
+		}
+
+		[TestMethod]
+		public void OctaveOfTestDSharpNeg1()
+		{
+			Assert.AreEqual(-1, PitchExtensions.OctaveOf(MidiPitch.DSharpNeg1));
+		}
 	}
 }

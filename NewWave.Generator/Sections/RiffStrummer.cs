@@ -37,7 +37,7 @@ namespace NewWave.Generator.Sections
 				var noteLength = i < _riff.Count - 1
 					? _riff[i + 1] - start
 					: songInfo.TimeSignature.BeatCount - start;
-				var pitches = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2.Pitches();
+				var pitches = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2.Pitches(isBass ? 2 : 3);
 
 				var pitchCount = 100;
 				if (isBass)

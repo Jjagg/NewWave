@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Library.Chords;
+using NewWave.Library.Pitches;
 using NewWave.Midi;
 
 namespace NewWave.Test.LibraryTests
@@ -11,8 +12,8 @@ namespace NewWave.Test.LibraryTests
 		[TestMethod]
 		public void CChordTest()
 		{
-			var chord = new Chord(MidiPitch.C3);
-			var pitches = chord.Pitches().ToList();
+			var chord = new Chord(Pitch.C);
+			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(3, pitches.Count);
 
 			Assert.AreEqual(MidiPitch.C3, pitches[0]);
@@ -23,8 +24,8 @@ namespace NewWave.Test.LibraryTests
 		[TestMethod]
 		public void CminChordTest()
 		{
-			var chord = new Chord(MidiPitch.C3, ChordQuality.Minor);
-			var pitches = chord.Pitches().ToList();
+			var chord = new Chord(Pitch.C, ChordQuality.Minor);
+			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(3, pitches.Count);
 
 			Assert.AreEqual(MidiPitch.C3, pitches[0]);
@@ -35,8 +36,8 @@ namespace NewWave.Test.LibraryTests
 		[TestMethod]
 		public void Cmin7ChordTest()
 		{
-			var chord = new Chord(MidiPitch.C3, ChordQuality.Minor, ChordAdded.Seven);
-			var pitches = chord.Pitches().ToList();
+			var chord = new Chord(Pitch.C, ChordQuality.Minor, ChordAdded.Seven);
+			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(4, pitches.Count);
 
 			Assert.AreEqual(MidiPitch.C3, pitches[0]);
@@ -48,8 +49,8 @@ namespace NewWave.Test.LibraryTests
 		[TestMethod]
 		public void Cmin9ChordTest()
 		{
-			var chord = new Chord(MidiPitch.C3, ChordQuality.NotSpecified, ChordAdded.Nine);
-			var pitches = chord.Pitches().ToList();
+			var chord = new Chord(Pitch.C, ChordQuality.NotSpecified, ChordAdded.Nine);
+			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(5, pitches.Count);
 
 			Assert.AreEqual(MidiPitch.C3, pitches[0]);
@@ -62,8 +63,8 @@ namespace NewWave.Test.LibraryTests
 		[TestMethod]
 		public void Cmin11ChordTest()
 		{
-			var chord = new Chord(MidiPitch.C3, ChordQuality.NotSpecified, ChordAdded.Eleven);
-			var pitches = chord.Pitches().ToList();
+			var chord = new Chord(Pitch.C, ChordQuality.NotSpecified, ChordAdded.Eleven);
+			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(6, pitches.Count);
 
 			Assert.AreEqual(MidiPitch.C3, pitches[0]);
@@ -77,8 +78,8 @@ namespace NewWave.Test.LibraryTests
 		[TestMethod]
 		public void CsusChordTest()
 		{
-			var chord = new Chord(MidiPitch.C3, ChordQuality.Suspended, ChordAdded.Nine);
-			var pitches = chord.Pitches().ToList();
+			var chord = new Chord(Pitch.C, ChordQuality.Suspended, ChordAdded.Nine);
+			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(5, pitches.Count);
 
 			Assert.AreEqual(MidiPitch.C3, pitches[0]);
