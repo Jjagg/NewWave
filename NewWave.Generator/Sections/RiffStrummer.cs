@@ -30,6 +30,9 @@ namespace NewWave.Generator.Sections
 		private void AddNotes(IEnumerable<InstrumentTrack> tracks, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, bool isBass = false)
 		{
 			var notes = new List<Note>();
+			var octave = isBass
+				? PitchExtensions.OctaveOf(songInfo.Parameters.BassTuning.Pitches[0])
+				: PitchExtensions.OctaveOf(songInfo.Parameters.GuitarTuning.Pitches[0]);
 
 			for (var i = 0; i < _riff.Count; i++)
 			{
@@ -37,7 +40,7 @@ namespace NewWave.Generator.Sections
 				var noteLength = i < _riff.Count - 1
 					? _riff[i + 1] - start
 					: songInfo.TimeSignature.BeatCount - start;
-				var pitches = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2.Pitches(isBass ? 2 : 3);
+				var pitches = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2.Pitches(octave);
 
 				var pitchCount = 100;
 				if (isBass)
@@ -45,7 +48,7 @@ namespace NewWave.Generator.Sections
 					pitchCount = 1;
 				}
 
-				notes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, isBass ? p.AddOctave(-1) : p, Velocity.F)));
+				notes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, Velocity.F)));
 			}
 
 			foreach (var track in tracks)
