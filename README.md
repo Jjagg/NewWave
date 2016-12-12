@@ -13,9 +13,7 @@ Create a test in the unit test project (there are several examples already there
 * **NewWave.Generator**
   * Where the magic happens. Generates chord progressions, drum grooves, arrangements, etc. and layers it all together
 * **NewWave.Library**
-  * Contains the `Chord` class
-  * Contains the `GrooveLibrary` class (currently only used for testing) and methods for printing drum tabs when testing
-  * Mostly unused in general, but will probably eventually contain more common functionality
+  * Contains common functionality: chords, scales, scales
 * **NewWave.Midi**
   * Enums for MIDI generation
 * **NewWave.Test**
