@@ -32,39 +32,17 @@ namespace NewWave.Library.Scales
 
 		public static MidiPitch Step(Pitch root, ScaleType scaleType, MidiPitch start, int steps)
 		{
-			return steps == 0
-				? start
-				: (steps > 0
-					? StepUp(root, scaleType, start, steps)
-					: StepDown(root, scaleType, start, steps));
-		}
-
-		private static MidiPitch StepUp(Pitch root, ScaleType scaleType, MidiPitch start, int steps)
-		{
-			var scale = GetScale(root, scaleType).ToList();
-			var pitchScale = scale.Select(s => s.ToMidiPitch(start.OctaveOf())).ToList();
-
-			var octaves = steps / scale.Count + 2;
-			for (var i = 1; i <= octaves; i++)
+			if (steps == 0)
 			{
-				pitchScale.AddRange(scale.Select(s => s.ToMidiPitch(start.OctaveOf() + i)).ToList());
+				return start;
 			}
-			pitchScale = pitchScale.OrderBy(p => p).ToList();
 
-			var startIndex = pitchScale.IndexOf(start);
-			var returnIndex = startIndex + steps;
-			return pitchScale[returnIndex];
-		}
-
-		private static MidiPitch StepDown(Pitch root, ScaleType scaleType, MidiPitch start, int steps)
-		{
 			var scale = GetScale(root, scaleType).ToList();
 			var pitchScale = scale.Select(s => s.ToMidiPitch(start.OctaveOf())).ToList();
-
-			var octaves = -steps / scale.Count + 2;
+			var octaves = Math.Abs(steps) / scale.Count + 2;
 			for (var i = 1; i <= octaves; i++)
 			{
-				pitchScale.AddRange(scale.Select(s => s.ToMidiPitch(start.OctaveOf() - i)).ToList());
+				pitchScale.AddRange(scale.Select(s => s.ToMidiPitch(start.OctaveOf() + (steps > 0 ? i : -i))).ToList());
 			}
 			pitchScale = pitchScale.OrderBy(p => p).ToList();
 
