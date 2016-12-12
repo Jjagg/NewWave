@@ -31,8 +31,8 @@ namespace NewWave.Generator.Sections
 		{
 			var notes = new List<Note>();
 			var octave = isBass
-				? PitchExtensions.OctaveOf(songInfo.Parameters.BassTuning.Pitches[0])
-				: PitchExtensions.OctaveOf(songInfo.Parameters.GuitarTuning.Pitches[0]);
+				? songInfo.Parameters.BassTuning.Pitches[0].OctaveOf()
+				: songInfo.Parameters.GuitarTuning.Pitches[0].OctaveOf();
 
 			for (var i = 0; i < _riff.Count; i++)
 			{
