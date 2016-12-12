@@ -4,6 +4,7 @@ using System.Linq;
 using NewWave.Core;
 using NewWave.Library.Chords;
 using NewWave.Library.Pitches;
+using NewWave.Library.Scales;
 using NewWave.Midi;
 
 namespace NewWave.Generator.SoloLead
@@ -20,7 +21,7 @@ namespace NewWave.Generator.SoloLead
 			for (var note = 0; note < lengths.Count; note++)
 			{
 				var thisChord = chordProgression.Last(c => c.Item1 <= note).Item2;
-				var thisScale = GetScale(thisChord).ToList();
+				var thisScale = ScaleLibrary.GetScale(thisChord).ToList();
 				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5), -7, 7);
 				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count - 1);
 				var thisPitch = thisScale[thisIndex];
@@ -87,33 +88,5 @@ namespace NewWave.Generator.SoloLead
 			new List<double> { 0.67, 0.33 },
 			new List<double> { 0.67, 0.67, 0.67 }
 		};
-
-		internal static List<Pitch> GetScale(Chord chord)
-		{
-			List<Pitch> notes;
-			var pitch = !chord.IsInverted ? chord.BasePitch : chord.Inversion;
-
-			switch (chord.Quality)
-			{
-				case ChordQuality.Minor:
-				case ChordQuality.Diminished:
-					notes = MinorPentatonicScale.Select(n => pitch + n).ToList();
-					break;
-				case ChordQuality.NotSpecified:
-				case ChordQuality.Major:
-					notes = MajorPentatonicScale.Select(n => pitch + n).ToList();
-					break;
-				default:
-					notes = new List<Pitch>();
-					break;
-			}
-
-			return notes.ToList();
-		}
-
-		private static IEnumerable<int> MajorPentatonicScale => new[] { 0, 2, 4, 7, 9 };
-		private static IEnumerable<int> MinorPentatonicScale => new[] { 0, 3, 5, 7, 10 };
-		private static IEnumerable<int> MajorScale => new[] { 0, 2, 4, 5, 7, 9, 11 };
-		private static IEnumerable<int> MinorScale => new[] { 0, 2, 3, 5, 7, 8, 10 };
 	}
 }
