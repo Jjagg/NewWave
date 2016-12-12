@@ -25,13 +25,18 @@ namespace NewWave.Library.Pitches
 			return string.Format("{0}{1}", letter, isSharp ? "#" : "");
 		}
 
-		public static MidiPitch ToMidiPitch(Pitch p, int octave)
+		public static MidiPitch ToMidiPitch(this Pitch p, int octave)
 		{
 			var pitchDiff = ((int)p - (int)MidiPitch.CNeg1) % 12;
 			return MidiPitch.CNeg1 + pitchDiff + 12 * (octave + 1);
 		}
 
-		public static int OctaveOf(MidiPitch p)
+		public static Pitch FromMidiPitch(this MidiPitch p)
+		{
+			return (Pitch)((int)p % 12);
+		}
+		
+		public static int OctaveOf(this MidiPitch p)
 		{
 			return (int)p / 12 - 1;
 		}
