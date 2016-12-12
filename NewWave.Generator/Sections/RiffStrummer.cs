@@ -61,17 +61,16 @@ namespace NewWave.Generator.Sections
 		private static IEnumerable<MidiPitch> NotesToPlayAt(SongInfo songInfo, List<Tuple<int, Chord>> chords, int measure, double start, bool isBass, int octave)
 		{
 			var chord = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2;
-			var augment = measure > 2 && start > 2;
 			return isBass
 					? new[] { chord.Pitches(octave).ToList()[0] }
-					: PlayableNotes(chord, songInfo.Parameters.GuitarTuning, augment);
+					: PlayableNotes(chord, songInfo.Parameters.GuitarTuning);
 		}
 
-		private static IEnumerable<MidiPitch> PlayableNotes(Chord chord, GuitarTuning tuning, bool augment)
+		private static IEnumerable<MidiPitch> PlayableNotes(Chord chord, GuitarTuning tuning)
 		{
-			var chordPitches = chord.Pitches(tuning.Pitches[0].OctaveOf()).ToList();
+			var chordPitches = chord.PitchesHigherThan(tuning.Pitches[0]).ToList();
 			chordPitches.Add(chordPitches[0] + 7);
-			chordPitches.Add(chordPitches[0] + (augment ? (Randomizer.ProbabilityOfTrue(0.5) ? 14 : (chord.Quality == ChordQuality.Minor ? 15 : 16)) : 12));
+			chordPitches.Add(chordPitches[0] + 12);
 			var root = chordPitches[0];
 			var pitches = new List<MidiPitch> { root };
 

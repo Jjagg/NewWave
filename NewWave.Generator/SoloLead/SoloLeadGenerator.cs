@@ -67,7 +67,7 @@ namespace NewWave.Generator.SoloLead
 			var intervals = new List<int>();
 			for (var i = 0; i < count; i++)
 			{
-				interval = Randomizer.Clamp(interval + Randomizer.Clamp(Randomizer.NextNormalized(0, 1.25), -4, 4), -7, 7);
+				interval = Randomizer.Clamp(interval + Randomizer.Clamp(Randomizer.NextNormalized(0, 1.75), -4, 4), -7, 7);
 				intervals.Add(interval);
 			}
 

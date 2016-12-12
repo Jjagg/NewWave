@@ -61,7 +61,7 @@ namespace NewWave.Library.Scales
 			var scale = GetScale(root, scaleType).ToList();
 			var pitchScale = scale.Select(s => s.ToMidiPitch(start.OctaveOf())).ToList();
 
-			var octaves = steps / scale.Count + 2;
+			var octaves = -steps / scale.Count + 2;
 			for (var i = 1; i <= octaves; i++)
 			{
 				pitchScale.AddRange(scale.Select(s => s.ToMidiPitch(start.OctaveOf() - i)).ToList());
