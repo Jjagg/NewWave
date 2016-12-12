@@ -56,7 +56,7 @@ namespace NewWave.Generator.Sections
 
 		private void RenderRepeat(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
 		{
-			if (Type == SectionType.Verse || Type == SectionType.Chorus)
+			if ((Type == SectionType.Verse || Type == SectionType.Chorus))
 			{
 				guitarC.Notes.Add(Lead.ToList());
 			}
