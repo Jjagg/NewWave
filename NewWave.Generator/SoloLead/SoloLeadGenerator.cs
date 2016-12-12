@@ -37,7 +37,7 @@ namespace NewWave.Generator.SoloLead
 					break;
 				}
 
-				notes.Add(new Note(thisStart, thisLength, PitchExtensions.ToMidiPitch(thisPitch, 4), Velocity.Ff));
+				notes.Add(new Note(thisStart, thisLength, thisPitch.ToMidiPitch(4), Velocity.Ff));
 				lastIndex = thisIndex;
 				thisStart += thisLength;
 			}

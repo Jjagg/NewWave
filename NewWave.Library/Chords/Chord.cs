@@ -33,8 +33,8 @@ namespace NewWave.Library.Chords
 
 		public IEnumerable<MidiPitch> Pitches(int rootOctave)
 		{
-			var basePitch = PitchExtensions.ToMidiPitch(BasePitch, rootOctave);
-			var pitches = new List<MidiPitch> { PitchExtensions.ToMidiPitch(IsInverted ? Inversion : BasePitch, rootOctave) };
+			var basePitch = BasePitch.ToMidiPitch(rootOctave);
+			var pitches = new List<MidiPitch> { (IsInverted ? Inversion : BasePitch).ToMidiPitch(rootOctave) };
 
 			// Second note
 			if (Quality == ChordQuality.Minor || Quality == ChordQuality.Diminished)
