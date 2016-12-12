@@ -29,7 +29,7 @@ namespace NewWave.Generator.Parameters
 			}
 		}
 
-		public static Pitch GetKey(GuitarTuning tuning)
+		public static MidiPitch GetKey(GuitarTuning tuning)
 		{
 			var possibleKeys = new[] { tuning.Pitches[0], tuning.Pitches[0] + 2, tuning.Pitches[1] }; // e.g. E, F#, A (0, 2, 5)
 			return possibleKeys[Randomizer.Next(possibleKeys.Length)];

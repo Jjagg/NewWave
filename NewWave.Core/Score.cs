@@ -236,10 +236,10 @@ namespace NewWave.Core
 		{
 			public readonly int Start;
 			public readonly int End;
-			public readonly Pitch Pitch;
+			public readonly MidiPitch Pitch;
 			public readonly Velocity Velocity;
 
-			public MidiNote(int start, int length, Pitch pitch, Velocity velocity)
+			public MidiNote(int start, int length, MidiPitch pitch, Velocity velocity)
 			{
 				Start = start;
 				End = start + length;
