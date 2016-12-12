@@ -21,7 +21,7 @@ namespace NewWave.Generator.SoloLead
 			for (var note = 0; note < lengths.Count; note++)
 			{
 				var thisChord = chordProgression.Last(c => c.Item1 <= note).Item2;
-				var thisScale = ScaleLibrary.GetScale(thisChord).ToList();
+				var thisScale = ScaleLibrary.GetScale(thisChord.BasePitch, ScaleType.MinorPentatonic).ToList();
 				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5), -7, 7);
 				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count - 1);
 				var thisPitch = thisScale[thisIndex];

@@ -54,6 +54,7 @@
     <Compile Include="Pitches\PitchExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scales\ScaleLibrary.cs" />
+    <Compile Include="Scales\ScaleType.cs" />
     <Compile Include="Tunings\GuitarTuning.cs" />
     <Compile Include="Tunings\GuitarTuningLibrary.cs" />
   </ItemGroup>
