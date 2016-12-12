@@ -14,17 +14,17 @@ namespace NewWave.Generator.SoloLead
 		internal static IEnumerable<Note> GetSoloLead(SongInfo songInfo, int length, List<Tuple<int, Chord>> chordProgression)
 		{
 			var notes = new List<Note>();
-			var lastIndex = -1;
 			var thisStart = 0.0;
 			var lengths = GetNoteLengths(length, songInfo.Feel);
+			const ScaleType scaleType = ScaleType.MinorPentatonic;
+			const int octave = 4;
+			var interval = 0;
 
 			for (var note = 0; note < lengths.Count; note++)
 			{
 				var thisChord = chordProgression.Last(c => c.Item1 <= note).Item2;
-				var thisScale = ScaleLibrary.GetScale(thisChord.BasePitch, ScaleType.MinorPentatonic).ToList();
-				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5), -7, 7);
-				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count - 1);
-				var thisPitch = thisScale[thisIndex];
+				interval += Randomizer.Clamp(Randomizer.NextNormalized(0, 1), -7, 7);
+				var thisPitch = ScaleLibrary.Step(thisChord.BasePitch, scaleType, thisChord.BasePitch.ToMidiPitch(octave), interval);
 				var thisLength = lengths[note];
 
 				if (thisStart + thisLength > length)
@@ -37,8 +37,7 @@ namespace NewWave.Generator.SoloLead
 					break;
 				}
 
-				notes.Add(new Note(thisStart, thisLength, thisPitch.ToMidiPitch(4), Velocity.Ff));
-				lastIndex = thisIndex;
+				notes.Add(new Note(thisStart, thisLength, thisPitch, Velocity.Ff));
 				thisStart += thisLength;
 			}
 			return notes;
