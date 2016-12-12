@@ -63,7 +63,7 @@ namespace NewWave.Generator.Sections
 			var chord = chords.Last(c => c.Item1 <= measure * songInfo.TimeSignature.BeatCount + start).Item2;
 			var augment = measure > 2 && start > 2;
 			return isBass
-					? new[] { chord.Pitches(octave).ToList()[0] - 12 }
+					? new[] { chord.Pitches(octave).ToList()[0] }
 					: PlayableNotes(chord, songInfo.Parameters.GuitarTuning, augment);
 		}
 
