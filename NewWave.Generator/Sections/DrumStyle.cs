@@ -86,7 +86,9 @@ namespace NewWave.Generator.Sections
 				}
 				else
 				{
-					snareList = EveryNthOfBeat(groove.TimeSignature.BeatCount, 1.5, 1).ToList();
+					snareList = (Randomizer.ProbabilityOfTrue(0.75)
+						? EveryNthOfBeat(groove.TimeSignature.BeatCount, 3, 1.5)
+						: EveryNthOfBeat(groove.TimeSignature.BeatCount, 1.5, 1)).ToList();
 				}
 			}
 
