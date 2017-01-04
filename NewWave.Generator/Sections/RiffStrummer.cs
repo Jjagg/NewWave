@@ -2,54 +2,86 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
+using NewWave.Generator.SoloLead;
 using NewWave.Library.Chords;
 using NewWave.Library.Tunings;
 using NewWave.Library.Pitches;
+using NewWave.Library.Scales;
 using NewWave.Midi;
 
 namespace NewWave.Generator.Sections
 {
 	internal class RiffStrummer
 	{
-		private readonly List<double> _riff;
+		private readonly List<double> _rhythm;
+		private readonly List<Tuple<int, Chord>> _chords;
+		private readonly List<Note> _notes;
 
-		public RiffStrummer(List<double> riff)
+		public RiffStrummer(List<double> rhythm, List<Tuple<int, Chord>> chords, TimeSignature timeSignature, int measures)
 		{
-			_riff = riff;
+			_rhythm = rhythm;
+			_chords = chords;
+			_notes = new List<Note>();
+
+			for (var measure = 0; measure < measures; measure++)
+			{
+				var chord = chords.Last(c => c.Item1 <= measure * timeSignature.BeatCount).Item2;
+				var scaleType = chord.Quality == ChordQuality.Minor ? ScaleType.MinorPentatonic : ScaleType.MajorPentatonic;
+				var pitches = PitchSequenceGenerator.GetPitches(chord, scaleType, _rhythm.Count, 3);
+				for (var hitIndex = 0; hitIndex < rhythm.Count; hitIndex++)
+				{
+					var start = rhythm[hitIndex];
+					var totalStart = measure * timeSignature.BeatCount + start;
+
+					var chordHere = chords.Last(c => c.Item1 <= totalStart).Item2;
+					if (!chordHere.Equals(chord))
+					{
+						chord = chordHere;
+						pitches = PitchSequenceGenerator.GetPitches(chord, scaleType, _rhythm.Count, 3);
+					}
+
+					var length = hitIndex < rhythm.Count - 1
+						? rhythm[hitIndex + 1] - rhythm[hitIndex]
+						: timeSignature.BeatCount - start;
+					if (length > 0)
+					{
+						_notes.Add(new Note(totalStart, length, pitches[hitIndex], Velocity.Fff));
+					}
+				}
+			}
 		}
 
-		public void AddGuitarNotes(IEnumerable<InstrumentTrack> tracks, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
+		public void AddGuitarNotes(IEnumerable<InstrumentTrack> tracks, int measure, SongInfo songInfo)
 		{
-			AddNotes(tracks, chords, measure, songInfo);
+			AddNotes(tracks, measure, songInfo);
 		}
 
-		public void AddBassNotes(InstrumentTrack track, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
+		public void AddBassNotes(InstrumentTrack track, int measure, SongInfo songInfo)
 		{
-			AddNotes(new[] { track }, chords, measure, songInfo, true);
+			AddNotes(new[] { track }, measure, songInfo, true);
 		}
 
-		private void AddNotes(IEnumerable<InstrumentTrack> tracks, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, bool isBass = false)
+		private void AddNotes(IEnumerable<InstrumentTrack> tracks, int measure, SongInfo songInfo, bool isBass = false)
 		{
 			var notes = new List<Note>();
 			var octave = isBass
 				? songInfo.Parameters.BassTuning.Pitches[0].OctaveOf()
 				: songInfo.Parameters.GuitarTuning.Pitches[0].OctaveOf();
 
-			for (var i = 0; i < _riff.Count; i++)
+			for (var i = 0; i < _rhythm.Count; i++)
 			{
-				var start = _riff[i];
-				var noteLength = i < _riff.Count - 1
-					? _riff[i + 1] - start
-					: songInfo.TimeSignature.BeatCount - start;
-				var pitches = NotesToPlayAt(songInfo, chords, measure, start, isBass, octave);
+				var pitch = _notes.Last(n => n.Start <= _rhythm[i] + measure * songInfo.TimeSignature.BeatCount);
+				var pitches = NotesToPlayAt(songInfo, _chords, measure, _rhythm[i], isBass, octave).ToList();
 
-				var pitchCount = 100;
+
 				if (isBass)
 				{
-					pitchCount = 1;
+					notes.Add(new Note(pitch.Start, pitch.Length, pitches[0], Velocity.Fff));
 				}
-
-				notes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, isBass ? Velocity.Fff : Velocity.F)));
+				else
+				{
+					notes.Add(pitch);
+				}
 			}
 
 			foreach (var track in tracks)

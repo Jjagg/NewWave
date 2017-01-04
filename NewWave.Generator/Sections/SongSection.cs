@@ -38,8 +38,8 @@ namespace NewWave.Generator.Sections
 			_drumstyle = songInfo.Parameters.DrumStyle(Type);
 			var groove = GetGroove();
 			_drumstyle.Generate(groove);
-			var riff = RiffGenerator.Rhythm(songInfo.TimeSignature, groove.Beats.ToList(), songInfo.Parameters.RiffResolutionFunc(type), songInfo.Feel).ToList();
-			_strummer = new RiffStrummer(riff);
+			var rhythm = RiffGenerator.Rhythm(songInfo.TimeSignature, groove.Beats.ToList(), songInfo.Parameters.RiffResolutionFunc(type), songInfo.Feel).ToList();
+			_strummer = new RiffStrummer(rhythm, Chords, songInfo.TimeSignature, Measures);
 		}
 
 		internal int Measures => _measures * _repeats;
@@ -56,7 +56,7 @@ namespace NewWave.Generator.Sections
 
 		private void RenderRepeat(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
 		{
-			if ((Type == SectionType.Verse || Type == SectionType.Chorus))
+			if (false && (Type == SectionType.Verse || Type == SectionType.Chorus))
 			{
 				guitarC.Notes.Add(Lead.ToList());
 			}
@@ -81,20 +81,27 @@ namespace NewWave.Generator.Sections
 				gNotes.Add(new Tuple<double, double>(0, _songInfo.TimeSignature.BeatCount));
 			}
 
-			if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
+			if (false)
 			{
-				_strummer.AddGuitarNotes(new[] { guitarLc, guitarRc }, Chords, measure, _songInfo);
+				guitarL.Notes.Add(new List<Note>());
+				guitarR.Notes.Add(new List<Note>());
+				guitarLc.Notes.Add(new List<Note>());
+				guitarRc.Notes.Add(new List<Note>());
+			}
+			else if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
+			{
+				_strummer.AddGuitarNotes(new[] { guitarLc, guitarRc }, measure, _songInfo);
 				guitarL.Notes.Add(new List<Note>());
 				guitarR.Notes.Add(new List<Note>());
 			}
 			else
 			{
-				_strummer.AddGuitarNotes(new[] { guitarL, guitarR }, Chords, measure, _songInfo);
+				_strummer.AddGuitarNotes(new[] { guitarL, guitarR }, measure, _songInfo);
 				guitarLc.Notes.Add(new List<Note>());
 				guitarRc.Notes.Add(new List<Note>());
 			}
 
-			_strummer.AddBassNotes(bass, Chords, measure, _songInfo);
+			_strummer.AddBassNotes(bass, measure, _songInfo);
 			drums.Notes.Add(AddFill(repeat, measure, grooveNotes));
 
 			if (measure != 0)

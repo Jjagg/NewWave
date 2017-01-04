@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Library.Chords;
-using NewWave.Library.Pitches;
 using NewWave.Library.Scales;
 using NewWave.Midi;
 
@@ -27,7 +26,7 @@ namespace NewWave.Generator.SoloLead
 				var chord = chordTuple.Item2;
 				var scaleType = chord.Quality == ChordQuality.Minor ? ScaleType.MinorPentatonic : ScaleType.MajorPentatonic;
 				var lengths = GetNoteLengths(length, songInfo.Feel);
-				var pitches = GetPitches(chord, scaleType, lengths.Count, octave);
+				var pitches = PitchSequenceGenerator.GetPitches(chord, scaleType, lengths.Count, octave);
 				var thisStart = (double)startBeat;
 
 				for (var i = 0; i < lengths.Count; i++)
@@ -59,23 +58,6 @@ namespace NewWave.Generator.SoloLead
 			}
 
 			return lengths;
-		}
-
-		private static List<MidiPitch> GetPitches(Chord chord, ScaleType scaleType, int count, int octave)
-		{
-			var interval = 0;
-			var pitchesInChord = chord.Pitches(octave).Select(p => p.FromMidiPitch()).ToList();
-			var pitches = new List<MidiPitch>();
-			var stdDev = 0.5;
-			for (var i = 0; i < count; i++)
-			{
-				interval = Randomizer.Clamp(interval + Randomizer.Clamp(Randomizer.NextNormalized(0, stdDev), -4, 4), -7, 7);
-				var pitch = ScaleLibrary.Step(chord.BasePitch, scaleType, chord.BasePitch.ToMidiPitch(octave), interval);
-				pitches.Add(pitch);
-				stdDev = pitchesInChord.Contains(pitch.FromMidiPitch()) ? 0.75 : 2;
-			}
-
-			return pitches;
 		}
 
 		private static List<List<double>> LengthSegments4 => new List<List<double>>

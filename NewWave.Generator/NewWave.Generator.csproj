@@ -55,6 +55,7 @@
     <Compile Include="Randomizer.cs" />
     <Compile Include="Riffs\RiffGenerator.cs" />
     <Compile Include="Sections\RiffStrummer.cs" />
+    <Compile Include="SoloLead\PitchSequenceGenerator.cs" />
     <Compile Include="SoloLead\SoloLeadGenerator.cs" />
     <Compile Include="Sections\DrumStyle.cs" />
     <Compile Include="SongInfo.cs" />

@@ -10,9 +10,10 @@ namespace NewWave.Generator.Riffs
 		public static IEnumerable<double> Rhythm(TimeSignature timeSignature, List<double> hits, double resolution, int feel)
 		{
 			var targetBeatCount = Math.Max(1, resolution * hits.Count);
-			return resolution < 1.0
+			var result = resolution < 1.0
 				? ReduceRhythm(hits, targetBeatCount)
 				: IncreaseRhythm(timeSignature, targetBeatCount, hits, feel);
+			return result.OrderBy(h => h);
 		}
 
 		private static IEnumerable<double> IncreaseRhythm(TimeSignature timeSignature, double targetBeatCount, List<double> hits, int feel)
