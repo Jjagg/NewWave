@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NewWave.Library.Grooves;
+using NewWave.Core.Grooves;
+using NewWave.Generator.Common;
 
 namespace NewWave.Generator.Grooves
 {

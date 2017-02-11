@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using NewWave.Library.Chords;
+using NewWave.Core.Chords;
+using NewWave.Generator.Common.ChordProgressions;
 
 namespace NewWave.Generator.ChordProgressions
 {

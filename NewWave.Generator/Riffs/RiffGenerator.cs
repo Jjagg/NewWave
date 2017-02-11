@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
+using NewWave.Generator.Common;
 
 namespace NewWave.Generator.Riffs
 {

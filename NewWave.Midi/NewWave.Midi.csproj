@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Sanford.Multimedia.Midi">
+      <HintPath>..\Dependencies\Sanford.Multimedia.Midi.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,14 +47,20 @@
     <Compile Include="Channel.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="Instrument.cs" />
+    <Compile Include="MidiExtensions.cs" />
     <Compile Include="Pan.cs" />
     <Compile Include="Percussion.cs" />
-    <Compile Include="MidiPitch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Velocity.cs" />
+    <Compile Include="TabWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NewWave.Core\NewWave.Core.csproj">
+      <Project>{fa86d790-de62-46d9-a3b6-0fd84accb75d}</Project>
+      <Name>NewWave.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

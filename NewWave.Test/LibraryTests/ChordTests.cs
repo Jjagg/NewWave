@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NewWave.Library.Chords;
-using NewWave.Library.Pitches;
-using NewWave.Midi;
+using NewWave.Core.Chords;
+using NewWave.Core.Pitches;
 
 namespace NewWave.Test.LibraryTests
 {
@@ -16,9 +15,9 @@ namespace NewWave.Test.LibraryTests
 			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(3, pitches.Count);
 
-			Assert.AreEqual(MidiPitch.C3, pitches[0]);
-			Assert.AreEqual(MidiPitch.E3, pitches[1]);
-			Assert.AreEqual(MidiPitch.G3, pitches[2]);
+			Assert.AreEqual(OctavePitch.C3, pitches[0]);
+			Assert.AreEqual(OctavePitch.E3, pitches[1]);
+			Assert.AreEqual(OctavePitch.G3, pitches[2]);
 		}
 
 		[TestMethod]
@@ -28,9 +27,9 @@ namespace NewWave.Test.LibraryTests
 			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(3, pitches.Count);
 
-			Assert.AreEqual(MidiPitch.C3, pitches[0]);
-			Assert.AreEqual(MidiPitch.DSharp3, pitches[1]);
-			Assert.AreEqual(MidiPitch.G3, pitches[2]);
+			Assert.AreEqual(OctavePitch.C3, pitches[0]);
+			Assert.AreEqual(OctavePitch.DSharp3, pitches[1]);
+			Assert.AreEqual(OctavePitch.G3, pitches[2]);
 		}
 
 		[TestMethod]
@@ -40,10 +39,10 @@ namespace NewWave.Test.LibraryTests
 			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(4, pitches.Count);
 
-			Assert.AreEqual(MidiPitch.C3, pitches[0]);
-			Assert.AreEqual(MidiPitch.DSharp3, pitches[1]);
-			Assert.AreEqual(MidiPitch.G3, pitches[2]);
-			Assert.AreEqual(MidiPitch.ASharp3, pitches[3]);
+			Assert.AreEqual(OctavePitch.C3, pitches[0]);
+			Assert.AreEqual(OctavePitch.DSharp3, pitches[1]);
+			Assert.AreEqual(OctavePitch.G3, pitches[2]);
+			Assert.AreEqual(OctavePitch.ASharp3, pitches[3]);
 		}
 
 		[TestMethod]
@@ -53,11 +52,11 @@ namespace NewWave.Test.LibraryTests
 			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(5, pitches.Count);
 
-			Assert.AreEqual(MidiPitch.C3, pitches[0]);
-			Assert.AreEqual(MidiPitch.E3, pitches[1]);
-			Assert.AreEqual(MidiPitch.G3, pitches[2]);
-			Assert.AreEqual(MidiPitch.ASharp3, pitches[3]);
-			Assert.AreEqual(MidiPitch.D4, pitches[4]);
+			Assert.AreEqual(OctavePitch.C3, pitches[0]);
+			Assert.AreEqual(OctavePitch.E3, pitches[1]);
+			Assert.AreEqual(OctavePitch.G3, pitches[2]);
+			Assert.AreEqual(OctavePitch.ASharp3, pitches[3]);
+			Assert.AreEqual(OctavePitch.D4, pitches[4]);
 		}
 
 		[TestMethod]
@@ -67,12 +66,12 @@ namespace NewWave.Test.LibraryTests
 			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(6, pitches.Count);
 
-			Assert.AreEqual(MidiPitch.C3, pitches[0]);
-			Assert.AreEqual(MidiPitch.E3, pitches[1]);
-			Assert.AreEqual(MidiPitch.G3, pitches[2]);
-			Assert.AreEqual(MidiPitch.ASharp3, pitches[3]);
-			Assert.AreEqual(MidiPitch.D4, pitches[4]);
-			Assert.AreEqual(MidiPitch.F4, pitches[5]);
+			Assert.AreEqual(OctavePitch.C3, pitches[0]);
+			Assert.AreEqual(OctavePitch.E3, pitches[1]);
+			Assert.AreEqual(OctavePitch.G3, pitches[2]);
+			Assert.AreEqual(OctavePitch.ASharp3, pitches[3]);
+			Assert.AreEqual(OctavePitch.D4, pitches[4]);
+			Assert.AreEqual(OctavePitch.F4, pitches[5]);
 		}
 
 		[TestMethod]
@@ -82,11 +81,11 @@ namespace NewWave.Test.LibraryTests
 			var pitches = chord.Pitches(3).ToList();
 			Assert.AreEqual(5, pitches.Count);
 
-			Assert.AreEqual(MidiPitch.C3, pitches[0]);
-			Assert.AreEqual(MidiPitch.F3, pitches[1]);
-			Assert.AreEqual(MidiPitch.G3, pitches[2]);
-			Assert.AreEqual(MidiPitch.ASharp3, pitches[3]);
-			Assert.AreEqual(MidiPitch.D4, pitches[4]);
+			Assert.AreEqual(OctavePitch.C3, pitches[0]);
+			Assert.AreEqual(OctavePitch.F3, pitches[1]);
+			Assert.AreEqual(OctavePitch.G3, pitches[2]);
+			Assert.AreEqual(OctavePitch.ASharp3, pitches[3]);
+			Assert.AreEqual(OctavePitch.D4, pitches[4]);
 		}
 	}
 }

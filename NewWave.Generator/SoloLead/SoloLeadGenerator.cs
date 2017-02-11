@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
-using NewWave.Library.Chords;
-using NewWave.Library.Pitches;
-using NewWave.Library.Scales;
-using NewWave.Midi;
+using NewWave.Core.Chords;
+using NewWave.Core.Pitches;
+using NewWave.Core.Scales;
+using NewWave.Generator.Common;
 
 namespace NewWave.Generator.SoloLead
 {
@@ -37,7 +37,7 @@ namespace NewWave.Generator.SoloLead
 					break;
 				}
 
-				notes.Add(new Note(thisStart, thisLength, thisPitch.ToMidiPitch(4), Velocity.Ff));
+				notes.Add(new Note(thisStart, thisLength, thisPitch.ToOctavePitch(4), (int) Velocity.Ff));
 				lastIndex = thisIndex;
 				thisStart += thisLength;
 			}

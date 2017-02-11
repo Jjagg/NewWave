@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
+using NewWave.Core.Chords;
+using NewWave.Core.Pitches;
 using NewWave.Generator;
 using NewWave.Generator.ChordProgressions;
+using NewWave.Generator.Common;
 using NewWave.Generator.Parameters;
-using NewWave.Library.Chords;
-using NewWave.Midi;
 
 namespace NewWave.Test.GeneratorTests
 {
 	[TestClass]
 	public class BasicGeneratorTests
 	{
-		private const MidiPitch LowestPitch = MidiPitch.E2;
-		private static readonly ParameterList Parameters = new ParameterList
+		private const OctavePitch LowestPitch = OctavePitch.E2;
+		private static readonly MarkovGeneratorParameters Parameters = new MarkovGeneratorParameters
 		{
-			MinorKeyFunc = () => new List<MidiPitch> { LowestPitch, LowestPitch + 5, LowestPitch + 2 }[Randomizer.GetWeightedIndex(new List<double>
+			MinorKeyFunc = () => new List<OctavePitch> { LowestPitch, LowestPitch + 5, LowestPitch + 2 }[Randomizer.GetWeightedIndex(new List<double>
 			{
 				0.5, 0.3, 0.2
 			})],
@@ -29,8 +30,8 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void GenerateTest()
 		{
-			var song = new GeneratedSong();
-			Console.WriteLine(song.Generate(Parameters));
+		    var song = MarkovGeneratorSong.Generate(Parameters);
+		    Console.WriteLine(song.ToString());
 			foreach (var section in song.Sections)
 			{
 				Console.WriteLine("{0}: {1} meas, {2}", section.Type, section.Measures, string.Join(" - ", section.Chords.Select(c => c.Item2)));
@@ -40,8 +41,8 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void RenderTest()
 		{
-			var song = new GeneratedSong();
-			Common.RenderAndPlay(Parameters, song, "output.mid");
+		    var song = MarkovGeneratorSong.Generate(new MarkovGeneratorParameters());
+			Common.RenderAndPlay(Parameters, "output.mid");
 			foreach (var section in song.Sections)
 			{
 				Console.WriteLine("{0}: {1} meas, {2}", section.Type, section.Measures, string.Join(" - ", section.Chords.Select(c => c.Item2)));

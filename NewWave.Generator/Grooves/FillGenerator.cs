@@ -15,7 +15,7 @@ namespace NewWave.Generator.Grooves
 			var hits = new List<PercussionNote>();
 			foreach (var c in chain)
 			{
-				var theseHits = Enumerable.Range(0, (int)(c.Length / lengthOfNote)).Select(n => new PercussionNote(delay + n * lengthOfNote, c.Note, n == 0 ? Velocity.Fff : Velocity.F)).ToList();
+				var theseHits = Enumerable.Range(0, (int)(c.Length / lengthOfNote)).Select(n => new PercussionNote(delay + n * lengthOfNote, (int) c.Note, (int) (n == 0 ? Velocity.Fff : Velocity.F))).ToList();
 				hits.AddRange(theseHits);
 				delay += c.Length;
 			}

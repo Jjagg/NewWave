@@ -1,5 +1,4 @@
 using System;
-using NewWave.Midi;
 
 namespace NewWave.Core
 {
@@ -11,31 +10,29 @@ namespace NewWave.Core
 		public readonly double Start;
 
 		/// <summary>
-		/// The percussion voice played.
+		/// The identifier of the percussion voice played.
 		/// </summary>
-		public readonly Percussion Percussion;
+		public readonly int PercussionId;
 
 		/// <summary>
 		/// The Velocity of the note, 0-127.
 		/// </summary>
-		public readonly Velocity Velocity;
+		public readonly int Velocity;
 
 		/// <summary>
 		/// Creates a new percussion note instance.
 		/// </summary>
 		/// <param name="start">The starting position of the note, in ticks, with 0 as the beginning of the measure.</param>
-		/// <param name="percussion">The percussion voice played.</param>
+		/// <param name="percussionId">The percussion voice played.</param>
 		/// <param name="velocity">The Velocity of the note, 0-127.</param>
-		public PercussionNote(double start, Percussion percussion, Velocity velocity)
+		public PercussionNote(double start, int percussionId, int velocity)
 		{
 			Start = start;
-			Percussion = percussion;
+			PercussionId = percussionId;
 			Velocity = velocity;
 
-			if ((int)velocity > 127 || (int)velocity < 0)
-			{
+			if (velocity > 127 || velocity < 0)
 				throw new Exception("Velocity must be between 0 and 127 inclusive.");
-			}
 		}
 
 		public int StartInTicks(int ticksPerBeat)

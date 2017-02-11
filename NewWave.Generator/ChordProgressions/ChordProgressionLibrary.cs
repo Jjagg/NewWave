@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using NewWave.Library.Chords;
+using NewWave.Core.Chords;
 
 namespace NewWave.Generator.ChordProgressions
 {

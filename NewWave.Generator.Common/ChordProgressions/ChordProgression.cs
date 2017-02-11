@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using NewWave.Library.Chords;
+using NewWave.Core.Chords;
 
-namespace NewWave.Generator.ChordProgressions
+namespace NewWave.Generator.Common.ChordProgressions
 {
 	public class ChordProgression
 	{
@@ -25,5 +25,15 @@ namespace NewWave.Generator.ChordProgressions
 				   Chords.Count == other.Chords.Count &&
 				   Chords.Select((c, i) => other.Chords[i].Equals(c)).All(t => t);
 		}
+
+	    protected bool Equals(ChordProgression other)
+	    {
+	        return Equals(Chords, other.Chords);
+	    }
+
+	    public override int GetHashCode()
+	    {
+	        return Chords?.GetHashCode() ?? 0;
+	    }
 	}
 }

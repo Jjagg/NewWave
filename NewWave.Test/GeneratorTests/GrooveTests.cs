@@ -1,10 +1,12 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
+using NewWave.Core.Grooves;
 using NewWave.Generator;
+using NewWave.Generator.Common;
 using NewWave.Generator.Grooves;
 using NewWave.Generator.Sections;
-using NewWave.Library.Grooves;
+using NewWave.Midi;
 
 namespace NewWave.Test.GeneratorTests
 {

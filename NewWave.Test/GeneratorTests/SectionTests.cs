@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
 using NewWave.Generator;
 using NewWave.Generator.ChordProgressions;
+using NewWave.Generator.Common;
 using NewWave.Generator.Sections;
 
 namespace NewWave.Test.GeneratorTests
@@ -29,7 +30,7 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void SectionLayoutTest()
 		{
-			var structure = new SectionLayoutGenerator().GetSectionLayout(new SongInfo(TimeSignature.CommonTime, 4) { Tempo = 120, LengthInSeconds = 60 });
+			var structure = new SectionLayoutGenerator().GetSectionLayout(new SongInfo(TimeSignature.CommonTime, 4, 120, 60));
 			foreach (var sectionType in structure)
 			{
 				Console.WriteLine(sectionType);

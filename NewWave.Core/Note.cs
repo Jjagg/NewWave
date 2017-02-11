@@ -1,5 +1,5 @@
 using System;
-using NewWave.Midi;
+using NewWave.Core.Pitches;
 
 namespace NewWave.Core
 {
@@ -8,22 +8,22 @@ namespace NewWave.Core
 		/// <summary>
 		/// The starting position of the note, in beats.
 		/// </summary>
-		public readonly double Start;
+		public readonly float Start;
 
 		/// <summary>
 		/// The length of the note, as a fraction of the beat (usually quarter note).
 		/// </summary>
-		public readonly double Length;
+		public readonly float Length;
 
 		/// <summary>
 		/// The pitch of the note.
 		/// </summary>
-		public readonly MidiPitch Pitch;
+		public readonly OctavePitch Pitch;
 
 		/// <summary>
 		/// The Velocity of the note, 0-127.
 		/// </summary>
-		public readonly Velocity Velocity;
+		public readonly int Velocity;
 
 		/// <summary>
 		/// Creates a new note instance.
@@ -32,7 +32,7 @@ namespace NewWave.Core
 		/// <param name="length">The length of the note, in ticks.</param>
 		/// <param name="pitch">The pitch of the note.</param>
 		/// <param name="velocity">The Velocity of the note, 0-127.</param>
-		public Note(double start, double length, MidiPitch pitch, Velocity velocity)
+		public Note(float start, float length, OctavePitch pitch, int velocity)
 		{
 			Start = start;
 			Length = length;

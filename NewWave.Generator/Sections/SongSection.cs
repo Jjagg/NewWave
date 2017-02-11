@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
-using NewWave.Generator.ChordProgressions;
+using NewWave.Core.Chords;
+using NewWave.Core.Grooves;
+using NewWave.Core.Instruments;
+using NewWave.Core.Pitches;
+using NewWave.Generator.Common;
+using NewWave.Generator.Common.ChordProgressions;
 using NewWave.Generator.Grooves;
+using NewWave.Generator.Parameters;
 using NewWave.Generator.Riffs;
 using NewWave.Generator.SoloLead;
-using NewWave.Library.Chords;
-using NewWave.Library.Grooves;
-using NewWave.Library.Pitches;
 using NewWave.Midi;
 
 namespace NewWave.Generator.Sections
 {
-	internal class SongSection
+    public class SongSection
 	{
 		internal readonly SectionType Type;
 		private readonly SongInfo _songInfo;
@@ -26,85 +29,95 @@ namespace NewWave.Generator.Sections
 		private readonly DrumStyle _drumstyle;
 		private readonly RiffStrummer _strummer;
 
-		internal SongSection(SongInfo songInfo, SectionType type, ChordProgression chordProgression)
+		internal SongSection(SongInfo songInfo, SectionType type, ChordProgression chordProgression, MarkovGeneratorParameters parameters = null)
 		{
+		    var ps = parameters ?? new MarkovGeneratorParameters();
+
 			Type = type;
 			_songInfo = songInfo;
 
-			_measures = songInfo.Parameters.MeasuresPerSection(type);
-			Chords = GetChordProgression(songInfo.Parameters.GuitarTuning.Pitches[0], chordProgression);
-			_repeats = songInfo.Parameters.RepeatsPerSection(type, _measures);
+			_measures = ps.MeasuresPerSection(type);
+			Chords = GetChordProgression(ps.GuitarTuning.Pitches[0], chordProgression, ps);
+			_repeats = ps.RepeatsPerSection(type, _measures);
 			Lead = SoloLeadGenerator.GetSoloLead(_songInfo, _measures * _songInfo.TimeSignature.BeatCount, Chords);
-			_drumstyle = songInfo.Parameters.DrumStyle(Type);
+			_drumstyle = ps.DrumStyle(Type);
 			var groove = GetGroove();
 			_drumstyle.Generate(groove);
-			var riff = RiffGenerator.Rhythm(songInfo.TimeSignature, groove.Beats.ToList(), songInfo.Parameters.RiffResolutionFunc(type), songInfo.Feel).ToList();
+			var riff = RiffGenerator.Rhythm(songInfo.TimeSignature, groove.Beats.ToList(), ps.RiffResolutionFunc(type), songInfo.Feel).ToList();
 			_strummer = new RiffStrummer(riff);
 		}
 
 		internal int Measures => _measures * _repeats;
 
-		internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums)
-		{
-			for (var repeat = 0; repeat < _repeats; repeat++)
-			{
-				RenderRepeat(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat);
-			}
+	    internal int Render(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC,
+	        InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums,
+	        MarkovGeneratorParameters ps)
+	    {
+	        for (var repeat = 0; repeat < _repeats; repeat++)
+	            RenderRepeat(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, ps);
 
-			return Measures;
-		}
+	        return Measures;
+	    }
 
-		private void RenderRepeat(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat)
-		{
-			if (Type == SectionType.Verse || Type == SectionType.Chorus)
-			{
-				guitarC.Notes.Add(Lead.ToList());
-			}
-			else
-			{
-				guitarC.Notes.Add(new List<Note>());
-			}
+	    private void RenderRepeat(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC,
+	        InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat,
+	        MarkovGeneratorParameters ps)
+	    {
+	        if (Type == SectionType.Verse || Type == SectionType.Chorus)
+	        {
+	            guitarC.Notes.Add(Lead.ToList());
+	        }
+	        else
+	        {
+	            guitarC.Notes.Add(new List<Note>());
+	        }
 
-			for (var measure = 0; measure < _measures; measure++)
-			{
-				RenderMeasure(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure);
-			}
-		}
+	        for (var measure = 0; measure < _measures; measure++)
+	            RenderMeasure(guitarR, guitarL, guitarC, guitarLc, guitarRc, bass, drums, repeat, measure, ps);
+	    }
 
-		private void RenderMeasure(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC, InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat, int measure)
-		{
-			var grooveNotes = _drumstyle.Notes;
-			var kicks = grooveNotes.Where(n => n.Percussion == Percussion.BassDrum1).ToList();
-			var gNotes = kicks.Select((k, i) => new Tuple<double, double>(k.Start, i < kicks.Count - 1 ? kicks[i + 1].Start - k.Start : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
-			if (!gNotes.Any())
-			{
-				gNotes.Add(new Tuple<double, double>(0, _songInfo.TimeSignature.BeatCount));
-			}
+	    private void RenderMeasure(InstrumentTrack guitarR, InstrumentTrack guitarL, InstrumentTrack guitarC,
+	        InstrumentTrack guitarLc, InstrumentTrack guitarRc, InstrumentTrack bass, PercussionTrack drums, int repeat,
+	        int measure, MarkovGeneratorParameters ps)
+	    {
+	        var grooveNotes = _drumstyle.Notes;
+	        var kicks = grooveNotes.Where(n => n.PercussionId == (int) Percussion.BassDrum1).ToList();
+	        var gNotes =
+	            kicks.Select(
+	                (k, i) =>
+	                    new Tuple<double, double>(k.Start,
+	                        i < kicks.Count - 1
+	                            ? kicks[i + 1].Start - k.Start
+	                            : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
+	        if (!gNotes.Any())
+	        {
+	            gNotes.Add(new Tuple<double, double>(0, _songInfo.TimeSignature.BeatCount));
+	        }
 
-			if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
-			{
-				_strummer.AddGuitarNotes(new[] { guitarLc, guitarRc }, Chords, measure, _songInfo);
-				guitarL.Notes.Add(new List<Note>());
-				guitarR.Notes.Add(new List<Note>());
-			}
-			else
-			{
-				_strummer.AddGuitarNotes(new[] { guitarL, guitarR }, Chords, measure, _songInfo);
-				guitarLc.Notes.Add(new List<Note>());
-				guitarRc.Notes.Add(new List<Note>());
-			}
+	        if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
+	        {
+	            _strummer.AddGuitarNotes(new[] {guitarLc, guitarRc}, Chords, measure, _songInfo, ps);
+	            guitarL.Notes.Add(new List<Note>());
+	            guitarR.Notes.Add(new List<Note>());
+	        }
+	        else
+	        {
+	            _strummer.AddGuitarNotes(new[] {guitarL, guitarR}, Chords, measure, _songInfo, ps);
+	            guitarLc.Notes.Add(new List<Note>());
+	            guitarRc.Notes.Add(new List<Note>());
+	        }
 
-			_strummer.AddBassNotes(bass, Chords, measure, _songInfo);
-			drums.Notes.Add(AddFill(repeat, measure, grooveNotes));
+	        _strummer.AddBassNotes(bass, Chords, measure, _songInfo, ps);
+	        drums.Notes.Add(AddFill(repeat, measure, grooveNotes));
 
-			if (measure != 0)
-			{
-				// All the solo lead notes are actually in the first measure, so add empty ones after it
-				guitarC.Notes.Add(new List<Note>());
-			}
-		}
+	        if (measure != 0)
+	        {
+	            // All the solo lead notes are actually in the first measure, so add empty ones after it
+	            guitarC.Notes.Add(new List<Note>());
+	        }
+	    }
 
-		private List<PercussionNote> AddFill(int repeat, int measure, List<PercussionNote> grooveNotes)
+	    private List<PercussionNote> AddFill(int repeat, int measure, List<PercussionNote> grooveNotes)
 		{
 			var isLastMeasureInRepeatedSection = measure == _measures - 1 && repeat == _repeats - 1;
 			var isLastMeasureInSingleMediumSection = _measures > 2 && measure == _measures - 1;
@@ -125,12 +138,12 @@ namespace NewWave.Generator.Sections
 			return grooveNotes;
 		}
 
-		private List<Tuple<int, Chord>> GetChordProgression(MidiPitch lowestPossibleNote, ChordProgression progression)
+		private List<Tuple<int, Chord>> GetChordProgression(OctavePitch lowestPossibleNote, ChordProgression progression, MarkovGeneratorParameters ps)
 		{
 			var chordList = progression
 				.Chords
 				.Take(Randomizer.Clamp(Randomizer.NextNormalized(3, 1), 2, 3))
-				.Select(c => TransposeForLowestNote(lowestPossibleNote, TransposeForKey(_songInfo.Parameters.MajorKey, c)))
+				.Select(c => TransposeForLowestNote(lowestPossibleNote, TransposeForKey(ps.MajorKey, c)))
 				.ToList();
 
 			return AssignChords(chordList, _measures * _songInfo.TimeSignature.BeatCount);
@@ -190,14 +203,14 @@ namespace NewWave.Generator.Sections
 			return GrooveGenerator.GenerateGroove(_songInfo);
 		}
 
-		private static Chord TransposeForKey(MidiPitch key, Chord result)
+		private static Chord TransposeForKey(OctavePitch key, Chord result)
 		{
-			var transposeDiff = key - MidiPitch.C0;
+			var transposeDiff = key - OctavePitch.C0;
 			result.Transpose(transposeDiff);
 			return result;
 		}
 
-		private static Chord TransposeForLowestNote(MidiPitch lowestPossibleNote, Chord result)
+		private static Chord TransposeForLowestNote(OctavePitch lowestPossibleNote, Chord result)
 		{
 			var rootOctave = lowestPossibleNote.OctaveOf();
 			var currentLowest = result.Pitches(rootOctave).Min();

@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
-using NewWave.Library.Chords;
-using NewWave.Library.Pitches;
-using NewWave.Midi;
+using NewWave.Core.Chords;
+using NewWave.Core.Instruments;
+using NewWave.Core.Pitches;
+using NewWave.Generator.Common;
+using NewWave.Generator.Parameters;
 
 namespace NewWave.Generator.Sections
 {
@@ -17,22 +19,22 @@ namespace NewWave.Generator.Sections
 			_riff = riff;
 		}
 
-		public void AddGuitarNotes(InstrumentTrack[] tracks, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
+		public void AddGuitarNotes(InstrumentTrack[] tracks, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, MarkovGeneratorParameters ps)
 		{
-			AddNotes(tracks, chords, measure, songInfo);
+			AddNotes(tracks, chords, measure, songInfo, ps);
 		}
 
-		public void AddBassNotes(InstrumentTrack track, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo)
+		public void AddBassNotes(InstrumentTrack track, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, MarkovGeneratorParameters ps)
 		{
-			AddNotes(new[] { track }, chords, measure, songInfo, true);
+			AddNotes(new[] { track }, chords, measure, songInfo, ps, true);
 		}
 
-		private void AddNotes(IEnumerable<InstrumentTrack> tracks, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, bool isBass = false)
+		private void AddNotes(IEnumerable<InstrumentTrack> tracks, List<Tuple<int, Chord>> chords, int measure, SongInfo songInfo, MarkovGeneratorParameters ps, bool isBass = false)
 		{
 			var notes = new List<Note>();
 			var octave = isBass
-				? songInfo.Parameters.BassTuning.Pitches[0].OctaveOf()
-				: songInfo.Parameters.GuitarTuning.Pitches[0].OctaveOf();
+				? ps.BassTuning.Pitches[0].OctaveOf()
+				: ps.GuitarTuning.Pitches[0].OctaveOf();
 
 			for (var i = 0; i < _riff.Count; i++)
 			{
@@ -48,7 +50,7 @@ namespace NewWave.Generator.Sections
 					pitchCount = 1;
 				}
 
-				notes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, Velocity.F)));
+				notes.AddRange(pitches.Take(pitchCount).Select(p => new Note(start, noteLength, p, (int) Velocity.F)));
 			}
 
 			foreach (var track in tracks)

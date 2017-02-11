@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
-using NewWave.Library.Grooves;
+using NewWave.Core.Grooves;
+using NewWave.Generator.Common;
 using NewWave.Midi;
 
 namespace NewWave.Generator.Sections
@@ -49,9 +50,9 @@ namespace NewWave.Generator.Sections
 				GenerateBasicGroove(groove, out kicks, out hihats, out snares);
 			}
 
-			Notes.AddRange(hihats.Select(h => new PercussionNote(h, _timeKeeper, Velocity.Fff)));
-			Notes.AddRange(kicks.Select(k => new PercussionNote(k, Percussion.BassDrum1, Velocity.Fff)));
-			Notes.AddRange(snares.Select(s => new PercussionNote(s, Percussion.SnareDrum1, Velocity.Fff)));
+			Notes.AddRange(hihats.Select(h => new PercussionNote(h, (int) _timeKeeper, (int) Velocity.Fff)));
+			Notes.AddRange(kicks.Select(k => new PercussionNote(k, (int) Percussion.BassDrum1, (int) Velocity.Fff)));
+			Notes.AddRange(snares.Select(s => new PercussionNote(s, (int) Percussion.SnareDrum1, (int) Velocity.Fff)));
 		}
 
 		private static void GenerateBasicGroove(Groove groove, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)

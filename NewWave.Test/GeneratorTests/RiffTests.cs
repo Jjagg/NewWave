@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
-using NewWave.Generator;
+using NewWave.Generator.Common;
 using NewWave.Generator.Grooves;
 using NewWave.Generator.Riffs;
 

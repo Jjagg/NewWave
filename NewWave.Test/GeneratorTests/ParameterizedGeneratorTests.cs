@@ -2,10 +2,11 @@ using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
+using NewWave.Core.Tunings;
 using NewWave.Generator;
+using NewWave.Generator.Common;
 using NewWave.Generator.Parameters;
 using NewWave.Generator.Sections;
-using NewWave.Library.Tunings;
 
 namespace NewWave.Test.GeneratorTests
 {
@@ -15,13 +16,13 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void Default()
 		{
-			RenderAndPlay(new ParameterList());
+			RenderAndPlay(new MarkovGeneratorParameters());
 		}
 
 		[TestMethod]
 		public void MinorFastSong()
 		{
-			var parameters = new ParameterList
+			var parameters = new MarkovGeneratorParameters
 			{
 				GuitarTuning = GuitarTuningLibrary.DropDGuitarTuning,
 				MinorKeyFunc = () => ParameterLibrary.GetKey(GuitarTuningLibrary.DropDGuitarTuning),
@@ -107,21 +108,18 @@ namespace NewWave.Test.GeneratorTests
 		[TestMethod]
 		public void SlowSong()
 		{
-			RenderAndPlay(new ParameterList
+			RenderAndPlay(new MarkovGeneratorParameters
 			{
 				TempoMean = 100,
 				TempoStandardDeviation = 5
 			});
 		}
 
-		private static void RenderAndPlay(IParameterList parameterList)
+		private static void RenderAndPlay(MarkovGeneratorParameters parameterList)
 		{
-			var song = new GeneratedSong();
-			Common.RenderAndPlay(parameterList, song, "output.mid");
+			var song = Common.RenderAndPlay(parameterList, "output.mid");
 			foreach (var section in song.Sections)
-			{
 				Console.WriteLine("{0}: {1} meas, {2}", section.Type, section.Measures, string.Join(" - ", section.Chords.Select(c => c.Item2)));
-			}
 		}
 	}
 }
