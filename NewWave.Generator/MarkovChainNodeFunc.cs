@@ -9,9 +9,9 @@ namespace NewWave.Generator
 	{
 		internal readonly T Data;
 		internal readonly List<Func<MarkovChainNodeFunc<T>>> ChildNodes;
-		private readonly double _probability;
+		private readonly float _probability;
 
-		public MarkovChainNodeFunc(T data, double probability, List<Func<MarkovChainNodeFunc<T>>> childNodes = null)
+		public MarkovChainNodeFunc(T data, float probability, List<Func<MarkovChainNodeFunc<T>>> childNodes = null)
 		{
 			Data = data;
 			_probability = probability;

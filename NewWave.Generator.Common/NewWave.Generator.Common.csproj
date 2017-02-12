@@ -36,9 +36,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChordProgressions\ChordProgression.cs" />
     <Compile Include="Instruments\InstrumentRole.cs" />
-    <Compile Include="Instruments\PercussionInstrumentRole.cs" />
+    <Compile Include="Instruments\PercussionRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer.cs" />
     <Compile Include="SongInfo.cs" />

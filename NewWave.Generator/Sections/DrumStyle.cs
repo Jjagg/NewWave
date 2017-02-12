@@ -11,11 +11,11 @@ namespace NewWave.Generator.Sections
 	{
 		private readonly Percussion _timeKeeper;
 		private readonly bool _blast;
-		private readonly bool _doubleKick;
+		private readonly bool _floatKick;
 
 		public List<PercussionNote> Notes { get; }
 
-		public DrumStyle(SectionType type, double probabilityOfBlastbeats = 0)
+		public DrumStyle(SectionType type, float probabilityOfBlastbeats = 0)
 		{
 			_timeKeeper = GetTimeKeeper(type);
 			Notes = new List<PercussionNote>();
@@ -26,22 +26,22 @@ namespace NewWave.Generator.Sections
 			}
 			else if (Randomizer.ProbabilityOfTrue(probabilityOfBlastbeats))
 			{
-				_doubleKick = true;
+				_floatKick = true;
 			}
 		}
 
 		public void Generate(Groove groove)
 		{
 			Notes.Clear();
-			IEnumerable<double> kicks;
-			IEnumerable<double> hihats;
-			IEnumerable<double> snares;
+			IEnumerable<float> kicks;
+			IEnumerable<float> hihats;
+			IEnumerable<float> snares;
 
 			if (_blast)
 			{
 				GenerateBlast(groove.TimeSignature, groove.Feel, out kicks, out hihats, out snares);
 			}
-			else if (_doubleKick)
+			else if (_floatKick)
 			{
 				GenerateDoubleKick(groove.TimeSignature, groove.Feel, out kicks, out hihats, out snares);
 			}
@@ -55,39 +55,39 @@ namespace NewWave.Generator.Sections
 			Notes.AddRange(snares.Select(s => new PercussionNote(s, (int) Percussion.SnareDrum1, (int) Velocity.Fff)));
 		}
 
-		private static void GenerateBasicGroove(Groove groove, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)
+		private static void GenerateBasicGroove(Groove groove, out IEnumerable<float> kicks, out IEnumerable<float> hihats, out IEnumerable<float> snares)
 		{
-			hihats = new List<double>();
-			var snareList = new List<double>();
+			hihats = new List<float>();
+			var snareList = new List<float>();
 
 			switch (groove.Feel)
 			{
 				case 3:
-					hihats = Enumerable.Range(0, groove.TimeSignature.BeatCount * 3).Select(b => b / 3.0);
+					hihats = Enumerable.Range(0, groove.TimeSignature.BeatCount * 3).Select(b => b / 3.0f);
 					break;
 				case 4:
-					hihats = Enumerable.Range(0, groove.TimeSignature.BeatCount * 2).Select(b => b / 2.0);
+					hihats = Enumerable.Range(0, groove.TimeSignature.BeatCount * 2).Select(b => b / 2.0f);
 					break;
 			}
 
 			if (groove.TimeSignature.BeatCount % 4 == 0)
 			{
-				snareList = EveryNthOfBeat(groove.TimeSignature.BeatCount, groove.Feel / 2.0, 1).ToList();
+				snareList = EveryNthOfBeat(groove.TimeSignature.BeatCount, groove.Feel / 2.0f, 1).ToList();
 			}
 			else if (groove.TimeSignature.BeatCount % 3 == 0)
 			{
-				if (groove.TimeSignature.BeatCount == 3 && Randomizer.ProbabilityOfTrue(0.5) && groove.Feel == 4)
+				if (groove.TimeSignature.BeatCount == 3 && Randomizer.ProbabilityOfTrue(0.5f) && groove.Feel == 4)
 				{
 					snareList = new[]
 					{
-						new List<double> { 1, 2.5 },
-						new List<double> { 1, 2.25 },
-						new List<double> { 0.75, 2 }
+						new List<float> { 1, 2.5f },
+						new List<float> { 1, 2.25f },
+						new List<float> { 0.75f, 2 }
 					}[Randomizer.Next(3)];
 				}
 				else
 				{
-					snareList = EveryNthOfBeat(groove.TimeSignature.BeatCount, 1.5, 1).ToList();
+					snareList = EveryNthOfBeat(groove.TimeSignature.BeatCount, 1.5f, 1).ToList();
 				}
 			}
 
@@ -95,12 +95,12 @@ namespace NewWave.Generator.Sections
 			snares = snareList;
 		}
 
-		private static void GenerateBlast(TimeSignature timeSignature, int feel, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)
+		private static void GenerateBlast(TimeSignature timeSignature, int feel, out IEnumerable<float> kicks, out IEnumerable<float> hihats, out IEnumerable<float> snares)
 		{
 			if (feel % 2 == 0)
 			{
-				kicks = EveryNthOfBeat(timeSignature.BeatCount, 0.5);
-				snares = EveryNthOfBeat(timeSignature.BeatCount, 0.5, 0.25);
+				kicks = EveryNthOfBeat(timeSignature.BeatCount, 0.5f);
+				snares = EveryNthOfBeat(timeSignature.BeatCount, 0.5f, 0.25f);
 				hihats = kicks;
 			}
 			else
@@ -109,14 +109,14 @@ namespace NewWave.Generator.Sections
 			}
 		}
 
-		private static void GenerateDoubleKick(TimeSignature timeSignature, int feel, out IEnumerable<double> kicks, out IEnumerable<double> hihats, out IEnumerable<double> snares)
+		private static void GenerateDoubleKick(TimeSignature timeSignature, int feel, out IEnumerable<float> kicks, out IEnumerable<float> hihats, out IEnumerable<float> snares)
 		{
-			kicks = EveryNthOfBeat(timeSignature.BeatCount, 1.0 / feel);
-			snares = EveryNthOfBeat(timeSignature.BeatCount, feel / 2.0, 1);
-			hihats = EveryNthOfBeat(timeSignature.BeatCount, 2.0 / feel);
+			kicks = EveryNthOfBeat(timeSignature.BeatCount, 1.0f / feel);
+			snares = EveryNthOfBeat(timeSignature.BeatCount, feel / 2.0f, 1);
+			hihats = EveryNthOfBeat(timeSignature.BeatCount, 2.0f / feel);
 		}
 
-		private static IEnumerable<double> EveryNthOfBeat(int numberOfBeats, double fractionOfBeat, double offset = 0)
+		private static IEnumerable<float> EveryNthOfBeat(int numberOfBeats, float fractionOfBeat, float offset = 0)
 		{
 			return Enumerable.Range(0, (int)(numberOfBeats * 1 / fractionOfBeat)).Select(b => b * fractionOfBeat + offset);
 		}

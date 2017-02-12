@@ -15,14 +15,14 @@ namespace NewWave.Generator.SoloLead
 		{
 			var notes = new List<Note>();
 			var lastIndex = -1;
-			var thisStart = 0.0;
+			var thisStart = 0f;
 			var lengths = GetNoteLengths(length, songInfo.Feel);
 
 			for (var note = 0; note < lengths.Count; note++)
 			{
 				var thisChord = chordProgression.Last(c => c.Item1 <= note).Item2;
 				var thisScale = ScaleLibrary.GetScale(thisChord.BasePitch, ScaleType.MinorPentatonic).ToList();
-				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5), -7, 7);
+				var interval = Randomizer.Clamp(Randomizer.NextNormalized(0, 1.5f), -7, 7);
 				var thisIndex = Randomizer.Clamp(lastIndex + interval, 0, thisScale.Count - 1);
 				var thisPitch = thisScale[thisIndex];
 				var thisLength = lengths[note];
@@ -44,10 +44,10 @@ namespace NewWave.Generator.SoloLead
 			return notes;
 		}
 
-		private static List<double> GetNoteLengths(int totalLength, int feel)
+		private static List<float> GetNoteLengths(int totalLength, int feel)
 		{
 			var thisLength = 0.0;
-			var lengths = new List<double>();
+			var lengths = new List<float>();
 			while (thisLength < totalLength)
 			{
 				var seg = feel == 4
@@ -60,33 +60,33 @@ namespace NewWave.Generator.SoloLead
 			return lengths;
 		}
 
-		private static List<List<double>> LengthSegments4 => new List<List<double>>
+		private static List<List<float>> LengthSegments4 => new List<List<float>>
 		{
-			new List<double> { 2 },
-			new List<double> { 2, 1, 1 },
-			new List<double> { 1, 2, 1 },
-			new List<double> { 1 },
-			new List<double> { 1, 1 },
-			new List<double> { 0.5, 0.5 },
-			new List<double> { 1.5, 1, 1.5 },
-			new List<double> { 1.5, 1.5 },
-			new List<double> { 0.5, 1, 0.5 },
-			new List<double> { 0.5, 0.5 },
-			new List<double> { 0.5, 0.5, 0.5, 0.5 },
-			new List<double> { 0.5, 0.5, 1 }
+			new List<float> { 2 },
+			new List<float> { 2, 1, 1 },
+			new List<float> { 1, 2, 1 },
+			new List<float> { 1 },
+			new List<float> { 1, 1 },
+			new List<float> { 0.5f, 0.5f },
+			new List<float> { 1.5f, 1, 1.5f },
+			new List<float> { 1.5f, 1.5f },
+			new List<float> { 0.5f, 1, 0.5f },
+			new List<float> { 0.5f, 0.5f },
+			new List<float> { 0.5f, 0.5f, 0.5f, 0.5f },
+			new List<float> { 0.5f, 0.5f, 1 }
 		};
 
-		private static List<List<double>> LengthSegments3 => new List<List<double>>
+		private static List<List<float>> LengthSegments3 => new List<List<float>>
 		{
-			new List<double> { 2 },
-			new List<double> { 2, 1, 1 },
-			new List<double> { 1, 2, 1 },
-			new List<double> { 1 },
-			new List<double> { 1, 1 },
-			new List<double> { 0.33, 0.33, 0.33 },
-			new List<double> { 0.33, 0.67 },
-			new List<double> { 0.67, 0.33 },
-			new List<double> { 0.67, 0.67, 0.67 }
+			new List<float> { 2 },
+			new List<float> { 2, 1, 1 },
+			new List<float> { 1, 2, 1 },
+			new List<float> { 1 },
+			new List<float> { 1, 1 },
+			new List<float> { 0.33f, 0.33f, 0.33f },
+			new List<float> { 0.33f, 0.67f },
+			new List<float> { 0.67f, 0.33f },
+			new List<float> { 0.67f, 0.67f, 0.67f }
 		};
 	}
 }

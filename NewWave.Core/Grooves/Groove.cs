@@ -6,10 +6,10 @@ namespace NewWave.Core.Grooves
 	public class Groove
 	{
 		public readonly TimeSignature TimeSignature;
-		public readonly IEnumerable<double> Beats;
+		public readonly IEnumerable<float> Beats;
 		public readonly int Feel;
 
-		public Groove(TimeSignature timeSignature, int feel, IEnumerable<double> beats)
+		public Groove(TimeSignature timeSignature, int feel, IEnumerable<float> beats)
 		{
 			TimeSignature = timeSignature;
 			Feel = feel;

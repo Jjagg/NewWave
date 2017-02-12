@@ -7,7 +7,7 @@ namespace NewWave.Core
 		/// <summary>
 		/// The starting position of the note, in fractions of a beat.
 		/// </summary>
-		public readonly double Start;
+		public readonly float Start;
 
 		/// <summary>
 		/// The identifier of the percussion voice played.
@@ -25,7 +25,7 @@ namespace NewWave.Core
 		/// <param name="start">The starting position of the note, in ticks, with 0 as the beginning of the measure.</param>
 		/// <param name="percussionId">The percussion voice played.</param>
 		/// <param name="velocity">The Velocity of the note, 0-127.</param>
-		public PercussionNote(double start, int percussionId, int velocity)
+		public PercussionNote(float start, int percussionId, int velocity)
 		{
 			Start = start;
 			PercussionId = percussionId;

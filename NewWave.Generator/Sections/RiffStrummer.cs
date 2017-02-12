@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NewWave.Core;
 using NewWave.Core.Chords;
-using NewWave.Core.Instruments;
 using NewWave.Core.Pitches;
 using NewWave.Generator.Common;
 using NewWave.Generator.Parameters;
@@ -12,9 +11,9 @@ namespace NewWave.Generator.Sections
 {
 	internal class RiffStrummer
 	{
-		private readonly List<double> _riff;
+		private readonly List<float> _riff;
 
-		public RiffStrummer(List<double> riff)
+		public RiffStrummer(List<float> riff)
 		{
 			_riff = riff;
 		}

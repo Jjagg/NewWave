@@ -23,20 +23,20 @@ namespace NewWave.Generator.Common
 			return R.Next(minValue, maxValue);
 		}
 
-		public static double NextDouble()
+		public static float NextSingle()
 		{
-			return R.NextDouble();
+			return (float) R.NextDouble();
 		}
 
-		public static double NextDouble(double minValue, double maxValue)
+		public static float NextSingle(float minValue, float maxValue)
 		{
-			return R.NextDouble() * (maxValue - minValue) + minValue;
+			return (float) R.NextDouble() * (maxValue - minValue) + minValue;
 		}
 
-		public static int GetWeightedIndex(List<double> input)
+		public static int GetWeightedIndex(List<float> input)
 		{
 			var sum = input.Sum();
-			var target = NextDouble(0, sum);
+			var target = NextSingle(0, sum);
 
 			for (var i = 0; i < input.Count; i++)
 			{
@@ -51,17 +51,17 @@ namespace NewWave.Generator.Common
 			return input.Count - 1;
 		}
 
-		public static double NextNormalized(double mean, double standardDeviation)
+		public static float NextNormalized(float mean, float standardDeviation)
 		{
 			// Box–Muller transform
 			// http://stackoverflow.com/a/2751988/436282
-			var u1 = NextDouble();
-			var u2 = NextDouble();
-			var normal = Math.Sqrt(-2 * Math.Log(u1)) * Math.Cos(2 * Math.PI * u2);
+			var u1 = NextSingle();
+			var u2 = NextSingle();
+			var normal = (float) (Math.Sqrt(-2 * Math.Log(u1)) * Math.Cos(2 * Math.PI * u2));
 			return normal * standardDeviation + mean;
 		}
 
-		public static int Clamp(double value, int min, int max)
+		public static int Clamp(float value, int min, int max)
 		{
 			return value < min
 				? min
@@ -70,9 +70,9 @@ namespace NewWave.Generator.Common
 					: (int)value;
 		}
 
-		public static bool ProbabilityOfTrue(double probability)
+		public static bool ProbabilityOfTrue(float probability)
 		{
-			return NextDouble() < probability;
+			return NextSingle() < probability;
 		}
 	}
 }

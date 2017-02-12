@@ -23,13 +23,13 @@ namespace NewWave.Test.GeneratorTests
 
 			for (var i = 1; i <= 10; i ++)
 			{
-				var res = 4.0 / i;
+				var res = 4.0f / i;
 				var riffBeats = RiffGenerator.Rhythm(timeSignature, groove.Beats.ToList(), res, feel);
 				WriteRhythm(string.Format("{0:0}% resolution", res * 100), riffBeats, timeSignature.BeatCount, feel);
 			}
 		}
 
-		private void WriteRhythm(string label, IEnumerable<double> lengths, int lengthInBeats, int feel)
+		private void WriteRhythm(string label, IEnumerable<float> lengths, int lengthInBeats, int feel)
 		{
 			var spacesPerBeat = feel;
 			var tabLength = lengthInBeats * spacesPerBeat;

@@ -27,7 +27,7 @@ namespace NewWave.Test.GeneratorTests
 				GuitarTuning = GuitarTuningLibrary.DropDGuitarTuning,
 				MinorKeyFunc = () => ParameterLibrary.GetKey(GuitarTuningLibrary.DropDGuitarTuning),
 				ChordProgressionFilter = ParameterLibrary.MinorFilter,
-				TimeSignatureFunc = () => new TimeSignature((Randomizer.ProbabilityOfTrue(0.5) ? 1 : 2) * (Randomizer.ProbabilityOfTrue(0.5) ? 3 : 4), 4),
+				TimeSignatureFunc = () => new TimeSignature((Randomizer.ProbabilityOfTrue(0.5f) ? 1 : 2) * (Randomizer.ProbabilityOfTrue(0.5f) ? 3 : 4), 4),
 				TempoMean = 130,
 				TempoStandardDeviation = 10,
 				LengthInSecondsMean = 240,
@@ -68,7 +68,7 @@ namespace NewWave.Test.GeneratorTests
 			{
 				case SectionType.Verse:
 				case SectionType.Chorus:
-					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? baseLength * 2 : baseLength;
+					returnVal = Randomizer.ProbabilityOfTrue(0.5f) ? baseLength * 2 : baseLength;
 					break;
 				case SectionType.Intro:
 				case SectionType.Outro:
@@ -76,14 +76,14 @@ namespace NewWave.Test.GeneratorTests
 					returnVal = baseLength / 2;
 					break;
 				case SectionType.Bridge:
-					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? baseLength : baseLength / 2;
+					returnVal = Randomizer.ProbabilityOfTrue(0.5f) ? baseLength : baseLength / 2;
 					break;
 			}
 
 			return Math.Max(1, multiplier * returnVal);
 		}
 
-		private static Func<SectionType, double> RiffResolutionFunc
+		private static Func<SectionType, float> RiffResolutionFunc
 		{
 			get
 			{
@@ -93,14 +93,14 @@ namespace NewWave.Test.GeneratorTests
 					{
 						case SectionType.Verse:
 						case SectionType.Chorus:
-							return 4.0 / Randomizer.NextNormalized(5.0, 1.0);
+							return 4.0f / Randomizer.NextNormalized(5.0f, 1.0f);
 						case SectionType.Intro:
 						case SectionType.Outro:
 						case SectionType.Bridge:
 							return 0;
 					}
 
-					return 1.0;
+					return 1.0f;
 				};
 			}
 		}

@@ -10,10 +10,10 @@ namespace NewWave.Generator.Parameters
 {
 	public class MarkovGeneratorParameters
 	{
-		public double TempoMean;
-		public double TempoStandardDeviation;
-		public double LengthInSecondsMean;
-		public double LengthInSecondsStandardDeviation;
+		public float TempoMean;
+		public float TempoStandardDeviation;
+		public float LengthInSecondsMean;
+		public float LengthInSecondsStandardDeviation;
 		public OctavePitch MajorKey;
 		public Func<TimeSignature> TimeSignatureFunc;
 		public Func<TimeSignature, int> FeelFunc;
@@ -23,7 +23,7 @@ namespace NewWave.Generator.Parameters
 		public GuitarTuning GuitarTuning;
 		public GuitarTuning BassTuning;
 		public Func<SectionType, DrumStyle> DrumStyle;
-		public Func<SectionType, double> RiffResolutionFunc;
+		public Func<SectionType, float> RiffResolutionFunc;
 
 		public OctavePitch MinorKey
 		{
@@ -57,7 +57,7 @@ namespace NewWave.Generator.Parameters
 			GuitarTuning = GuitarTuningLibrary.StandardGuitarTuning;
 			BassTuning = GuitarTuningLibrary.StandardBassTuning;
 			DrumStyle = t => new DrumStyle(t);
-			RiffResolutionFunc = t => 1.0;
+			RiffResolutionFunc = t => 1.0f;
 		}
 
 		private static int RepeatsPerSectionFunc(SectionType type, int measures)
@@ -68,7 +68,7 @@ namespace NewWave.Generator.Parameters
 			{
 				case SectionType.Verse:
 				case SectionType.Chorus:
-					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? 4 : 2;
+					returnVal = Randomizer.ProbabilityOfTrue(0.5f) ? 4 : 2;
 					break;
 				case SectionType.Intro:
 				case SectionType.Outro:
@@ -76,7 +76,7 @@ namespace NewWave.Generator.Parameters
 					returnVal = 1;
 					break;
 				case SectionType.Bridge:
-					returnVal = Randomizer.ProbabilityOfTrue(0.5) ? 2 : 1;
+					returnVal = Randomizer.ProbabilityOfTrue(0.5f) ? 2 : 1;
 					break;
 			}
 

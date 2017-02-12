@@ -9,9 +9,9 @@ namespace NewWave.Generator
     {
         internal readonly T Data;
         internal readonly List<MarkovChainNode<T>> ChildNodes;
-        internal readonly double Probability;
+        internal readonly float Probability;
 
-        public MarkovChainNode(T data, double probability, List<MarkovChainNode<T>> childNodes = null)
+        public MarkovChainNode(T data, float probability, List<MarkovChainNode<T>> childNodes = null)
         {
             Data = data;
             Probability = probability;

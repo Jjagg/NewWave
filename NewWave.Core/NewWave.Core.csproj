@@ -44,6 +44,7 @@
     <Compile Include="Chords\Chord.cs" />
     <Compile Include="Chords\ChordAdded.cs" />
     <Compile Include="Chords\ChordPresets.cs" />
+    <Compile Include="Chords\ChordProgression.cs" />
     <Compile Include="Chords\ChordQuality.cs" />
     <Compile Include="Grooves\Groove.cs" />
     <Compile Include="InstrumentTrack.cs" />

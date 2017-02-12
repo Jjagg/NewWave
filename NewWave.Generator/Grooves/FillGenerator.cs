@@ -8,9 +8,9 @@ namespace NewWave.Generator.Grooves
 {
 	public static class FillGenerator
 	{
-		public static IEnumerable<PercussionNote> GetFill(double delay, double fillLengthInBeats, int feel)
+		public static IEnumerable<PercussionNote> GetFill(float delay, float fillLengthInBeats, int feel)
 		{
-			var lengthOfNote = 1.0 / feel;
+			var lengthOfNote = 1.0f / feel;
 			var chain = FillChain(n => n, fillLengthInBeats).ToList();
 			var hits = new List<PercussionNote>();
 			foreach (var c in chain)
@@ -25,37 +25,37 @@ namespace NewWave.Generator.Grooves
 
 		private static List<MarkovChainNodeFunc<FillSection>> Chain => new List<MarkovChainNodeFunc<FillSection>>
 		{
-			new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 1), 0.5, SnareChain),
-			new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 1), 0.3, HiTomChain),
-			new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.HighTom1, 1), 0.2, MidTomChain)
+			new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 1), 0.5f, SnareChain),
+			new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 1), 0.3f, HiTomChain),
+			new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.HighTom1, 1), 0.2f, MidTomChain)
 		};
 
 		private static List<Func<MarkovChainNodeFunc<FillSection>>> SnareChain => new List<Func<MarkovChainNodeFunc<FillSection>>>
 		{
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.HighTom1, 0.5), 0.5, HiTomChain),
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.MidTom1, 0.5), 0.3, MidTomChain),
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 0.5), 0.2, SnareChain)
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.HighTom1, 0.5f), 0.5f, HiTomChain),
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.MidTom1, 0.5f), 0.3f, MidTomChain),
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 0.5f), 0.2f, SnareChain)
 		};
 
 		private static List<Func<MarkovChainNodeFunc<FillSection>>> HiTomChain => new List<Func<MarkovChainNodeFunc<FillSection>>>
 		{
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.MidTom1, 0.5), 0.5, MidTomChain),
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 0.5), 0.5, SnareChain)
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.MidTom1, 0.5f), 0.5f, MidTomChain),
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 0.5f), 0.5f, SnareChain)
 		};
 
 		private static List<Func<MarkovChainNodeFunc<FillSection>>> MidTomChain => new List<Func<MarkovChainNodeFunc<FillSection>>>
 		{
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.LowTom1, 0.5), 0.5, LowTomChain),
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 0.5), 0.5, SnareChain)
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.LowTom1, 0.5f), 0.5f, LowTomChain),
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 0.5f), 0.5f, SnareChain)
 		};
 
 		private static List<Func<MarkovChainNodeFunc<FillSection>>> LowTomChain => new List<Func<MarkovChainNodeFunc<FillSection>>>
 		{
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.LowTom1, 0.5), 0.5, LowTomChain),
-			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 0.5), 0.5, SnareChain)
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.LowTom1, 0.5f), 0.5f, LowTomChain),
+			() => new MarkovChainNodeFunc<FillSection>(new FillSection(Percussion.SnareDrum1, 0.5f), 0.5f, SnareChain)
 		};
 
-		private static IEnumerable<FillSection> FillChain(Func<MarkovChainNodeFunc<FillSection>, MarkovChainNodeFunc<FillSection>> filterFunc, double fillLengthInBeats)
+		private static IEnumerable<FillSection> FillChain(Func<MarkovChainNodeFunc<FillSection>, MarkovChainNodeFunc<FillSection>> filterFunc, float fillLengthInBeats)
 		{
 			var chains = new List<FillSection>();
 			var chain = Chain;
@@ -76,9 +76,9 @@ namespace NewWave.Generator.Grooves
 		private struct FillSection
 		{
 			public readonly Percussion Note;
-			public readonly double Length;
+			public readonly float Length;
 
-			public FillSection(Percussion note, double length)
+			public FillSection(Percussion note, float length)
 			{
 				Note = note;
 				Length = length;

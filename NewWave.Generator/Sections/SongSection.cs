@@ -4,10 +4,8 @@ using System.Linq;
 using NewWave.Core;
 using NewWave.Core.Chords;
 using NewWave.Core.Grooves;
-using NewWave.Core.Instruments;
 using NewWave.Core.Pitches;
 using NewWave.Generator.Common;
-using NewWave.Generator.Common.ChordProgressions;
 using NewWave.Generator.Grooves;
 using NewWave.Generator.Parameters;
 using NewWave.Generator.Riffs;
@@ -85,13 +83,13 @@ namespace NewWave.Generator.Sections
 	        var gNotes =
 	            kicks.Select(
 	                (k, i) =>
-	                    new Tuple<double, double>(k.Start,
+	                    new Tuple<float, float>(k.Start,
 	                        i < kicks.Count - 1
 	                            ? kicks[i + 1].Start - k.Start
 	                            : _songInfo.TimeSignature.BeatCount - k.Start)).ToList();
 	        if (!gNotes.Any())
 	        {
-	            gNotes.Add(new Tuple<double, double>(0, _songInfo.TimeSignature.BeatCount));
+	            gNotes.Add(new Tuple<float, float>(0, _songInfo.TimeSignature.BeatCount));
 	        }
 
 	        if (Type == SectionType.Intro || Type == SectionType.Outro || Type == SectionType.Bridge)
@@ -125,7 +123,7 @@ namespace NewWave.Generator.Sections
 
 			if (isLastMeasureInRepeatedSection || isLastMeasureInSingleMediumSection || isMiddleMeasureInSingleLongSection)
 			{
-				var fillLength = new List<double> { 1.0, 2.0 }[Randomizer.GetWeightedIndex(new List<double> { 0.5, 0.5 })];
+				var fillLength = new List<float> { 1.0f, 2.0f }[Randomizer.GetWeightedIndex(new List<float> { 0.5f, 0.5f })];
 
 				if (isLastMeasureInRepeatedSection)
 				{
@@ -190,12 +188,12 @@ namespace NewWave.Generator.Sections
 
 		private static int GetSplitPoint(int maxValue)
 		{
-			if (Randomizer.ProbabilityOfTrue(0.9))
+			if (Randomizer.ProbabilityOfTrue(0.9f))
 			{
 				return maxValue / 2;
 			}
 
-			return GetSplitPoint(maxValue / 2) + (Randomizer.ProbabilityOfTrue(0.5) ? maxValue / 2 : 0);
+			return GetSplitPoint(maxValue / 2) + (Randomizer.ProbabilityOfTrue(0.5f) ? maxValue / 2 : 0);
 		}
 
 		private Groove GetGroove()
