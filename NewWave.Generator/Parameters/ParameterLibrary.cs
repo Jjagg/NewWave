@@ -14,7 +14,7 @@ namespace NewWave.Generator.Parameters
 			get
 			{
 				return n => n.Data.Quality != ChordQuality.Minor && n.Data.Quality != ChordQuality.Diminished
-					? new MarkovChainNode<Chord>(n.Data, n.Probability * 0.25, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
+					? new MarkovChainNode<Chord>(n.Data, n.Probability * 0.25f, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
 					: n;
 			}
 		}
@@ -25,7 +25,7 @@ namespace NewWave.Generator.Parameters
 			{
 				return n =>
 					n.Data.Quality == ChordQuality.Minor
-						? new MarkovChainNode<Chord>(n.Data, n.Probability * 0.25, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
+						? new MarkovChainNode<Chord>(n.Data, n.Probability * 0.25f, n.ChildNodes?.Where(c => c.Probability > 0.08).ToList())
 						: n;
 			}
 		}

@@ -17,8 +17,8 @@ namespace NewWave.Generator.Sections
 
 		private List<MarkovChainNodeFunc<SectionType>> Chain => new List<MarkovChainNodeFunc<SectionType>>
 		{
-			new MarkovChainNodeFunc<SectionType>(SectionType.Intro, 0.7, JustVerseChain),
-			new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.3, VerseChain)
+			new MarkovChainNodeFunc<SectionType>(SectionType.Intro, 0.7f, JustVerseChain),
+			new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.3f, VerseChain)
 		};
 
 		private List<Func<MarkovChainNodeFunc<SectionType>>> JustVerseChain => new List<Func<MarkovChainNodeFunc<SectionType>>>
@@ -28,9 +28,9 @@ namespace NewWave.Generator.Sections
 
 		private List<Func<MarkovChainNodeFunc<SectionType>>> VerseChain => new List<Func<MarkovChainNodeFunc<SectionType>>>
 		{
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.2, VerseChain),
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Prechorus, 0.4, PrechorusChain),
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Chorus, 0.4, ChorusChain)
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.2f, VerseChain),
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Prechorus, 0.4f, PrechorusChain),
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Chorus, 0.4f, ChorusChain)
 		};
 
 		private List<Func<MarkovChainNodeFunc<SectionType>>> PrechorusChain => new List<Func<MarkovChainNodeFunc<SectionType>>>
@@ -40,15 +40,15 @@ namespace NewWave.Generator.Sections
 
 		private List<Func<MarkovChainNodeFunc<SectionType>>> ChorusChain => new List<Func<MarkovChainNodeFunc<SectionType>>>
 		{
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, _estimatedMeasures > _idealMeasures ? 0 : 0.6, VerseChain),
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Bridge, _estimatedMeasures > _idealMeasures ? 0 : 0.4, BridgeChain),
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, _estimatedMeasures > _idealMeasures ? 0 : 0.6f, VerseChain),
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Bridge, _estimatedMeasures > _idealMeasures ? 0 : 0.4f, BridgeChain),
 			() => new MarkovChainNodeFunc<SectionType>(SectionType.Outro, _estimatedMeasures > _idealMeasures ? 1 : 0, OutroChain)
 		};
 
 		private List<Func<MarkovChainNodeFunc<SectionType>>> BridgeChain => new List<Func<MarkovChainNodeFunc<SectionType>>>
 		{
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.3, VerseChain),
-			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.7, ChorusChain)
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.3f, VerseChain),
+			() => new MarkovChainNodeFunc<SectionType>(SectionType.Verse, 0.7f, ChorusChain)
 		};
 
 		private List<Func<MarkovChainNodeFunc<SectionType>>> OutroChain => new List<Func<MarkovChainNodeFunc<SectionType>>>

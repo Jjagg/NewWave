@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NewWave.Core;
 using NewWave.Core.Tunings;
-using NewWave.Generator;
 using NewWave.Generator.Common;
 using NewWave.Generator.Parameters;
 using NewWave.Generator.Sections;
