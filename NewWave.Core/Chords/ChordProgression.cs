@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using NewWave.Core.Chords;
 
-namespace NewWave.Generator.Common.ChordProgressions
+namespace NewWave.Core.Chords
 {
 	public class ChordProgression
 	{
